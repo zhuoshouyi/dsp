@@ -1,6 +1,8 @@
 package com.topway.jwt;
 
+import com.topway.enums.ResultEnum;
 import com.topway.utils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,6 +15,7 @@ import java.io.IOException;
 /**
  * Created by haizhi on 2019/5/15.
  */
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private PathMatcher pathMatcher;
@@ -28,11 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // 检查token是否符合要求
                 JwtUtil.decode(token);
+                // TODO 校验用户权限表,看用户是否在权限表中
             }
 
         }catch (Exception e){
-            System.out.println("2");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            log.error("【认证错误】token不符合规范");
+            response.sendError(ResultEnum.USER_NOT_FOUND.getCode(), ResultEnum.USER_NOT_FOUND.getDesc());
             return;
         }
 

@@ -1,13 +1,15 @@
 package com.topway.controller;
 
 import com.topway.VO.ResultVO;
-import com.topway.convert.Area2AreaListDTOConvert;
-import com.topway.dto.AreaListDTO;
+import com.topway.convert.AreaConvert;
+import com.topway.dto.*;
 import com.topway.enums.ResultEnum;
 import com.topway.exception.ParamException;
 import com.topway.exception.ResultNotFoundException;
+import com.topway.form.AreaIdForm;
 import com.topway.form.AreaListForm;
 import com.topway.pojo.Area;
+import com.topway.pojo.Property;
 import com.topway.service.Impl.AreaServiceImpl;
 import com.topway.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +64,7 @@ public class AreaController {
 
                 // 将查询出来的Area转换成AreaListDTO显示
                 Area area = areaService.findByAreaId(KEYWORD);
-                AreaListDTO areaListDTO = Area2AreaListDTOConvert.convert(area);
+                AreaListDTO areaListDTO = AreaConvert.convertAreaListDTO(area);
                 areaListDTO.setFk999cd340(areaListDTO.getFka9350c89().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
 
                 return ResultVOUtil.successPage(areaListDTO, 1, 1, total);
@@ -82,7 +81,7 @@ public class AreaController {
                 total = areaPage.getTotalElements();  // 搜索出结果的条数
                 for (Area area : areaPage) {
                     // 使用工具类将Area转换成AreaListDTO
-                    AreaListDTO areaListDTO = Area2AreaListDTOConvert.convert(area);
+                    AreaListDTO areaListDTO = AreaConvert.convertAreaListDTO(area);
                     // 将关键字加上<em>,前端可高亮显示
                     areaListDTO.setFk999cd340(areaListDTO.getFk999cd340().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
                     areaListDTOList.add(areaListDTO);
@@ -97,5 +96,45 @@ public class AreaController {
                     ResultEnum.RESULT_NOT_FOUND.getDesc());
         }
 
+    }
+
+    @PostMapping("/detail")
+    public ResultVO detail(@RequestBody AreaIdForm areaIdForm){
+
+        final String AREAID = areaIdForm.getAreaId();
+        AreaDetailDTO areaDetailDTO = new AreaDetailDTO();
+
+        /** 1.根据areaId查询出基本信息 */
+        AreaBasicInfoDTO areaBasicInfoDTO = new AreaBasicInfoDTO();
+        // TODO 计算天威客户数,覆盖住户数
+        Area area = areaService.findByAreaId(AREAID);
+        areaBasicInfoDTO = AreaConvert.convertAreaBasicInfoDTO(area, 0, 0);
+
+
+        /** 2.根据areaId查询出label */
+        List<String> label = new ArrayList<>();
+        // TODO 关联小区标签表,得到小区标签
+        label.add("竞争小区");
+        label.add("高端小区");
+
+        /** 3.根据areaId计算出business */
+        AreaBusinessDTO areaBusinessDTO = areaService.calAreaBusiness(AREAID);
+
+        /** 4.根据areaId计算出monthlyDevelopment */
+        AreaMonthlyDevelopmentDTO areaMonthlyDevelopmentDTO = areaService.calMonthlyDevelopment(AREAID);
+
+        /** 5.根据areaId关联出propertyInfo */
+        // TODO 关联小区物业信息表
+        Property property = new Property();
+
+
+        /** 6.将所有信息组装在一起 */
+        areaDetailDTO.setBasicInfo(areaBasicInfoDTO);
+        areaDetailDTO.setLabel(label);
+        areaDetailDTO.setBusiness(areaBusinessDTO);
+        areaDetailDTO.setMonthlyDevelopment(areaMonthlyDevelopmentDTO);
+        areaDetailDTO.setPropertyInfo(property);
+
+        return ResultVOUtil.success(areaDetailDTO);
     }
 }

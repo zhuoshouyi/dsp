@@ -1,5 +1,7 @@
 package com.topway.service;
 
+import com.topway.dto.AreaBusinessDTO;
+import com.topway.dto.AreaMonthlyDevelopmentDTO;
 import com.topway.pojo.Area;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,5 +21,7 @@ public interface AreaService {
 
     Page<Area> findByAreaNameLike(String areaName, Pageable pageable);
 
+    AreaBusinessDTO calAreaBusiness(String areaId);
 
+    AreaMonthlyDevelopmentDTO calMonthlyDevelopment(String areaId);
 }

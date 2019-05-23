@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AreaDao extends JpaRepository<Area, Integer> {
 
+
+
     /**
      * 通过areaId查找唯一的小区
      *
