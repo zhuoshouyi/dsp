@@ -34,6 +34,11 @@ public class AreaController {
     @Autowired
     AreaServiceImpl areaService;
 
+    /**
+     * 小区列表接口
+     *
+     * @return
+     */
     @PostMapping("/list")
     public ResultVO list(@RequestBody AreaListForm areaListForm,
                          BindingResult bindingResult){
@@ -98,6 +103,11 @@ public class AreaController {
 
     }
 
+    /**
+     * 小区详情接口
+     *
+     * @return
+     */
     @PostMapping("/detail")
     public ResultVO detail(@RequestBody AreaIdForm areaIdForm){
 
@@ -137,4 +147,66 @@ public class AreaController {
 
         return ResultVOUtil.success(areaDetailDTO);
     }
+
+
+    /**
+     * 小区标签查看接口
+     *
+     * @return
+     */
+    @PostMapping("/label/list")
+    public ResultVO labelList(){
+        // TODO 小区标签查看开发
+
+        return ResultVOUtil.success();
+    }
+
+    /**
+     * 小区标签编辑接口
+     *
+     * @return
+     */
+    @PostMapping("/label/save")
+    public ResultVO labelSave(){
+        // TODO 小区标签编辑开发
+
+        return ResultVOUtil.success();
+    }
+
+    /**
+     * 小区物业信息编辑接口
+     *
+     * @return
+     */
+    @PostMapping("/area/property/save")
+    public ResultVO propertySave(){
+        // TODO 小区物业信息编辑开发
+
+        return ResultVOUtil.success();
+    }
+
+    /**
+     * 查看历史营销进场记录接口
+     *
+     * @return
+     */
+    @PostMapping("/area/market/list")
+    public ResultVO marketList(){
+        // TODO 查看历史营销进场记录开发
+
+        return ResultVOUtil.success();
+    }
+
+    /**
+     * 新建营销进场记录接口
+     *
+     * @return
+     */
+    @PostMapping("/area/market/save")
+    public ResultVO marketSave(){
+        // TODO 新建营销进场记录开发
+
+        return ResultVOUtil.success();
+    }
+
 }
