@@ -13,6 +13,8 @@ public class WorkForm2DeviceWorkOrderDTOConvert {
 
     public static DeviceWorkOrderDTO convert(WorkForm workForm){
         DeviceWorkOrderDTO deviceWorkOrderDTO = new DeviceWorkOrderDTO();
+        // id
+        deviceWorkOrderDTO.setId(workForm.getId());
         // fk4daf9bee 工单类型
         deviceWorkOrderDTO.setOrderType(workForm.getFk4daf9bee());
         // fkc7646a53 派单时间

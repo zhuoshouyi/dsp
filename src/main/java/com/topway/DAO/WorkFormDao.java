@@ -21,10 +21,17 @@ public interface WorkFormDao extends JpaRepository<WorkForm, Integer> {
      * @return
      */
     @Query("select wf from WorkForm wf, User u " +
-            "where u.fkc1f5a1c1=?1 and u.fkce29e60a=?2 and u.fk2610e16b=wf.fk496397ec " +
+            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=wf.fk496397ec " +
             "order by wf.fkc7646a53 desc")
     Page<WorkForm> findJoinWorkFormAndUser(@Param(value = "customerId") String customerId,
                                            @Param(value = "deviceNo") String deviceNo,
                                            Pageable pageable);
+
+
+    @Query("select wf from WorkForm wf, User u " +
+            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=wf.fk496397ec and wf.id=?3")
+    WorkForm findJoinWorkFormAndUserDetail(@Param(value = "customerId") String customerId,
+                                           @Param(value = "deviceNo") String deviceNo,
+                                           @Param(value = "id") String id);
 
 }

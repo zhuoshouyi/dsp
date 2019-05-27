@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class DeviceWorkOrderDTO {
 
+    /** id. */
+    private Integer id;
+
     /** 工单类型. */
     private String orderType;
 

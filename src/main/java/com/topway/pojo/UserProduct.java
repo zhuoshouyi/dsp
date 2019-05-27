@@ -16,7 +16,7 @@ public class UserProduct {
     /** id. */
     @Id
     @GeneratedValue
-    private String id;
+    private Integer id;
 
     /** 订购标识. */
     private String fk75e925ce;

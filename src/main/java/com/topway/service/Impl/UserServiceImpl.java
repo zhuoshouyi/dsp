@@ -1,21 +1,9 @@
 package com.topway.service.Impl;
 
-import com.topway.DAO.CustomerDao;
-import com.topway.DAO.UserDao;
-import com.topway.DAO.UserProductDao;
-import com.topway.DAO.WorkFormDao;
-import com.topway.convert.Customer2CustomerDTOCovert;
-import com.topway.convert.User2DeviceBasicInfoDTOConvert;
-import com.topway.convert.UserProduct2DeviceBusinessInfoDTOConvert;
-import com.topway.convert.WorkForm2DeviceWorkOrderDTOConvert;
-import com.topway.dto.CustomerDTO;
-import com.topway.dto.DeviceBasicInfoDTO;
-import com.topway.dto.DeviceBusinessInfoDTO;
-import com.topway.dto.DeviceWorkOrderDTO;
-import com.topway.pojo.Customer;
-import com.topway.pojo.User;
-import com.topway.pojo.UserProduct;
-import com.topway.pojo.WorkForm;
+import com.topway.DAO.*;
+import com.topway.convert.*;
+import com.topway.dto.*;
+import com.topway.pojo.*;
 import com.topway.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +27,8 @@ public class UserServiceImpl implements UserService {
     CustomerDao customerDao;
     UserProductDao userProductDao;
     WorkFormDao workFormDao;
+    ComplaintDao complaintDao;
+    WatchActionDao watchActionDao;
 
 
     /**
@@ -53,7 +43,7 @@ public class UserServiceImpl implements UserService {
         Page<Customer> customerPage = userDao.findByDeviceNoToCustomer(deviceNo, pageable);
 
         for (Customer customer : customerPage){
-            List<User> userList1 = userDao.findByFkc1f5a1c1(customer.getCustomerId());
+            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
             customerDTOList.add(customerDTO);
         }
@@ -73,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
         Page<Customer> customerPage = customerDao.findByPhoneLike("%" + phone + "%", pageable);
         for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByFkc1f5a1c1(customer.getCustomerId());
+            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
 
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
@@ -94,7 +84,7 @@ public class UserServiceImpl implements UserService {
 
         Page<Customer> customerPage = customerDao.findByCustomerNameLike("%" + customerName + "%", pageable);
         for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByFkc1f5a1c1(customer.getCustomerId());
+            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
 
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
@@ -115,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
         Page<Customer> customerPage = customerDao.findByCustomerIdLike("%" + customerId + "%", pageable);
         for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByFkc1f5a1c1(customer.getCustomerId());
+            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
 
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
@@ -125,8 +115,14 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /***********************************************************************************/
+
+
+
+
+
     /**
-     * 通过客户Id
+     * 通过 customerId 查询 CustomerDTO
      *
      * @param customerId
      * @return
@@ -143,10 +139,10 @@ public class UserServiceImpl implements UserService {
         customerDTO.setPaperNo(customer.getPaperNo());
         customerDTO.setCustomerId(customer.getCustomerId());
 
-        List<User> userList = userDao.findByFkc1f5a1c1(customerId);
-        customerDTO.setAddress(userList.get(0).getFka7e6d50f());
+        List<User> userList = userDao.findByFk572f5a34(customerId);
+        customerDTO.setAddress(userList.get(0).getFkc398514b());
         customerDTO.setDeviceNoList(
-                userList.stream().map(e -> e.getFkce29e60a()).collect(Collectors.toList())
+                userList.stream().map(e -> e.getFkdf1e945e()).collect(Collectors.toList())
         );
 
         return customerDTO;
@@ -160,7 +156,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public DeviceBasicInfoDTO findDeviceBasicInfoDTO(String customerId, String deviceNo) {
-        User user = userDao.findByFkc1f5a1c1AndFkce29e60a(customerId, deviceNo);
+        User user = userDao.findByFk572f5a34AndFkdf1e945e(customerId, deviceNo);
 
         return User2DeviceBasicInfoDTOConvert.convert(user);
 
@@ -192,4 +188,104 @@ public class UserServiceImpl implements UserService {
         Page<WorkForm> workFormPage = workFormDao.findJoinWorkFormAndUser(customerId, deviceNo, pageRequest);
         return WorkForm2DeviceWorkOrderDTOConvert.convert(workFormPage.getContent());
     }
+
+    /**
+     * 通过 customerId 和 deviceNo 查询投诉单信息
+     * @param customerId
+     * @param deviceNo
+     * @return
+     */
+    @Override
+    public List<DeviceComplaintDTO> findDeviceComplaintDTO(String customerId, String deviceNo) {
+        PageRequest pageRequest = new PageRequest(0, 5);
+        Page<Complaint> complaintPage = complaintDao.findJoinComplaintAndUser(customerId, deviceNo, pageRequest);
+        return Complaint2DeviceComplaintDTOConvert.convert(complaintPage.getContent());
+    }
+
+
+    /**
+     * 通过 customerId 和 deviceNo 查询收视行为信息
+     * @param customerId
+     * @param deviceNo
+     * @return
+     */
+    @Override
+    public DeviceWatchActionDTO findDeviceWatchActionDTO(String customerId, String deviceNo) {
+        DeviceWatchActionDTO deviceWatchActionDTO = new DeviceWatchActionDTO();
+        List<WatchAction> watchActionList = watchActionDao.findJoinWatchActionAndUser(customerId, deviceNo);
+
+        return null;
+    }
+
+
+
+    /***********************************************************************************/
+
+
+
+
+
+
+    /**
+     * 通过 customerId 、 deviceNo 和 id 查询产品详情信息
+     * @param customerId
+     * @param deviceNo
+     * @return
+     */
+    @Override
+    public DeviceBusinessInfoDetailDTO findDeviceBusinessInfoDetailDTO(String customerId, String deviceNo, String id) {
+
+        UserProduct userProduct = userProductDao.findJoinUserAndUserProductDetail(customerId, deviceNo, id);
+        DeviceBusinessInfoDetailDTO deviceBusinessInfoDetailDTO =
+                UserProduct2DeviceBusinessInfoDetailDTOConvert.convert(userProduct);
+        deviceBusinessInfoDetailDTO.setDeviceNo(deviceNo);
+        return deviceBusinessInfoDetailDTO;
+    }
+
+
+    /**
+     * 通过 customerId 和 deviceNo 和 id 查询工单详情信息
+     * @param customerId
+     * @param deviceNo
+     * @return
+     */
+    @Override
+    public DeviceWorkOrderDetailDTO findDeviceWorkOrderDetailDTO(String customerId, String deviceNo, String id) {
+        WorkForm workForm = workFormDao.findJoinWorkFormAndUserDetail(customerId, deviceNo, id);
+        // TODO
+        return null;
+    }
+
+    /**
+     * 通过 customerId 和 deviceNo 和 id 查询投诉单详情信息
+     * @param customerId
+     * @param deviceNo
+     * @return
+     */
+    @Override
+    public DeviceComplaintDetailDTO findDeviceComplaintDetailDTO(String customerId, String deviceNo, String id) {
+        Complaint complaint = complaintDao.findJoinComplaintAndUserDetail(customerId, deviceNo, id);
+        DeviceComplaintDetailDTO deviceComplaintDetailDTO = new DeviceComplaintDetailDTO();
+        List<DealWithMessageDTO> dealWithMessageDTOList = new ArrayList<>();
+        ComplaintDTO complaintDTO = new ComplaintDTO();
+
+        // fk2d546781 投诉编码
+        complaintDTO.setOrderId(complaint.getFk2d546781());
+        // fk0b5c4bd1 受理时间
+        complaintDTO.setAcceptTime(complaint.getFk0b5c4bd1());
+        // fkee9a3c22 投诉来源
+        complaintDTO.setComplaintFrom(complaint.getFkee9a3c22());
+        // fk25c3d8d3 结单时间
+        complaintDTO.setEndTime(complaint.getFk25c3d8d3());
+        // fk7fadbec0 处理方式分类一 fk14d9b227 处理方式分类二
+        complaintDTO.setDealWithWay(complaint.getFk7fadbec0() + "/" + complaint.getFk14d9b227());
+        // fkcf8c69a6 投诉单内容
+
+        // TODO
+
+        deviceComplaintDetailDTO.setComplaint(complaintDTO);
+        deviceComplaintDetailDTO.setDealWithMessage(dealWithMessageDTOList);
+        return null;
+    }
+
 }

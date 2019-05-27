@@ -1,9 +1,6 @@
 package com.topway.service;
 
-import com.topway.dto.CustomerDTO;
-import com.topway.dto.DeviceBasicInfoDTO;
-import com.topway.dto.DeviceBusinessInfoDTO;
-import com.topway.dto.DeviceWorkOrderDTO;
+import com.topway.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +37,16 @@ public interface UserService {
 
     List<DeviceWorkOrderDTO> findDeviceWorkOrderDTO(String customerId, String deviceNo);
 
+    List<DeviceComplaintDTO> findDeviceComplaintDTO(String customerId, String deviceNo);
 
+    DeviceWatchActionDTO findDeviceWatchActionDTO(String customerId, String deviceNo);
+
+
+    /** 详情查看 */
+    DeviceBusinessInfoDetailDTO findDeviceBusinessInfoDetailDTO(String customerId, String deviceNo, String id);
+
+    DeviceWorkOrderDetailDTO findDeviceWorkOrderDetailDTO(String customerId, String deviceNo, String id);
+
+    DeviceComplaintDetailDTO findDeviceComplaintDetailDTO(String customerId, String deviceNo, String id);
 
 }

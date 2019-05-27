@@ -4,9 +4,7 @@ import com.topway.VO.ResultVO;
 import com.topway.dto.*;
 import com.topway.enums.ResultEnum;
 import com.topway.exception.ParamException;
-import com.topway.form.CustomerIdForm;
-import com.topway.form.DeviceNoForm;
-import com.topway.form.UserListForm;
+import com.topway.form.*;
 import com.topway.service.Impl.UserServiceImpl;
 import com.topway.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +29,8 @@ public class UserController {
 
     @Autowired
     UserServiceImpl userService;
+
+
 
     /**
      * 客户搜索列表接口
@@ -103,6 +103,8 @@ public class UserController {
     }
 
 
+
+
     /**
      * 客户详情查看接口
      *
@@ -131,6 +133,8 @@ public class UserController {
     }
 
 
+
+
     /**
      * 终端信息
      *
@@ -147,7 +151,7 @@ public class UserController {
 
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
-            log.error("【参数错误】传入的 deviceNo 有误,deviceNoForm={}", deviceNoForm.toString());
+            log.error("【参数错误】传入的参数有误,deviceNoForm={}", deviceNoForm.toString());
             throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
@@ -165,7 +169,7 @@ public class UserController {
         List<DeviceWorkOrderDTO> deviceWorkOrderDTO = userService.findDeviceWorkOrderDTO(CUSTOMERID, DEVICENO);
 
         // 投诉单信息
-        DeviceComplaintDTO deviceComplaintDTO = new DeviceComplaintDTO();
+        List<DeviceComplaintDTO> deviceComplaintDTO = userService.findDeviceComplaintDTO(CUSTOMERID, DEVICENO);
 
         // 收视行为信息
         DeviceWatchActionDTO deviceWatchActionDTO = new DeviceWatchActionDTO();
@@ -183,6 +187,141 @@ public class UserController {
 
         return ResultVOUtil.success(deviceDTO);
     }
+
+
+
+
+
+    /**
+     * 终端业务详情查看
+     *
+     * @param deviceBusinessForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/device/business")
+    public ResultVO deviceBusiness(@RequestBody DeviceBusinessForm deviceBusinessForm,
+                                   BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceBusinessForm.getCustomerId();
+        final String DEVICENO = deviceBusinessForm.getDeviceNo();
+        final String ID = deviceBusinessForm.getId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceBusinessForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找产品信息 */
+        DeviceBusinessInfoDetailDTO deviceBusinessInfoDetailDTO =
+                userService.findDeviceBusinessInfoDetailDTO(CUSTOMERID, DEVICENO, ID);
+
+        return ResultVOUtil.success(deviceBusinessInfoDetailDTO);
+    }
+
+
+
+
+
+    /**
+     * 工单信息详情查看
+     *
+     * @param deviceOrderForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/device/order")
+    public ResultVO deviceOrder(@RequestBody DeviceOrderForm deviceOrderForm,
+                                   BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceOrderForm.getCustomerId();
+        final String DEVICENO = deviceOrderForm.getDeviceNo();
+        final String ID = deviceOrderForm.getId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceOrderForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找工单信息 */
+        DeviceWorkOrderDetailDTO deviceWorkOrderDetailDTO = new DeviceWorkOrderDetailDTO();
+        // TODO
+
+        return ResultVOUtil.success(deviceWorkOrderDetailDTO);
+    }
+
+
+
+
+
+    /**
+     * 投诉单信息详情查看
+     *
+     * @param deviceComplaintForm
+     * @param bindingResult
+     * @return
+     */
+    public ResultVO deviceComplaint(@RequestBody DeviceComplaintForm deviceComplaintForm,
+                                   BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceComplaintForm.getCustomerId();
+        final String DEVICENO = deviceComplaintForm.getDeviceNo();
+        final String ID = deviceComplaintForm.getId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceComplaintForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找投诉单信息 */
+        DeviceComplaintDetailDTO deviceComplaintDetailDTO = new DeviceComplaintDetailDTO();
+        // TODO
+
+        return ResultVOUtil.success(deviceComplaintDetailDTO);
+    }
+
+
+
+
+
+
+    /**
+     * 投诉处理信息详情查看
+     *
+     * @param deviceComplaintDetailForm
+     * @param bindingResult
+     * @return
+     */
+    public ResultVO deviceComplaint(@RequestBody DeviceComplaintDetailForm deviceComplaintDetailForm,
+                                    BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceComplaintDetailForm.getCustomerId();
+        final String DEVICENO = deviceComplaintDetailForm.getDeviceNo();
+        final String ID = deviceComplaintDetailForm.getId();
+        final String DETAILID = deviceComplaintDetailForm.getDetailId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceComplaintDetailForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找投诉单处理信息 */
+        DeviceComplaintDetailDTO deviceComplaintDetailDTO = new DeviceComplaintDetailDTO();
+        // TODO
+
+        return ResultVOUtil.success(deviceComplaintDetailDTO);
+    }
+
+
+
 
 
 }

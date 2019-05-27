@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class DeviceBusinessInfoDTO {
 
+    /** id. */
+    private Integer id;
+
     /** 产品名称. */
     private String productName;
 

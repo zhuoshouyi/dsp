@@ -13,6 +13,8 @@ public class UserProduct2DeviceBusinessInfoDTOConvert {
 
     public static DeviceBusinessInfoDTO convert(UserProduct userProduct){
         DeviceBusinessInfoDTO deviceBusinessInfoDTO = new DeviceBusinessInfoDTO();
+        // id
+        deviceBusinessInfoDTO.setId(userProduct.getId());
         // fk795b247c 产品名称
         deviceBusinessInfoDTO.setProductName(userProduct.getFk795b247c());
         // fk918097a6 授权开始时间
