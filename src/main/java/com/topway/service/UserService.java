@@ -49,4 +49,12 @@ public interface UserService {
 
     DeviceComplaintDetailDTO findDeviceComplaintDetailDTO(String customerId, String deviceNo, String id);
 
+
+    /** 滑动接口 */
+    Page<DeviceBusinessInfoDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable);
+
+    Page<DeviceWorkOrderDTO> findWorkOrderSlide(String customerId, String deviceNo, Pageable pageable);
+
+    Page<DeviceComplaintDTO> findComplaintSlide(String customerId, String deviceNo, Pageable pageable);
+
 }

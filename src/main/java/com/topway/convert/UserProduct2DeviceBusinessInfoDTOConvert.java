@@ -2,6 +2,9 @@ package com.topway.convert;
 
 import com.topway.dto.DeviceBusinessInfoDTO;
 import com.topway.pojo.UserProduct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,4 +34,17 @@ public class UserProduct2DeviceBusinessInfoDTOConvert {
                 .map(e -> convert(e))
                 .collect(Collectors.toList());
     }
+
+    public static Page<DeviceBusinessInfoDTO> convert(Page<UserProduct> userProductPage){
+        Pageable pageable = userProductPage.getPageable();
+        List<UserProduct> userProductList = userProductPage.getContent();
+        List<DeviceBusinessInfoDTO> deviceBusinessInfoDTOList = convert(userProductList);
+        Page<DeviceBusinessInfoDTO> deviceBusinessInfoDTOPage =
+                new PageImpl(deviceBusinessInfoDTOList, pageable, userProductPage.getTotalElements());
+
+
+        return deviceBusinessInfoDTOPage;
+
+    }
+
 }

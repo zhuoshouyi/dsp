@@ -288,4 +288,22 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+
+    @Override
+    public Page<DeviceBusinessInfoDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable) {
+        Page<UserProduct> userProductPage = userProductDao.findJoinUserAndUserProduct(customerId, deviceNo, pageable);
+        return UserProduct2DeviceBusinessInfoDTOConvert.convert(userProductPage);
+    }
+
+    @Override
+    public Page<DeviceWorkOrderDTO> findWorkOrderSlide(String customerId, String deviceNo, Pageable pageable) {
+        Page<WorkForm> workFormPage = workFormDao.findJoinWorkFormAndUser(customerId, deviceNo, pageable);
+        return WorkForm2DeviceWorkOrderDTOConvert.convert(workFormPage);
+    }
+
+    @Override
+    public Page<DeviceComplaintDTO> findComplaintSlide(String customerId, String deviceNo, Pageable pageable) {
+        Page<Complaint> complaintPage = complaintDao.findJoinComplaintAndUser(customerId, deviceNo, pageable);
+        return Complaint2DeviceComplaintDTOConvert.convert(complaintPage);
+    }
 }

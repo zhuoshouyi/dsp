@@ -172,7 +172,7 @@ public class UserController {
         List<DeviceComplaintDTO> deviceComplaintDTO = userService.findDeviceComplaintDTO(CUSTOMERID, DEVICENO);
 
         // 收视行为信息
-        DeviceWatchActionDTO deviceWatchActionDTO = new DeviceWatchActionDTO();
+        DeviceWatchActionDTO deviceWatchActionDTO = userService.findDeviceWatchActionDTO(CUSTOMERID, DEVICENO);
 
         // 网络质量诊断信息
         DeviceNetworkQualityDTO deviceNetworkQualityDTO = new DeviceNetworkQualityDTO();
@@ -265,6 +265,7 @@ public class UserController {
      * @param bindingResult
      * @return
      */
+    @PostMapping("/device/complaint")
     public ResultVO deviceComplaint(@RequestBody DeviceComplaintForm deviceComplaintForm,
                                    BindingResult bindingResult){
 
@@ -298,6 +299,7 @@ public class UserController {
      * @param bindingResult
      * @return
      */
+    @PostMapping("/device/complaint/detail")
     public ResultVO deviceComplaint(@RequestBody DeviceComplaintDetailForm deviceComplaintDetailForm,
                                     BindingResult bindingResult){
 
@@ -321,6 +323,82 @@ public class UserController {
     }
 
 
+
+
+
+    @PostMapping("/device/businessSlide")
+    public ResultVO deviceBusinessSlide(@RequestBody DeviceSlideForm deviceSlideForm,
+                                        BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceSlideForm.getCustomerId();
+        final String DEVICENO = deviceSlideForm.getDeviceNo();
+        final int PAGENO = deviceSlideForm.getPageNo();
+        final int PAGESIZE = deviceSlideForm.getPageSize();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceSlideForm={}", deviceSlideForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找产品信息 */
+        PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
+        Page<DeviceBusinessInfoDTO> deviceBusinessInfoDTOPage = userService.findBusinessSlide(CUSTOMERID, DEVICENO, pageRequest);
+        long total = deviceBusinessInfoDTOPage.getTotalElements();
+
+        return ResultVOUtil.successPage(deviceBusinessInfoDTOPage.getContent(), PAGENO, PAGESIZE, total);
+    }
+
+
+    @PostMapping("/device/orderSlide")
+    public ResultVO deviceOrderSlide(@RequestBody DeviceSlideForm deviceSlideForm,
+                                        BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceSlideForm.getCustomerId();
+        final String DEVICENO = deviceSlideForm.getDeviceNo();
+        final int PAGENO = deviceSlideForm.getPageNo();
+        final int PAGESIZE = deviceSlideForm.getPageSize();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceSlideForm={}", deviceSlideForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找工单信息 */
+        PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
+        Page<DeviceWorkOrderDTO> deviceWorkOrderDTOPage = userService.findWorkOrderSlide(CUSTOMERID, DEVICENO, pageRequest);
+        long total = deviceWorkOrderDTOPage.getTotalElements();
+
+        return ResultVOUtil.successPage(deviceWorkOrderDTOPage.getContent(), PAGENO, PAGESIZE, total);
+    }
+
+
+    @PostMapping("/device/complaintSlide")
+    public ResultVO deviceComplaintSlide(@RequestBody DeviceSlideForm deviceSlideForm,
+                                        BindingResult bindingResult){
+
+        final String CUSTOMERID = deviceSlideForm.getCustomerId();
+        final String DEVICENO = deviceSlideForm.getDeviceNo();
+        final int PAGENO = deviceSlideForm.getPageNo();
+        final int PAGESIZE = deviceSlideForm.getPageSize();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceSlideForm={}", deviceSlideForm.toString());
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查找投诉信息 */
+        PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
+        Page<DeviceComplaintDTO> deviceComplaintDTOPage = userService.findComplaintSlide(CUSTOMERID, DEVICENO, pageRequest);
+        long total = deviceComplaintDTOPage.getTotalElements();
+
+        return ResultVOUtil.successPage(deviceComplaintDTOPage.getContent(), PAGENO, PAGESIZE, total);
+    }
 
 
 

@@ -2,6 +2,9 @@ package com.topway.convert;
 
 import com.topway.dto.DeviceWorkOrderDTO;
 import com.topway.pojo.WorkForm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,5 +33,17 @@ public class WorkForm2DeviceWorkOrderDTOConvert {
         return workFormList.stream()
                 .map(e -> convert(e))
                 .collect(Collectors.toList());
+    }
+
+
+    public static Page<DeviceWorkOrderDTO> convert(Page<WorkForm> workFormPage){
+        Pageable pageable = workFormPage.getPageable();
+        List<WorkForm> workFormList = workFormPage.getContent();
+        List<DeviceWorkOrderDTO> deviceWorkOrderDTOList = convert(workFormList);
+        Page<DeviceWorkOrderDTO> deviceWorkOrderDTOPage =
+                new PageImpl(deviceWorkOrderDTOList, pageable, workFormPage.getTotalElements());
+
+        return deviceWorkOrderDTOPage;
+
     }
 }

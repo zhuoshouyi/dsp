@@ -2,6 +2,9 @@ package com.topway.convert;
 
 import com.topway.dto.DeviceComplaintDTO;
 import com.topway.pojo.Complaint;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,5 +32,16 @@ public class Complaint2DeviceComplaintDTOConvert {
         return complaintList.stream()
                 .map(e -> convert(e))
                 .collect(Collectors.toList());
+    }
+
+    public static Page<DeviceComplaintDTO> convert(Page<Complaint> complaintPage){
+        Pageable pageable = complaintPage.getPageable();
+        List<Complaint> complaintList = complaintPage.getContent();
+        List<DeviceComplaintDTO> deviceComplaintDTOList = convert(complaintList);
+        Page<DeviceComplaintDTO> deviceComplaintDTOPage =
+                new PageImpl(deviceComplaintDTOList, pageable, complaintPage.getTotalElements());
+
+        return deviceComplaintDTOPage;
+
     }
 }
