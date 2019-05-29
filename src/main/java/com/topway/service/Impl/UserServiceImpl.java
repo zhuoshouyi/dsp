@@ -3,6 +3,7 @@ package com.topway.service.Impl;
 import com.topway.DAO.*;
 import com.topway.convert.*;
 import com.topway.dto.*;
+import com.topway.form.UserLabelForm;
 import com.topway.pojo.*;
 import com.topway.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-/**
+/**cd
  * Created by haizhi on 2019/5/23.
  */
 @Service
@@ -24,11 +26,24 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
     CustomerDao customerDao;
+
+    @Autowired
     UserProductDao userProductDao;
+
+    @Autowired
     WorkFormDao workFormDao;
+
+    @Autowired
     ComplaintDao complaintDao;
+
+    @Autowired
     WatchActionDao watchActionDao;
+
+    @Autowired
+    UserLabelDao userLabelDao;
 
 
     /**
@@ -69,6 +84,9 @@ public class UserServiceImpl implements UserService {
             customerDTOList.add(customerDTO);
         }
 
+        customerDTOList.stream()
+                .forEach(e -> e.setPhone(e.getPhone().replace(phone, "<em>"+phone+"</em>")));
+
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
 
@@ -90,6 +108,9 @@ public class UserServiceImpl implements UserService {
             customerDTOList.add(customerDTO);
         }
 
+        customerDTOList.stream()
+                .forEach(e -> e.setCustomerName(e.getCustomerName().replace(customerName, "<em>"+customerName+"</em>")));
+
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
 
@@ -110,6 +131,9 @@ public class UserServiceImpl implements UserService {
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
         }
+
+        customerDTOList.stream()
+                .forEach(e -> e.setCustomerId(e.getCustomerId().replace(customerId, "<em>"+customerId+"</em>")));
 
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
@@ -141,9 +165,29 @@ public class UserServiceImpl implements UserService {
 
         List<User> userList = userDao.findByFk572f5a34(customerId);
         customerDTO.setAddress(userList.get(0).getFkc398514b());
-        customerDTO.setDeviceNoList(
-                userList.stream().map(e -> e.getFkdf1e945e()).collect(Collectors.toList())
-        );
+        Set<String> mixSet = new HashSet<>();
+        for (User user : userList){
+            if (user.getFk4f5972b7() != null)
+                mixSet.add(user.getFk4f5972b7());
+        }
+
+//        Set<String> mixSet = userList.stream().map(e -> e.getFk4f5972b7()).collect(Collectors.toSet());
+        List<List<String>> deviceList = new ArrayList<>(new ArrayList<>());
+
+        userList.stream().forEach(x -> {
+            List<String> list = new ArrayList<>();
+            // 如果融合列表为空,则跳过此阶段
+            if (!mixSet.isEmpty()){
+                mixSet.stream().forEach(e -> {
+                    if (x.getFk4f5972b7().equals(e)) list.add(x.getFkdf1e945e());
+                });
+            }
+            // 如果融合列表遍历完后未发现匹配的,就将deviceNo单独加入list中
+            if (list.isEmpty()) list.add(x.getFkdf1e945e());
+            deviceList.add(list);
+        });
+
+        customerDTO.setArrDeviceNoList(deviceList);
 
         return customerDTO;
     }
@@ -211,10 +255,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public DeviceWatchActionDTO findDeviceWatchActionDTO(String customerId, String deviceNo) {
-        DeviceWatchActionDTO deviceWatchActionDTO = new DeviceWatchActionDTO();
         List<WatchAction> watchActionList = watchActionDao.findJoinWatchActionAndUser(customerId, deviceNo);
+        DeviceWatchActionDTO deviceWatchActionDTO = WatchAction2DeviceWatchActionDTOConvert.convert(watchActionList);
 
-        return null;
+        return deviceWatchActionDTO;
     }
 
 
@@ -252,8 +296,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public DeviceWorkOrderDetailDTO findDeviceWorkOrderDetailDTO(String customerId, String deviceNo, String id) {
         WorkForm workForm = workFormDao.findJoinWorkFormAndUserDetail(customerId, deviceNo, id);
-        // TODO
-        return null;
+
+        return WorkForm2DeviceWorkOrderDetailDTOConvert.convert(workForm);
     }
 
     /**
@@ -289,6 +333,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
+    /** 滑动 */
     @Override
     public Page<DeviceBusinessInfoDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable) {
         Page<UserProduct> userProductPage = userProductDao.findJoinUserAndUserProduct(customerId, deviceNo, pageable);
@@ -305,5 +351,33 @@ public class UserServiceImpl implements UserService {
     public Page<DeviceComplaintDTO> findComplaintSlide(String customerId, String deviceNo, Pageable pageable) {
         Page<Complaint> complaintPage = complaintDao.findJoinComplaintAndUser(customerId, deviceNo, pageable);
         return Complaint2DeviceComplaintDTOConvert.convert(complaintPage);
+    }
+
+
+    /**
+     * 查找客户标签
+     *
+     * @param customerId
+     * @return
+     */
+    @Override
+    public List<UserLabelShowDTO> findUserLabelShowDTO(String customerId){
+        List<UserLabel> userLabelList = userLabelDao.findByCustomerIdOrderByCreateTimeDesc(customerId);
+
+        // 将 UserLabel 转化为 UserLabelShowDTO
+        List<UserLabelShowDTO> userLabelShowDTOList =
+                UserLabel2UserLabelShowDTOConvert.convert(userLabelList);
+
+        return userLabelShowDTOList;
+    }
+
+    /**
+     * 插入客户标签
+     */
+    @Override
+    public void saveUserLabel(UserLabelForm userLabelForm, String date){
+        UserLabel userLabel = UserLabelForm2UserLabelConvert.convert(userLabelForm);
+        userLabel.setCreateTime(date);
+
     }
 }

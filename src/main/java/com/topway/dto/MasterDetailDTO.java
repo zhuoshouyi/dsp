@@ -9,22 +9,22 @@ import lombok.Data;
 public class MasterDetailDTO {
 
     /** 创建时间. */
-    private String createTime;
+    private String createTime = "";
 
     /** 派单时间. */
-    private String sendTime;
+    private String sendTime = "";
 
     /** 单据类型. */
-    private String type;
+    private String type = "";
 
     /** 派单内容. */
-    private String content;
+    private String content = "";
 
     /** 处理详细. */
-    private String handleDetails;
+    private String handleDetails = "";
 
     /** 派单备注. */
-    private String remarks;
+    private String remarks = "";
 
 
 }

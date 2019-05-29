@@ -1,26 +1,12 @@
 package com.topway.convert;
 
 import com.topway.dto.AreaBasicInfoDTO;
-import com.topway.dto.AreaListDTO;
 import com.topway.pojo.Area;
-import org.springframework.beans.BeanUtils;
 
 /**
- * Created by haizhi on 2019/5/22.
+ * Created by haizhi on 2019/5/28.
  */
-public class AreaConvert {
-
-    /**
-     * 将 Area 对象转换为小区列表的 AreaListDTO 对象
-     *
-     * @param area
-     * @return
-     */
-    public static AreaListDTO convertAreaListDTO(Area area){
-        AreaListDTO areaListDTO = new AreaListDTO();
-        BeanUtils.copyProperties(area, areaListDTO);
-        return areaListDTO;
-    }
+public class Area2AreaBasicInfoDTOConvert {
 
     /**
      * 将 Area 对象转换为小区详情页的 AreaBasicInfoDTO 对象
@@ -30,7 +16,7 @@ public class AreaConvert {
      * @param coverNum  覆盖住户数
      * @return
      */
-    public static AreaBasicInfoDTO convertAreaBasicInfoDTO(Area area, Integer customNum, Integer coverNum){
+    public static AreaBasicInfoDTO convert(Area area, Integer customNum, Integer coverNum){
         AreaBasicInfoDTO areaBasicInfoDTO = new AreaBasicInfoDTO();
         areaBasicInfoDTO.setAreaName(area.getFk999cd340());
         areaBasicInfoDTO.setAreaId(area.getFka9350c89());

@@ -8,19 +8,19 @@ import lombok.Data;
 @Data
 public class DeviceBasicInfoDTO {
 
-    private String deviceNo;
+    private String deviceNo = "";
 
-    private String model;
+    private String model = "";
 
-    private String brand;
+    private String brand = "";
 
-    private String lastUpdateTime;
+    private String lastUpdateTime = "";
 
-    private String grid;
+    private String grid = "";
 
-    private String computerRoom;
+    private String computerRoom = "";
 
-    private String certificates;
+    private String certificates = "";
 
-    private String address;
+    private String address = "";
 }

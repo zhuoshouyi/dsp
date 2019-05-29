@@ -1,6 +1,7 @@
 package com.topway.service;
 
 import com.topway.dto.*;
+import com.topway.form.UserLabelForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,11 @@ public interface UserService {
     Page<DeviceWorkOrderDTO> findWorkOrderSlide(String customerId, String deviceNo, Pageable pageable);
 
     Page<DeviceComplaintDTO> findComplaintSlide(String customerId, String deviceNo, Pageable pageable);
+
+
+    /** 标签 */
+    List<UserLabelShowDTO> findUserLabelShowDTO(String customerId);
+
+    void saveUserLabel(UserLabelForm userLabelForm, String date);
 
 }

@@ -9,9 +9,9 @@ import lombok.Data;
 public class WatchYearStartRateDTO {
 
     /** 今年开机率. */
-    private String thisYear;
+    private String thisYear = "";
 
     /** 上一年开机率. */
-    private String lastYear;
+    private String lastYear = "";
 
 }

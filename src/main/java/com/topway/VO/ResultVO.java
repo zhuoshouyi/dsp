@@ -27,7 +27,7 @@ public class ResultVO<T> {
     private Integer pageNo;
 
     /** 每页显示的数量. */
-    private Integer pagePage;
+    private Integer pageSize;
 
     /** 总条数. */
     private Long total;

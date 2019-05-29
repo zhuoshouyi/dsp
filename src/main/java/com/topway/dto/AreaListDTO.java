@@ -1,5 +1,6 @@
 package com.topway.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -8,19 +9,24 @@ import lombok.Data;
 @Data
 public class AreaListDTO {
 
-    /** 维护站名称. */
-    private String fk75638e31;
-
     /** 小区名称. */
-    private String fk999cd340;
+    @JsonProperty("areaName")
+    private String fk999cd340 = "";
 
     /** 小区代码. */
-    private String fka9350c89;
+    @JsonProperty("areaId")
+    private String fka9350c89 = "";
 
     /** 网格名称. */
-    private String fk3c052170;
+    @JsonProperty("grid")
+    private String fk3c052170 = "";
 
     /** 城中村标识. */
-    private String fkfeffc5ea;
+    @JsonProperty("attribute")
+    private String fkfeffc5ea = "";
+
+    /** 维护站名称. */
+    @JsonProperty("station")
+    private String fk75638e31 = "";
 
 }

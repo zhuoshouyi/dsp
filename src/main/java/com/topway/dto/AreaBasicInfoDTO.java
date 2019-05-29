@@ -8,21 +8,21 @@ import lombok.Data;
 @Data
 public class AreaBasicInfoDTO {
 
-    private String areaName;
+    private String areaName = "";
 
-    private String areaId;
+    private String areaId = "";
 
-    private String attribute;
+    private String attribute = "";
 
-    private String address;
+    private String address = "";
 
-    private String gridId;
+    private String gridId = "";
 
-    private String gridName;
+    private String gridName = "";
 
-    private String station;
+    private String station = "";
 
-    private Integer customNum;
+    private Integer customNum = 0;
 
-    private Integer coverNum;
+    private Integer coverNum = 0;
 }

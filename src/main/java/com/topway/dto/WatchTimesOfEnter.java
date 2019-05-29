@@ -7,28 +7,34 @@ import lombok.Data;
  */
 @Data
 public class WatchTimesOfEnter {
-    
+
+    /** 总计 7天. */
+    private String sevenTotal = "";
+
     /** 时移业务 7天. */
-    private String sevenDayTime;
+    private String sevenDayTime = "";
 
     /** 天天影院 7天. */
-    private String sevenDayCinema;
+    private String sevenDayCinema = "";
 
     /** 单片点播 7天. */
-    private String sevenDayDrop;
+    private String sevenDayDrop = "";
 
     /** 直播 7天. */
-    private String sevenDayShow;
+    private String sevenDayShow = "";
+
+    /** 总计 30天. */
+    private String thirtyTotal = "";
 
     /** 时移业务 30天. */
-    private String thirtyDayTime;
+    private String thirtyDayTime = "";
 
     /** 天天影院 30天. */
-    private String thirtyDayCinema;
+    private String thirtyDayCinema = "";
 
     /** 单片点播 30天. */
-    private String thirtyDayDrop;
+    private String thirtyDayDrop = "";
 
     /** 直播 30天. */
-    private String thirtyDayShow;
+    private String thirtyDayShow = "";
 }

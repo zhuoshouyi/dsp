@@ -9,14 +9,14 @@ import lombok.Data;
 public class DealWithMessageDTO {
 
     /** detailId. */
-    private String detailId;
+    private String detailId = "";
 
     /** 反馈时间. */
-    private String feedBackTime;
+    private String feedBackTime = "";
 
     /** 内容分类. */
-    private String contentType;
+    private String contentType = "";
 
     /** 处理详细信息. */
-    private String detail;
+    private String detail = "";
 }

@@ -1,8 +1,12 @@
 package com.topway.service;
 
 import com.topway.dto.AreaBusinessDTO;
+import com.topway.dto.AreaLabelShowDTO;
 import com.topway.dto.AreaMonthlyDevelopmentDTO;
+import com.topway.form.HistoryMarketForm;
 import com.topway.pojo.Area;
+import com.topway.pojo.AreaLabel;
+import com.topway.pojo.HistoryMarket;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,4 +28,14 @@ public interface AreaService {
     AreaBusinessDTO calAreaBusiness(String areaId);
 
     AreaMonthlyDevelopmentDTO calMonthlyDevelopment(String areaId);
+
+    List<AreaLabelShowDTO> findAreaLabel(String areaId);
+
+    void saveAreaLabel(AreaLabel areaLabel);
+
+    List<HistoryMarket> findHistoryMarket(String areaId);
+
+    void saveHistoryMarket(HistoryMarketForm historyMarketForm, String date);
+
+    List<String> findAreaLabelOne(String areaId);
 }

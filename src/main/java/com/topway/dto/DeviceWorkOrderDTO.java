@@ -12,13 +12,13 @@ public class DeviceWorkOrderDTO {
     private Integer id;
 
     /** 工单类型. */
-    private String orderType;
+    private String orderType = "";
 
     /** 创建日期. */
-    private String createTime;
+    private String createTime = "";
 
     /** 派单内容. */
-    private String content;
+    private String content = "";
 
 
 }

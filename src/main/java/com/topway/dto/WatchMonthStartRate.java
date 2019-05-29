@@ -9,20 +9,20 @@ import lombok.Data;
 public class WatchMonthStartRate {
 
     /** 本月开机率. */
-    private String nowMonthAgo;
+    private String nowMonthAgo = "";
 
     /** 上月开机率. */
-    private String oneMonthAgo;
+    private String oneMonthAgo = "";
 
     /** n-2月开机率. */
-    private String twoMonthAgo;
+    private String twoMonthAgo = "";
 
     /** n-3月开机率. */
-    private String threeMonthAgo;
+    private String threeMonthAgo = "";
 
     /** n-4月开机率. */
-    private String fourMonthAgo;
+    private String fourMonthAgo = "";
 
     /** n-5月开机率. */
-    private String fiveMonthAgo;
+    private String fiveMonthAgo = "";
 }

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ public class UserController {
     @Autowired
     UserServiceImpl userService;
 
+    // 全局统一时间格式化格式
+    SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
     /**
@@ -248,8 +252,7 @@ public class UserController {
         }
 
         /** 2.查找工单信息 */
-        DeviceWorkOrderDetailDTO deviceWorkOrderDetailDTO = new DeviceWorkOrderDetailDTO();
-        // TODO
+        DeviceWorkOrderDetailDTO deviceWorkOrderDetailDTO = userService.findDeviceWorkOrderDetailDTO(CUSTOMERID, DEVICENO, ID);
 
         return ResultVOUtil.success(deviceWorkOrderDetailDTO);
     }
@@ -326,6 +329,23 @@ public class UserController {
 
 
 
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 产品滑动
+     *
+     * @param deviceSlideForm
+     * @param bindingResult
+     * @return
+     */
     @PostMapping("/device/businessSlide")
     public ResultVO deviceBusinessSlide(@RequestBody DeviceSlideForm deviceSlideForm,
                                         BindingResult bindingResult){
@@ -351,6 +371,13 @@ public class UserController {
     }
 
 
+    /**
+     * 工单滑动
+     *
+     * @param deviceSlideForm
+     * @param bindingResult
+     * @return
+     */
     @PostMapping("/device/orderSlide")
     public ResultVO deviceOrderSlide(@RequestBody DeviceSlideForm deviceSlideForm,
                                         BindingResult bindingResult){
@@ -376,6 +403,13 @@ public class UserController {
     }
 
 
+    /**
+     * 投诉单滑动
+     *
+     * @param deviceSlideForm
+     * @param bindingResult
+     * @return
+     */
     @PostMapping("/device/complaintSlide")
     public ResultVO deviceComplaintSlide(@RequestBody DeviceSlideForm deviceSlideForm,
                                         BindingResult bindingResult){
@@ -400,6 +434,62 @@ public class UserController {
         return ResultVOUtil.successPage(deviceComplaintDTOPage.getContent(), PAGENO, PAGESIZE, total);
     }
 
+
+    /**
+     * 客户标签查看接口
+     *
+     * @param customerIdForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/label/list")
+    public ResultVO userLabelList(@RequestBody CustomerIdForm customerIdForm,
+                                         BindingResult bindingResult){
+
+        final String CUSTOMERID = customerIdForm.getCustomerId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,CUSTOMERID={}", CUSTOMERID);
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.查询客户标签 */
+        List<UserLabelShowDTO> userLabelShowDTOList = userService.findUserLabelShowDTO(CUSTOMERID);
+
+        return ResultVOUtil.success(userLabelShowDTOList);
+
+    }
+
+
+    /**
+     * 客户标签编辑接口
+     *
+     * @param userLabelForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/label/save")
+    public ResultVO userLabelSave(@RequestBody UserLabelForm userLabelForm,
+                                  BindingResult bindingResult){
+
+        final String CUSTOMERID = userLabelForm.getCustomerId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,CUSTOMERID={}", CUSTOMERID);
+            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.修改客户标签 */
+        userService.saveUserLabel(userLabelForm, FMT.format(new Date()));
+        log.info("【写入成功】客户标签添加成功.");
+
+        return ResultVOUtil.success();
+
+    }
 
 
 }

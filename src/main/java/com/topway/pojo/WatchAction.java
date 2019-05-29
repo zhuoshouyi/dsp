@@ -19,7 +19,7 @@ public class WatchAction {
     private int id;
 
     /** 智能卡号. */
-    private String devicNo;
+    private String deviceNo;
 
     /** 统计类型. */
     private String statisticalType;

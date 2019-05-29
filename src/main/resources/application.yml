@@ -1,9 +1,12 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
-    url: jdbc:mysql://127.0.0.1:3306/dsp?characterEncoding=utf-8&useSSL=false
+    username: etl
+    password: haizhi1234!
+    url: jdbc:mysql://172.31.150.67:3306/bdp?characterEncoding=utf-8&useSSL=false
+#    username: root
+#    password: 123456
+#    url: jdbc:mysql://127.0.0.1:3306/dsp?characterEncoding=utf-8&useSSL=false
   jpa:
     hibernate:
       ddl-auto: update

@@ -15,33 +15,38 @@ import java.util.List;
 public class CustomerDTO {
 
     /** 客户名称. */
-    private String customerName;
+    private String customerName = "";
 
     /** 客户编码. */
-    private String customerId;
+    private String customerId = "";
 
     /** 手机号码. */
-    private String phone;
+    private String phone = "";
 
     /** 身份证号. */
-    private String paperNo;
+    private String paperNo = "";
 
     /** 地址:取第一个device的地址. */
-    private String address;
+    private String address = "";
 
     /** 业务类型:电视、宽带、融合. */
-    private String businessType;
+    private String businessType = "";
 
     /** 终端列表:列出此客户所有拥有的2个终端,如果有搜索的终端置顶. */
-    private List<String> deviceNoList;
+    private List<String> deviceNoList = new ArrayList<>();
 
-    public CustomerDTO(String customerName, String customerId, String phone, String paperNo, String address, String businessType) {
-        this.customerName = customerName;
-        this.customerId = customerId;
-        this.phone = phone;
-        this.paperNo = paperNo;
-        this.address = address;
-        this.businessType = businessType;
-        this.deviceNoList = new ArrayList<>();
-    }
+
+    private List<List<String>> arrDeviceNoList = new ArrayList<>();
+
+
+
+//    public CustomerDTO(String customerName, String customerId, String phone, String paperNo, String address, String businessType) {
+//        this.customerName = customerName;
+//        this.customerId = customerId;
+//        this.phone = phone;
+//        this.paperNo = paperNo;
+//        this.address = address;
+//        this.businessType = businessType;
+//        this.deviceNoList = new ArrayList<>();
+//    }
 }

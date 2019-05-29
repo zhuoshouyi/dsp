@@ -9,20 +9,20 @@ import lombok.Data;
 public class ComplaintDTO {
 
     /** 投诉编号. */
-    private String orderId;
+    private String orderId = "";
 
     /** 受理时间. */
-    private String acceptTime;
+    private String acceptTime = "";
 
     /** 投诉来源. */
-    private String complaintFrom;
+    private String complaintFrom = "";
 
     /** 结单时间. */
-    private String endTime;
+    private String endTime = "";
 
     /** 处理方式. */
-    private String dealWithWay;
+    private String dealWithWay = "";
 
     /** 投诉内容. */
-    private String content;
+    private String content = "";
 }

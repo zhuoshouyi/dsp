@@ -12,13 +12,13 @@ public class DeviceComplaintDTO {
     private Integer id;
 
     /** 受理时间. */
-    private String acceptTime;
+    private String acceptTime = "";
 
     /** 联系电话. */
-    private String phone;
+    private String phone = "";
 
     /** 投诉内容. */
-    private String content;
+    private String content = "";
 
 
 }

@@ -48,15 +48,15 @@ public class ResultVOUtil {
      * 带page和payload的成功返回
      * @param object  payload内容
      * @param pageNo  显示第几页的数据
-     * @param pagePage  每页显示多少条数据
+     * @param pageSize  每页显示多少条数据
      * @return
      */
-    public static ResultVO successPage(Object object, Integer pageNo, Integer pagePage, Long total){
+    public static ResultVO successPage(Object object, Integer pageNo, Integer pageSize, Long total){
         ResultVO resultVO = new ResultVO();
         resultVO.setSuccess(true);
         resultVO.setPayload(object);
         resultVO.setPageNo(pageNo);
-        resultVO.setPagePage(pagePage);
+        resultVO.setPageSize(pageSize);
         resultVO.setTotal(total);
         return resultVO;
     }

@@ -18,223 +18,386 @@ public class WorkForm {
     @GeneratedValue
     private int id;
 
-    /** 工单从表编码 */
-    private String fkb6d0313a;
+    /** 工单编码_工单. */
+    private String fk4bb12569;
 
-    /** 工单主表编码 */
-    private String fk1767b996;
+    /** 客户编码_工单. */
+    private String fk7ed12de2;
 
-    /** 业务类型 */
-    private String fk48d38a12;
+    /** 客户名称_工单. */
+    private String fk3e8956c6;
 
-    /** 工单大类 */
-    private String fkcad55a66;
+    /** 客户地址_工单. */
+    private String fk791ee49f;
 
-    /** 工单类型 */
-    private String fk4daf9bee;
+    /** 地址编码_工单. */
+    private String fk3b84f123;
 
-    /** 工单状态 */
-    private String fk2a81754d;
+    /** 创建时间_工单. */
+    private String fk368c3e9d;
 
-    /** 派单内容 */
-    private String fk1e14931b;
+    /** 用户编码_工单. */
+    private String fk5ede7403;
 
-    /** 派单备注 */
-    private String fkf4f6303a;
+    /** 客户等级_工单. */
+    private String fk7f4c5d04;
 
-    /** 资源号 */
-    private String fkf5266887;
+    /** 客户性质_工单. */
+    private String fk6789c97d;
 
-    /** 机顶盒号 */
-    private String fk8d61e5e3;
+    /** 派单来源_工单. */
+    private String fk4c0fe644;
 
-    /** 产品编码 */
-    private String fk83b4b287;
+    /** 派单时间_工单. */
+    private String fk69edae7e;
 
-    /** 产品信息 */
-    private String fkb28cc75a;
+    /** 派单内容_工单. */
+    private String fkf784bca2;
 
-    /** 是否附带赠品 */
-    private String fk0b6db1bd;
+    /** 派单备注_工单. */
+    private String fk5b9b3e0a;
 
-    /** 回收设备 */
-    private String fk5d6b33fe;
+    /** 派单人编码_工单. */
+    private String fk8ab988a2;
 
-    /** 更换设备 */
-    private String fk013b9407;
+    /** 派单人名称_工单. */
+    private String fk39f96080;
 
-    /** 区域授权 */
-    private String fkfcc1d2a9;
+    /** 派单部门编码_工单. */
+    private String fk6a49139f;
 
-    /** 处理方式 */
-    private String fk072cc93e;
+    /** 派单部门名称_工单. */
+    private String fk0acc22ff;
 
-    /** 工单成功标志 */
-    private String fkc0c6392f;
+    /** 责任部门编码_工单. */
+    private String fk0d955c6c;
 
-    /** 阶段名称 */
-    private String fk0634bff1;
+    /** 联系人名称_工单. */
+    private String fk90372c1f;
 
-    /** 阶段处理结果 */
-    private String fk773df17e;
+    /** 承诺时间_工单. */
+    private String fkd2402222;
 
-    /** 阶段处理内容 */
-    private String fkbb6786ff;
+    /** 楼栋编码_工单. */
+    private String fkd6c036e8;
 
-    /** 返单类型 */
-    private String fk1ab76cea;
+    /** 处理成功标志_工单. */
+    private String fk05e8786a;
 
-    /** 返单大类 */
-    private String fka3a8787e;
+    /** 是否补签_工单. */
+    private String fk54a39ef4;
 
-    /** 返单备注 */
-    private String fk9d883dfb;
+    /** 过程节点标识_工单. */
+    private String fk26c9176d;
 
-    /** 返单时间 */
-    private String fk81a6feef;
+    /** 工单完成时间_工单. */
+    private String fkdc85637c;
 
-    /** 完成时间 */
-    private String fk469897fa;
+    /** 重派创建时间_工单. */
+    private String fk9f38801c;
 
-    /** 工单承诺时间 */
-    private String fk491e51f2;
+    /** 是否重派_工单. */
+    private String fk299ac3b2;
 
-    /** 机房 */
-    private String fk86bb0250;
+    /** 催单次数_工单. */
+    private String fkebc44897;
 
-    /** 返单部门编码 */
-    private String fka533b4d5;
+    /** 预约次数_工单. */
+    private String fk4d1e9520;
 
-    /** 返单部门名称 */
-    private String fk89506c7c;
+    /** 优先级_工单. */
+    private String fkadd2dbbf;
 
-    /** 返单人编码 */
-    private String fk192fb65c;
+    /** 单据属性_工单. */
+    private String fk2939678f;
 
-    /** 返单人名称 */
-    private String fkb45e4b8f;
+    /** 原工单编码_工单. */
+    private String fk193e82d6;
 
-    /** 当前处理部门编码 */
-    private String fk645a7aed;
+    /** 父工单编码_工单. */
+    private String fkcb54b5b5;
 
-    /** 当前处理部门名称 */
-    private String fk08e92476;
+    /** BOSS工单编码_工单. */
+    private String fk61ee083b;
 
-    /** 当前责任人编码 */
-    private String fkfd3c500b;
+    /** 其他系统工单编码_工单. */
+    private String fkc249dd8a;
 
-    /** 当前责任人名称 */
-    private String fk920dbf6b;
+    /** 运营商_工单. */
+    private String fk6b479553;
 
-    /** 当前流转备注 */
-    private String fk76b56acf;
+    /** 区域_工单. */
+    private String fk02e15d28;
 
-    /** 正向电平 */
-    private String fk08b918d4;
+    /** 是否归档_工单. */
+    private String fk0f724446;
 
-    /** 反向电平 */
-    private String fkf8dc45dc;
+    /** SLA服务等级编码_工单. */
+    private String fk387a06c2;
 
-    /** 机顶盒MAC */
-    private String fkdedb4dbe;
+    /** 机房_工单. */
+    private String fke8971d12;
 
-    /** 机顶盒IP */
-    private String fk29bc5270;
+    /** 故障现象_工单. */
+    private String fk04808a8a;
 
-    /** CMMAC */
-    private String fk6dde705d;
+    /** 合同编码_工单. */
+    private String fk79807cc2;
 
-    /** CMIP */
-    private String fk2751933f;
+    /** 融合单业务_工单. */
+    private String fkf7fd48d8;
 
-    /** 转派接收人编码 */
-    private String fkbf15d97a;
+    /** 业务网格_工单. */
+    private String fkb3f77a20;
 
-    /** 当前流程编号 */
-    private String fk97988ed5;
+    /** 是否最新_工单. */
+    private String fkd452b0ac;
 
-    /** 当前节点 */
-    private String fk4896eca6;
+    /** 返单类型_工单. */
+    private String fk1f41ae6e;
 
-    /** 工单到达节点时间 */
-    private String fk30f307b9;
+    /** 返单大类_工单. */
+    private String fk9604babb;
 
-    /** 主机数 */
-    private String fk005bd7e5;
+    /** 无纸化_工单. */
+    private String fk373ecdaf;
 
-    /** 副机数 */
-    private String fk5f89b19a;
+    /** 预约信息_工单. */
+    private String fkb620acb1;
 
-    /** 原始有效标识 */
-    private String fk3ef08343;
+    /** 用户类型_工单. */
+    private String fkeb1a081e;
 
-    /** 当前有效标识 */
-    private String fk769fed1c;
+    /** 工单从表编码_从单. */
+    private String fk14e1b2dc;
 
-    /** BOSS工单从单编码 */
-    private String fkf20eb08a;
+    /** 工单主表编码_从单. */
+    private String fkfa7b61d9;
 
-    /** 派单时间 */
-    private String fkc7646a53;
+    /** 业务类型_从单. */
+    private String fk4f40b3e2;
 
-    /** 接收人编码 */
-    private String fk1d9c4514;
+    /** 工单大类_从单. */
+    private String fk43f1ba84;
 
-    /** 上级流程编号 */
-    private String fkd6346d46;
+    /** 工单类型_从单. */
+    private String fk9fab84ff;
 
-    /** 故障现象 */
-    private String fk68b34a47;
+    /** 工单状态_从单. */
+    private String fk08c25a7d;
 
-    /** 用户编码 */
-    private String fk496397ec;
+    /** 派单内容_从单. */
+    private String fkb4886aac;
 
-    /** 变更后产品编码 */
-    private String fk64418226;
+    /** 派单备注_从单. */
+    private String fkacbe11b5;
 
-    /** CMTSIP */
-    private String fk82b59300;
+    /** 资源号_从单. */
+    private String fk6ad92d5c;
 
-    /** AP号 */
-    private String fkdd8cb274;
+    /** 机顶盒号_从单. */
+    private String fka093d669;
 
-    /** 自动处理间隔 */
-    private String fk7bf9f56e;
+    /** 产品编码_从单. */
+    private String fkd14a1af4;
 
-    /** 是否已回收设备 */
-    private String fkc4400789;
+    /** 产品信息_从单. */
+    private String fkb658261b;
 
-    /** 相同设备代号 */
-    private String fk3baeb732;
+    /** 是否附带赠品_从单. */
+    private String fk9188d978;
 
-    /** 迁移费用 */
-    private String fk0a649f34;
+    /** 回收设备_从单. */
+    private String fk10499ceb;
 
-    /** 技术诊断 */
-    private String fk20bafbff;
+    /** 更换设备_从单. */
+    private String fk5ab6d2f2;
 
-    /** 当前处理部门属性 */
-    private String fk3bc609d7;
+    /** 区域授权_从单. */
+    private String fk696673d8;
 
-    /** 当前处理部门属性编码 */
-    private String fk02f4f155;
+    /** 处理方式_从单. */
+    private String fk88e801a2;
 
-    /** 当前工单强制签收 */
-    private String fkdd9d1135;
+    /** 工单成功标志_从单. */
+    private String fk28806b92;
 
-    /** 强制签收时间 */
-    private String fka8e8eb60;
+    /** 阶段名称_从单. */
+    private String fk3f6223af;
 
-    /** 资源规格编码 */
-    private String fkd0716777;
+    /** 阶段处理结果_从单. */
+    private String fka18a635e;
 
-    /** 资源规格名称 */
-    private String fk3cd1b60f;
+    /** 阶段处理内容_从单. */
+    private String fkf6a41dc1;
 
-    /** 处理时长m */
-    private String fk379c3b9e;
+    /** 返单类型_从单. */
+    private String fk0bfa8691;
 
-    /** 是否迟返 */
-    private String fkdf8b6dba;
+    /** 返单大类_从单. */
+    private String fk4c3b6582;
+
+    /** 返单备注_从单. */
+    private String fkc7192294;
+
+    /** 返单时间_从单. */
+    private String fkb0444a1b;
+
+    /** 完成时间_从单. */
+    private String fkd993684b;
+
+    /** 工单承诺时间_从单. */
+    private String fk6e5675d4;
+
+    /** 机房_从单. */
+    private String fk650a3a8f;
+
+    /** 返单人编码_从单. */
+    private String fk0f6fb368;
+
+    /** 返单部门编码_从单. */
+    private String fk4768c107;
+
+    /** 当前处理部门编码_从单. */
+    private String fk32f2c5d2;
+
+    /** 当前责任人编码_从单. */
+    private String fk83df54b3;
+
+    /** 当前流转备注_从单. */
+    private String fk96ee7e5e;
+
+    /** 正向电平_从单. */
+    private String fk01e6bf0f;
+
+    /** 反向电平_从单. */
+    private String fk5df40960;
+
+    /** 机顶盒MAC_从单. */
+    private String fk8553c785;
+
+    /** 机顶盒IP_从单. */
+    private String fk7b0629be;
+
+    /** CMMAC_从单. */
+    private String fk8f0255da;
+
+    /** CMIP_从单. */
+    private String fk24f1ca0d;
+
+    /** 转派接收人编码_从单. */
+    private String fka185ee10;
+
+    /** 当前流程编号_从单. */
+    private String fk3db68c31;
+
+    /** 当前节点_从单. */
+    private String fk4cb26684;
+
+    /** 工单到达节点时间_从单. */
+    private String fkb92d14df;
+
+    /** 主机数_从单. */
+    private String fk48a9e686;
+
+    /** 副机数_从单. */
+    private String fkda096e6f;
+
+    /** 原始有效标识_从单. */
+    private String fkb90567ef;
+
+    /** 当前有效标识_从单. */
+    private String fk0952e566;
+
+    /** BOSS工单从单编码_从单. */
+    private String fk4f9dcd63;
+
+    /** 派单时间_从单. */
+    private String fk232178c3;
+
+    /** 接收人编码_从单. */
+    private String fk1bb4b0f5;
+
+    /** 上级流程编号_从单. */
+    private String fk1076ad93;
+
+    /** 故障现象_从单. */
+    private String fk378f881f;
+
+    /** 用户编码_从单. */
+    private String fk17cd314f;
+
+    /** 变更后产品编码_从单. */
+    private String fkcf3e56dd;
+
+    /** CMTSIP_从单. */
+    private String fkb5e420e1;
+
+    /** AP号_从单. */
+    private String fk7ccedb86;
+
+    /** 自动处理间隔_从单. */
+    private String fk60ce354c;
+
+    /** 是否已回收设备_从单. */
+    private String fk89da7ac6;
+
+    /** 相同设备代号_从单. */
+    private String fk072ce35d;
+
+    /** 迁移费用_从单. */
+    private String fkb074f87e;
+
+    /** 技术诊断_从单. */
+    private String fk7a27002c;
+
+    /** 当前处理部门_从单. */
+    private String fkaa392c40;
+
+    /** 当前工单强制签收_从单. */
+    private String fk391e7a75;
+
+    /** 强制签收时间_从单. */
+    private String fk7e0dd718;
+
+    /** 资源规格编码_从单. */
+    private String fk2582c87b;
+
+    /** 资源规格名称_从单. */
+    private String fkdcb5cedf;
+
+    /** 业务网格编码_工单. */
+    private String fkf8d38020;
+
+    /** 是否故障单标识. */
+    private String fk921af1b0;
+
+    /** 是否迟返_从单. */
+    private String fk00450a9b;
+
+    /** 是否迟返_工单. */
+    private String fk8913984c;
+
+    /** 是否安装单标识. */
+    private String fk1905aa01;
+
+    /** 处理时长m_工单. */
+    private String fk00f49e03;
+
+    /** 处理时长m_从单. */
+    private String fk164a6402;
+
+    /** 当前责任人名称_从单. */
+    private String fk0f86cb80;
+
+    /** 当前处理部门名称_从单. */
+    private String fk80cac03b;
+
+    /** 返单人名称_从单. */
+    private String fk4f8949f5;
+
+    /** 返单部门名称_从单. */
+    private String fk04a385b1;
+
 
 }

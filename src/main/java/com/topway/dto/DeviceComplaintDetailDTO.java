@@ -2,6 +2,7 @@ package com.topway.dto;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class DeviceComplaintDetailDTO<T> {
     private T complaint;
 
     /** 处理信息. */
-    private List<T> dealWithMessage;
+    private List<T> dealWithMessage = new ArrayList<T>();
 
 
 }

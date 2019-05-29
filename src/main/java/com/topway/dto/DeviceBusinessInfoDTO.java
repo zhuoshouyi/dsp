@@ -12,11 +12,11 @@ public class DeviceBusinessInfoDTO {
     private Integer id;
 
     /** 产品名称. */
-    private String productName;
+    private String productName = "";
 
     /** 开通日期. */
-    private String openTime;
+    private String openTime = "";
 
     /** 当前状态. */
-    private String status;
+    private String status = "";
 }

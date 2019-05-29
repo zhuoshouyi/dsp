@@ -86,6 +86,23 @@ public class WatchAction2DeviceWatchActionDTOConvert {
                     }
                 });
 
+        watchLengthOfOnline.setSevenTotal(
+                watchLengthOfOnline.getSevenDayCinema()+watchLengthOfOnline.getSevenDayDrop()+
+                        watchLengthOfOnline.getSevenDayShow()+watchLengthOfOnline.getSevenDayTime()+"h"
+        );
+        watchLengthOfOnline.setThirtyTotal(
+                watchLengthOfOnline.getThirtyDayCinema()+watchLengthOfOnline.getThirtyDayDrop()+
+                        watchLengthOfOnline.getThirtyDayShow()+watchLengthOfOnline.getThirtyDayTime()+"h"
+        );
+
+        watchTimesOfEnter.setSevenTotal(
+                watchLengthOfOnline.getSevenDayCinema()+watchLengthOfOnline.getSevenDayDrop()+
+                        watchLengthOfOnline.getSevenDayShow()+watchLengthOfOnline.getSevenDayTime()+"次"
+        );
+        watchTimesOfEnter.setThirtyTotal(
+                watchLengthOfOnline.getThirtyDayCinema()+watchLengthOfOnline.getThirtyDayDrop()+
+                        watchLengthOfOnline.getThirtyDayShow()+watchLengthOfOnline.getThirtyDayTime()+"次"
+        );
         deviceWatchActionDTO.setYearStartRate(watchYearStartRateDTO);
         deviceWatchActionDTO.setMonthStartRate(watchMonthStartRate);
         deviceWatchActionDTO.setLengthOfOnline(watchLengthOfOnline);

@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
+ * 小区物业信息
+ *
  * Created by haizhi on 2019/5/23.
  */
 @Entity

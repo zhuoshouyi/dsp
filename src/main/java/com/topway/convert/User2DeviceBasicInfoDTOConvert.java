@@ -23,7 +23,11 @@ public class User2DeviceBasicInfoDTOConvert {
         // fk4fb2b37b 机房名称_小区
         deviceBasicInfoDTO.setComputerRoom(user.getFk4fb2b37b());
         // fkb1affa87 账户银行名称, fk53c01bbd 账户银行账号
-        deviceBasicInfoDTO.setCertificates(user.getFkb1affa87() + "(卡号后四位为"+ user.getFk53c01bbd().substring(user.getFk53c01bbd().length()-4) +")");
+        deviceBasicInfoDTO.setCertificates(
+                (user.getFkb1affa87()==null?"":user.getFkb1affa87())
+                        + "(卡号后四位为"
+                        + ((user.getFk53c01bbd()==null)?"":(user.getFk53c01bbd().substring(user.getFk53c01bbd().length()-4)))
+                        + ")");
         // fkc398514b 地址
         deviceBasicInfoDTO.setAddress(user.getFkc398514b());
         return deviceBasicInfoDTO;

@@ -1,9 +1,16 @@
 package com.topway.service.Impl;
 
 import com.topway.DAO.AreaDao;
+import com.topway.DAO.AreaLabelDao;
+import com.topway.DAO.HistoryMarketDao;
+import com.topway.convert.HistoryMarketForm2HistoryMarketConvert;
 import com.topway.dto.AreaBusinessDTO;
+import com.topway.dto.AreaLabelShowDTO;
 import com.topway.dto.AreaMonthlyDevelopmentDTO;
+import com.topway.form.HistoryMarketForm;
 import com.topway.pojo.Area;
+import com.topway.pojo.AreaLabel;
+import com.topway.pojo.HistoryMarket;
 import com.topway.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +36,14 @@ public class AreaServiceImpl implements AreaService{
 
     @Autowired
     AreaDao dao;
+
+    @Autowired
+    AreaLabelDao areaLabelDao;
+
+    @Autowired
+    HistoryMarketDao historyMarketDao;
+
+
 
     @Override
     public List<Area> findByAreaList() {
@@ -118,6 +134,7 @@ public class AreaServiceImpl implements AreaService{
     public AreaMonthlyDevelopmentDTO calMonthlyDevelopment(String areaId) {
         AreaMonthlyDevelopmentDTO areaMonthlyDevelopmentDTO = new AreaMonthlyDevelopmentDTO();
 
+        // TODO 时间
         Area area1 = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "收费", "2019-05-22 00:00:00");
 //        Area area2 = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "免费", "2019-04-20 00:00:00");
 
@@ -148,4 +165,111 @@ public class AreaServiceImpl implements AreaService{
 
         return areaMonthlyDevelopmentDTO;
     }
+
+
+    /**
+     * 小区标签列表查询
+     * @param areaId
+     * @return
+     */
+    @Override
+    public List<AreaLabelShowDTO> findAreaLabel(String areaId){
+        List<AreaLabel> areaLabelList = areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId);
+        List<AreaLabelShowDTO> areaLabelShowDTOList = new ArrayList<>();
+
+        areaLabelList.stream()
+                .forEach(e -> {
+                    AreaLabelShowDTO areaLabelShowDTO = new AreaLabelShowDTO();
+                    areaLabelShowDTO.setDate(e.getCreateTime());
+                    List<String> labelList = new ArrayList<>();
+                    if (e.getBuildAttrbute()!=null) labelList.add(e.getBuildAttrbute());
+                    if (e.getAreaLiveProportion()!=null) labelList.add(e.getAreaLiveProportion());
+                    if (e.getIsContractArea()!=null) labelList.add(e.getIsContractArea());
+                    if (e.getIsPermittedAdmission()!=null) labelList.add(e.getIsPermittedAdmission());
+                    if (e.getIsCompeteArea()!=null) labelList.add(e.getIsCompeteArea());
+                    if (e.getIsRegularCover()!=null) labelList.add(e.getIsRegularCover());
+                    if (e.getNetworkCoverageProperties()!=null) labelList.add(e.getNetworkCoverageProperties());
+                    if (e.getIsStabilityLiver()!=null) labelList.add(e.getIsStabilityLiver());
+                    // TODO 拆分自定义标签
+                    if (e.getCustomFields()!=null) labelList.add(e.getCustomFields());
+
+                    areaLabelShowDTO.setLabelList(labelList);
+                    areaLabelShowDTOList.add(areaLabelShowDTO);
+                });
+
+
+        return areaLabelShowDTOList;
+    }
+
+
+    /**
+     * 小区详情页查看标签
+     * @param areaId
+     * @return
+     */
+    @Override
+    public List<String> findAreaLabelOne(String areaId){
+        AreaLabel areaLabel = areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId).get(0);
+        List<String> labelList = new ArrayList<>();
+
+        if (areaLabel.getBuildAttrbute()!=null) labelList.add(areaLabel.getBuildAttrbute());
+        if (areaLabel.getAreaLiveProportion()!=null) labelList.add(areaLabel.getAreaLiveProportion());
+        if (areaLabel.getIsContractArea()!=null) labelList.add(areaLabel.getIsContractArea());
+        if (areaLabel.getIsPermittedAdmission()!=null) labelList.add(areaLabel.getIsPermittedAdmission());
+        if (areaLabel.getIsCompeteArea()!=null) labelList.add(areaLabel.getIsCompeteArea());
+        if (areaLabel.getIsRegularCover()!=null) labelList.add(areaLabel.getIsRegularCover());
+        if (areaLabel.getNetworkCoverageProperties()!=null) labelList.add(areaLabel.getNetworkCoverageProperties());
+        if (areaLabel.getIsStabilityLiver()!=null) labelList.add(areaLabel.getIsStabilityLiver());
+        // TODO 拆分自定义标签
+        if (areaLabel.getCustomFields()!=null) labelList.add(areaLabel.getCustomFields());
+
+        return labelList;
+    }
+
+
+    /**
+     * 更新小区标签
+     *
+     * @param areaLabel
+     */
+    @Override
+    public void saveAreaLabel(AreaLabel areaLabel){
+
+    }
+
+
+    /**
+     * 查询历史营销记录
+     *
+     * @param areaId
+     * @return
+     */
+    @Override
+    public List<HistoryMarket> findHistoryMarket(String areaId){
+        return historyMarketDao.findByAreaIdOrderByCreateTime(areaId);
+    }
+
+
+    /**
+     * 插入历史营销记录
+     *
+     * @param historyMarketForm
+     * @param date
+     * @return
+     */
+    @Override
+    public void saveHistoryMarket(HistoryMarketForm historyMarketForm, String date){
+
+        // 将 historyMarketForm 转成 HistoryMarket
+        HistoryMarket historyMarket = HistoryMarketForm2HistoryMarketConvert.convert(historyMarketForm);
+
+        // 增加时间字段
+        historyMarket.setCreateTime(date);
+
+        // 写入数据库
+        historyMarketDao.save(historyMarket);
+
+    }
+
+
 }

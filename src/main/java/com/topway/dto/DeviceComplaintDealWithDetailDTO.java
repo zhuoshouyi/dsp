@@ -9,21 +9,21 @@ import lombok.Data;
 public class DeviceComplaintDealWithDetailDTO {
 
     /** 反馈时间. */
-    private String feedBackTime;
+    private String feedBackTime = "";
 
     /** 应反馈截止时间. */
-    private String feedBackEndTime;
+    private String feedBackEndTime = "";
 
     /** 是否延迟. */
-    private String isDelay;
+    private String isDelay = "";
 
     /** 处理人. */
-    private String dealwithPeople;
+    private String dealwithPeople = "";
 
     /** 内容分类. */
-    private String contentType;
+    private String contentType = "";
 
     /** 处理详细信息. */
-    private String detail;
+    private String detail = "";
 
 }

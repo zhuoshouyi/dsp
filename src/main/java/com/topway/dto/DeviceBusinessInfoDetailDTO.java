@@ -9,39 +9,39 @@ import lombok.Data;
 public class DeviceBusinessInfoDetailDTO {
 
     /** 资源号. */
-    private String deviceNo;
+    private String deviceNo = "";
 
     /** 产品编码. */
-    private String productId;
+    private String productId = "";
 
     /** 产品名称. */
-    private String productName;
+    private String productName = "";
 
     /** 购买价格. */
-    private String purchasePrice;
+    private String purchasePrice = "";
 
     /** 购买时长. */
-    private String purchaseLength;
+    private String purchaseLength = "";
 
     /** 购买时间. */
-    private String purchaseTime;
+    private String purchaseTime = "";
 
     /** 开通日期. */
-    private String openTime;
+    private String openTime = "";
 
     /** 到期时间. */
-    private String dueTime;
+    private String dueTime = "";
 
     /** 当前状态. */
-    private String status;
+    private String status = "";
 
     /** 经营范围. */
-    private String businessScope;
+    private String businessScope = "";
 
     /** 授权区域. */
-    private String authorizedArea;
+    private String authorizedArea = "";
 
     /** 计费方式. */
-    private String billingMode;
+    private String billingMode = "";
 
 }

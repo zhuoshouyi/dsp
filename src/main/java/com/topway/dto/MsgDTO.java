@@ -16,5 +16,5 @@ public class MsgDTO {
     private Integer code;
 
     /** 错误详细信息. */
-    private String desc;
+    private String desc = "";
 }
