@@ -19,31 +19,31 @@ public class PropertyForm {
     /**
      * 物业名称
      */
-    private String propertyName;
+    private String propertyName = "";
 
     /**
      * 物业地址
      */
-    private String propertyAddress;
+    private String propertyAddress = "";
 
     /**
      * 物业联系人
      */
-    private String propertyManagerName;
+    private String propertyManagerName = "";
 
     /**
      * 物业负责人电话
      */
-    private String propertyManagerPhone;
+    private String propertyManagerPhone = "";
 
     /**
      * 电工联系人
      */
-    private String electricianName;
+    private String electricianName = "";
 
     /**
      * 电工电话
      */
-    private String electricianPhone;
+    private String electricianPhone = "";
 
 }

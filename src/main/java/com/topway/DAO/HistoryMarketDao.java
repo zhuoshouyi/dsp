@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface HistoryMarketDao extends JpaRepository<HistoryMarket, Integer> {
 
-    List<HistoryMarket> findByAreaIdOrderByCreateTime(String areaId);
+    List<HistoryMarket> findByAreaIdOrderByCreateTimeDesc(String areaId);
 }

@@ -38,11 +38,10 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      *
      * fk999cd340 小区名称
      */
-    @Query("select a from Area a where a.fk999cd340 like CONCAT('%',?1,'%')")
-    Page<Area> findByFk999cd340Like(@Param("fk999cd340") String areaName, Pageable pageable);
+    @Query("select a from Area a where a.fk999cd340 like CONCAT('%',?1,'%') and a.fkfceb956f=?2 and a.fk560a959b='收费'")
+    Page<Area> findByFk999cd340Like(@Param("fk999cd340") String areaName, @Param("fkfceb956f") String date, Pageable pageable);
 
 
-//    @Query(value = " select fka9350c89, fk560a959b, fkfceb956f from area ")
-//    List<Object[]> findByUniqId();
+
 
 }

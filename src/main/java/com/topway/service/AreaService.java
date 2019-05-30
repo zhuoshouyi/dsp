@@ -7,6 +7,7 @@ import com.topway.form.HistoryMarketForm;
 import com.topway.pojo.Area;
 import com.topway.pojo.AreaLabel;
 import com.topway.pojo.HistoryMarket;
+import com.topway.pojo.Property;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,10 @@ public interface AreaService {
     Area findByAreaId(String areaId);
 
     Page<Area> findByAreaNameLike(String areaName, Pageable pageable);
+
+    Property findProperty(String areaId);
+
+    void saveProperty(Property property);
 
     AreaBusinessDTO calAreaBusiness(String areaId);
 

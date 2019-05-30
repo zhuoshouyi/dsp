@@ -80,10 +80,10 @@ public class AreaController {
                 List<AreaListDTO> areaListDTOList = new ArrayList<>();
                 Area area = areaService.findByAreaId(KEYWORD);
                 AreaListDTO areaListDTO = Area2AreaListDTOConvert.convert(area);
-                areaListDTO.setFk999cd340(areaListDTO.getFka9350c89().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
+                areaListDTO.setFka9350c89(areaListDTO.getFka9350c89().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
                 areaListDTOList.add(areaListDTO);
 
-                return ResultVOUtil.successPage(areaListDTOList, 1, 1, 1L);
+                return ResultVOUtil.successPage(areaListDTOList, 0, 1, 1L);
 
             }else {
                 /** 否则认为是小区名称,小区名称可以模糊搜索 */
@@ -150,9 +150,9 @@ public class AreaController {
         AreaMonthlyDevelopmentDTO areaMonthlyDevelopmentDTO = areaService.calMonthlyDevelopment(AREAID);
 
         /** 6.根据areaId关联出propertyInfo */
-        // TODO 关联小区物业信息表
         Property property = new Property();
-
+        if (areaService.findProperty(AREAID)!=null)
+            property = areaService.findProperty(AREAID);
 
         /** 7.将所有信息组装在一起 */
         areaDetailDTO.setBasicInfo(areaBasicInfoDTO);
@@ -217,7 +217,7 @@ public class AreaController {
      *
      * @return
      */
-    @PostMapping("/area/property/save")
+    @PostMapping("/property/save")
     public ResultVO propertySave(@RequestBody PropertyForm propertyForm,
                                  BindingResult bindingResult){
 
@@ -231,9 +231,21 @@ public class AreaController {
         }
 
         /** 2.更新物业信息 */
+        Property property = new Property();
+        if (areaService.findProperty(AREAID)!=null) areaService.findProperty(AREAID);
+        property.setAreaId(AREAID);
+        if (!propertyForm.getPropertyName().isEmpty()) property.setPropertyName(propertyForm.getPropertyName());
+        if (!propertyForm.getPropertyAddress().isEmpty()) property.setPropertyName(propertyForm.getPropertyAddress());
+        if (!propertyForm.getPropertyManagerName().isEmpty()) property.setPropertyName(propertyForm.getPropertyManagerName());
+        if (!propertyForm.getPropertyManagerPhone().isEmpty()) property.setPropertyName(propertyForm.getPropertyManagerPhone());
+        if (!propertyForm.getElectricianName().isEmpty()) property.setPropertyName(propertyForm.getElectricianName());
+        if (!propertyForm.getElectricianPhone().isEmpty()) property.setPropertyName(propertyForm.getElectricianPhone());
 
+        List<HistoryMarket> historyMarketList = areaService.findHistoryMarket(AREAID);
+        property.setHistoryMarket(historyMarketList.size());
 
-        // TODO 小区物业信息编辑开发
+        areaService.saveProperty(property);
+        log.info("【写入成功】物业信息修改成功.");
 
         return ResultVOUtil.success();
     }
@@ -246,7 +258,7 @@ public class AreaController {
      *
      * @return
      */
-    @PostMapping("/area/market/list")
+    @PostMapping("/market/list")
     public ResultVO marketList(@RequestBody AreaIdForm areaIdForm,
                                BindingResult bindingResult){
 
@@ -270,8 +282,8 @@ public class AreaController {
      *
      * @return
      */
-    @PostMapping("/area/market/save")
-    public ResultVO marketSave(HistoryMarketForm historyMarketForm,
+    @PostMapping("/market/save")
+    public ResultVO marketSave(@RequestBody HistoryMarketForm historyMarketForm,
                                BindingResult bindingResult){
 
         final String AREAID = historyMarketForm.getAreaId();

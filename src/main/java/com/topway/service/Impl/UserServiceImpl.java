@@ -164,7 +164,8 @@ public class UserServiceImpl implements UserService {
         customerDTO.setCustomerId(customer.getCustomerId());
 
         List<User> userList = userDao.findByFk572f5a34(customerId);
-        customerDTO.setAddress(userList.get(0).getFkc398514b());
+        if (userList!=null && !userList.isEmpty())
+            customerDTO.setAddress(userList.get(0).getFkc398514b());
         Set<String> mixSet = new HashSet<>();
         for (User user : userList){
             if (user.getFk4f5972b7() != null)

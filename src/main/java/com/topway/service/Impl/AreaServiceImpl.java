@@ -3,6 +3,7 @@ package com.topway.service.Impl;
 import com.topway.DAO.AreaDao;
 import com.topway.DAO.AreaLabelDao;
 import com.topway.DAO.HistoryMarketDao;
+import com.topway.DAO.PropertyDao;
 import com.topway.convert.HistoryMarketForm2HistoryMarketConvert;
 import com.topway.dto.AreaBusinessDTO;
 import com.topway.dto.AreaLabelShowDTO;
@@ -11,6 +12,7 @@ import com.topway.form.HistoryMarketForm;
 import com.topway.pojo.Area;
 import com.topway.pojo.AreaLabel;
 import com.topway.pojo.HistoryMarket;
+import com.topway.pojo.Property;
 import com.topway.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,6 +45,9 @@ public class AreaServiceImpl implements AreaService{
     @Autowired
     HistoryMarketDao historyMarketDao;
 
+    @Autowired
+    PropertyDao propertyDao;
+
 
 
     @Override
@@ -53,15 +58,29 @@ public class AreaServiceImpl implements AreaService{
     @Override
     public Area findByAreaId(String areaId) {
         // TODO 修改日期,改为昨天
-//        Area area = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "免费", "2019-04-20 00:00:00");
-        Area area = dao.findByFka9350c89(areaId);
+        // select * from area where fka9350c89="6641" and fk560a959b="收费" and fkfceb956f="2019-05-27 00:00:00" ;
+        Area area = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "收费", "2019-05-27 00:00:00");
+//        Area area = dao.findByFka9350c89(areaId);
         return area;
     }
 
     @Override
     public Page<Area> findByAreaNameLike(String areaName, Pageable pageable) {
-        Page<Area> areaPage = dao.findByFk999cd340Like(areaName, pageable);
+        // TODO 修改日期,改为昨天
+        Page<Area> areaPage = dao.findByFk999cd340Like(areaName, "2019-05-27 00:00:00" , pageable);
         return areaPage;
+    }
+
+    // 查询小区的物业信息
+    @Override
+    public Property findProperty(String areaId){
+        return propertyDao.findByAreaId(areaId);
+    }
+
+    // 修改小区的物业信息
+    @Override
+    public void saveProperty(Property property){
+        propertyDao.save(property);
     }
 
     @Override
@@ -209,21 +228,25 @@ public class AreaServiceImpl implements AreaService{
      */
     @Override
     public List<String> findAreaLabelOne(String areaId){
-        AreaLabel areaLabel = areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId).get(0);
-        List<String> labelList = new ArrayList<>();
+        if (areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId)!=null && !areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId).isEmpty()){
+            AreaLabel areaLabel = areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId).get(0);
+            List<String> labelList = new ArrayList<>();
 
-        if (areaLabel.getBuildAttrbute()!=null) labelList.add(areaLabel.getBuildAttrbute());
-        if (areaLabel.getAreaLiveProportion()!=null) labelList.add(areaLabel.getAreaLiveProportion());
-        if (areaLabel.getIsContractArea()!=null) labelList.add(areaLabel.getIsContractArea());
-        if (areaLabel.getIsPermittedAdmission()!=null) labelList.add(areaLabel.getIsPermittedAdmission());
-        if (areaLabel.getIsCompeteArea()!=null) labelList.add(areaLabel.getIsCompeteArea());
-        if (areaLabel.getIsRegularCover()!=null) labelList.add(areaLabel.getIsRegularCover());
-        if (areaLabel.getNetworkCoverageProperties()!=null) labelList.add(areaLabel.getNetworkCoverageProperties());
-        if (areaLabel.getIsStabilityLiver()!=null) labelList.add(areaLabel.getIsStabilityLiver());
-        // TODO 拆分自定义标签
-        if (areaLabel.getCustomFields()!=null) labelList.add(areaLabel.getCustomFields());
+            if (areaLabel.getBuildAttrbute()!=null) labelList.add(areaLabel.getBuildAttrbute());
+            if (areaLabel.getAreaLiveProportion()!=null) labelList.add(areaLabel.getAreaLiveProportion());
+            if (areaLabel.getIsContractArea()!=null) labelList.add(areaLabel.getIsContractArea());
+            if (areaLabel.getIsPermittedAdmission()!=null) labelList.add(areaLabel.getIsPermittedAdmission());
+            if (areaLabel.getIsCompeteArea()!=null) labelList.add(areaLabel.getIsCompeteArea());
+            if (areaLabel.getIsRegularCover()!=null) labelList.add(areaLabel.getIsRegularCover());
+            if (areaLabel.getNetworkCoverageProperties()!=null) labelList.add(areaLabel.getNetworkCoverageProperties());
+            if (areaLabel.getIsStabilityLiver()!=null) labelList.add(areaLabel.getIsStabilityLiver());
+            // TODO 拆分自定义标签
+            if (areaLabel.getCustomFields()!=null) labelList.add(areaLabel.getCustomFields());
 
-        return labelList;
+            return labelList;
+        }else {
+            return new ArrayList<>();
+        }
     }
 
 
@@ -246,7 +269,7 @@ public class AreaServiceImpl implements AreaService{
      */
     @Override
     public List<HistoryMarket> findHistoryMarket(String areaId){
-        return historyMarketDao.findByAreaIdOrderByCreateTime(areaId);
+        return historyMarketDao.findByAreaIdOrderByCreateTimeDesc(areaId);
     }
 
 
