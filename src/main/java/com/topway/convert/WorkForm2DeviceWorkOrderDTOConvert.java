@@ -19,11 +19,11 @@ public class WorkForm2DeviceWorkOrderDTOConvert {
         // id
         deviceWorkOrderDTO.setId(workForm.getId());
         // fk2939678f 单据属性_工单 工单类型
-        deviceWorkOrderDTO.setOrderType(workForm.getFk2939678f());
+        deviceWorkOrderDTO.setOrderType(workForm.getMasterType());
         // fk69edae7e 派单时间_工单
-        deviceWorkOrderDTO.setCreateTime(workForm.getFk69edae7e());
+        deviceWorkOrderDTO.setCreateTime(workForm.getMasterSendTime());
         // fkf784bca2 派单内容_工单
-        deviceWorkOrderDTO.setContent(workForm.getFkf784bca2());
+        deviceWorkOrderDTO.setContent(workForm.getMasterSendContent());
         return deviceWorkOrderDTO;
 
     }

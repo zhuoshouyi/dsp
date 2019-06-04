@@ -153,6 +153,7 @@ public class UserController {
         final String CUSTOMERID = deviceNoForm.getCustomerId();
         final String DEVICENO = deviceNoForm.getDeviceNo();
 
+        log.info("【终端信息】开始查找终端信息");
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceNoForm={}", deviceNoForm.toString());
@@ -165,22 +166,23 @@ public class UserController {
 
         // 终端信息
         DeviceBasicInfoDTO deviceBasicInfoDTO = userService.findDeviceBasicInfoDTO(CUSTOMERID, DEVICENO);
-
+        log.info("【终端信息】开始查找产品信息");
         // 业务基本信息
         List<DeviceBusinessInfoDTO> deviceBusinessInfoDTO = userService.findDeviceBusinessInfoDTO(CUSTOMERID, DEVICENO);
-
+//        List<DeviceBusinessInfoDTO> deviceBusinessInfoDTO = new ArrayList<>();
+        log.info("【终端信息】开始查找工单信息");
         // 工单信息
         List<DeviceWorkOrderDTO> deviceWorkOrderDTO = userService.findDeviceWorkOrderDTO(CUSTOMERID, DEVICENO);
-
+        log.info("【终端信息】开始查找投诉单信息");
         // 投诉单信息
         List<DeviceComplaintDTO> deviceComplaintDTO = userService.findDeviceComplaintDTO(CUSTOMERID, DEVICENO);
-
+        log.info("【终端信息】开始查找收视行为信息");
         // 收视行为信息
         DeviceWatchActionDTO deviceWatchActionDTO = userService.findDeviceWatchActionDTO(CUSTOMERID, DEVICENO);
-
+        log.info("【终端信息】开始查找网络质量信息");
         // 网络质量诊断信息
         DeviceNetworkQualityDTO deviceNetworkQualityDTO = new DeviceNetworkQualityDTO();
-
+        log.info("【终端信息】开始拼装");
         /** 3.拼装deviceDTO */
         deviceDTO.setBasicInfo(deviceBasicInfoDTO);
         deviceDTO.setBusinessInfo(deviceBusinessInfoDTO);

@@ -24,18 +24,19 @@ public interface WorkFormDao extends JpaRepository<WorkForm, Integer> {
      *  fk5ede7403 用户编码
      *  fk368c3e9d 创建时间
      */
-    @Query("select wf from WorkForm wf, User u " +
-            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=wf.fk5ede7403 " +
-            "order by wf.fk368c3e9d desc")
+    @Query(value = "select * from work_form where user_id=(" +
+            "select user_id from user u where u.customer_id=?1 and u.device_no=?2) " +
+            "order by master_create_time desc", nativeQuery = true)
     Page<WorkForm> findJoinWorkFormAndUser(@Param(value = "customerId") String customerId,
                                            @Param(value = "deviceNo") String deviceNo,
                                            Pageable pageable);
 
 
-    @Query("select wf from WorkForm wf, User u " +
-            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=wf.fk5ede7403 and wf.id=?3")
+    @Query(value = "select * from work_form wf where wf.user_id=(" +
+            "select u.user_id from user u where u.customer_id=?1 and u.device_no=?2) " +
+            "and wf.id=?3", nativeQuery = true)
     WorkForm findJoinWorkFormAndUserDetail(@Param(value = "customerId") String customerId,
-                                           @Param(value = "deviceNo") String deviceNo,
-                                           @Param(value = "id") String id);
+                                                @Param(value = "deviceNo") String deviceNo,
+                                                @Param(value = "id") String id);
 
 }

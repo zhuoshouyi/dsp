@@ -23,7 +23,13 @@ public class WorkFormDaoTest {
     public void findJoinWorkFormAndUser() throws Exception {
 
         PageRequest pageRequest = new PageRequest(0, 5);
-        Page<WorkForm> workFormPage = dao.findJoinWorkFormAndUser("12744888", "68719498946", pageRequest);
+        Page<WorkForm> workFormPage = dao.findJoinWorkFormAndUser("1010577290", "6100000237362", pageRequest);
+        System.out.println("");
+    }
+
+    @Test
+    public void test(){
+        WorkForm workForm = dao.findJoinWorkFormAndUserDetail("1010577290", "6100000237362", "331624");
         System.out.println("");
     }
 

@@ -11,9 +11,9 @@ import javax.validation.constraints.NotEmpty;
 public class LoginForm {
 
     /**
-     * 网格员编号id
+     * token
      */
-    @NotEmpty(message = "用户id必填")
-    private String userid;
+    @NotEmpty(message = "token必填")
+    private String token;
 
 }

@@ -18,12 +18,12 @@ public class Customer2CustomerDTOCovert {
         customerDTO.setCustomerName(customer.getCustomerName());
         customerDTO.setCustomerId(customer.getCustomerId());
         customerDTO.setPhone(customer.getPhone());
-        customerDTO.setAddress(userList1.get(0).getFkc398514b());
+        customerDTO.setAddress(userList1.get(0).getAddress());
         customerDTO.setBusinessType(customer.getCustomerType());
         List<String> deviceNoList = new ArrayList<>();
         deviceNoList.add("<em>"+deviceNo+"</em>");
         if (userList1.size()>1)
-            deviceNoList.add(userList1.get(1).getFkdf1e945e());
+            deviceNoList.add(userList1.get(1).getDeviceNo());
         customerDTO.setDeviceNoList(deviceNoList);
 
         return customerDTO;
@@ -37,13 +37,13 @@ public class Customer2CustomerDTOCovert {
         customerDTO.setCustomerId(customer.getCustomerId());
         customerDTO.setPhone(customer.getPhone());
         if (userList1.size()>0)
-            customerDTO.setAddress(userList1.get(0).getFkc398514b());
+            customerDTO.setAddress(userList1.get(0).getAddress());
         customerDTO.setBusinessType(customer.getCustomerType());
         List<String> deviceNoList = new ArrayList<>();
         if (userList1.size()>0)
-            deviceNoList.add(userList1.get(0).getFkdf1e945e());
+            deviceNoList.add(userList1.get(0).getDeviceNo());
         if (userList1.size()>1)
-            deviceNoList.add(userList1.get(1).getFkdf1e945e());
+            deviceNoList.add(userList1.get(1).getDeviceNo());
         customerDTO.setDeviceNoList(deviceNoList);
 
         return customerDTO;

@@ -17,36 +17,36 @@ public class WorkForm2DeviceWorkOrderDetailDTOConvert {
 
         /** 主单 */
         // fk368c3e9d 创建时间_工单
-        masterDetailDTO.setCreateTime(workForm.getFk368c3e9d());
+        masterDetailDTO.setCreateTime(workForm.getMasterCreateTime());
         // fk69edae7e 派单时间_工单
-        masterDetailDTO.setSendTime(workForm.getFk69edae7e());
+        masterDetailDTO.setSendTime(workForm.getMasterSendTime());
         // fk2939678f 单据属性_工单
-        masterDetailDTO.setType(workForm.getFk2939678f());
+        masterDetailDTO.setType(workForm.getMasterType());
         // fkf784bca2 派单内容_工单
-        masterDetailDTO.setContent(workForm.getFkf784bca2());
+        masterDetailDTO.setContent(workForm.getMasterSendContent());
         // fk1f41ae6e 返单类型_工单 处理详情
-        masterDetailDTO.setHandleDetails(workForm.getFk1f41ae6e());
+        masterDetailDTO.setHandleDetails(workForm.getMasterBackType());
         // fk5b9b3e0a 派单备注_工单
-        masterDetailDTO.setRemarks(workForm.getFk5b9b3e0a());
+        masterDetailDTO.setRemarks(workForm.getMasterSendRemark());
 
 
         /** 从单 */
         // fk232178c3 派单时间_从单
-        followDetailDTO.setSendTime(workForm.getFk232178c3());
+        followDetailDTO.setSendTime(workForm.getFollowSendTime());
         // fkb0444a1b 返单时间_从单
-        followDetailDTO.setBackTime(workForm.getFkb0444a1b());
+        followDetailDTO.setBackTime(workForm.getFollowBackTime());
         // 联系人电话_从单
         followDetailDTO.setPhone("");
         // fk0f6fb368 返单人编码_从单 处理人员_从单
-        followDetailDTO.setDealWithPerson(workForm.getFk0f6fb368());
+        followDetailDTO.setDealWithPerson(workForm.getFollowBackPersonNo());
         // fkb4886aac 派单内容_从单
-        followDetailDTO.setSendContent(workForm.getFkb4886aac());
+        followDetailDTO.setSendContent(workForm.getFollowSendContent());
         // fkacbe11b5 派单备注_从单
-        followDetailDTO.setSendRemark(workForm.getFkacbe11b5());
+        followDetailDTO.setSendRemark(workForm.getFollowSendRemark());
         // fk0bfa8691 返单类型_从单 处理详细_从单
-        followDetailDTO.setDealWithDetails(workForm.getFk0bfa8691());
+        followDetailDTO.setDealWithDetails(workForm.getFollowBackType());
         // fkc7192294 返单备注_从单
-        followDetailDTO.setBackRemark(workForm.getFkc7192294());
+        followDetailDTO.setBackRemark(workForm.getFollowBackRemark());
 
         deviceWorkOrderDetailDTO.setMasterDetail(masterDetailDTO);
         deviceWorkOrderDetailDTO.setFollowDetail(followDetailDTO);

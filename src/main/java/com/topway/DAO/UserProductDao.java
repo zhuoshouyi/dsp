@@ -12,16 +12,17 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface UserProductDao extends JpaRepository<UserProduct, Integer>{
 
-    @Query("select up from UserProduct up, User u " +
-            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=up.fk451a778a " +
-            "order by up.fk918097a6 desc")
+    @Query(value = "select * from user_product up where up.fk451a778a in (" +
+            "select user_id from user where customer_id=?1 and device_no=?2) " +
+            "order by up.fk918097a6 desc", nativeQuery = true)
     Page<UserProduct> findJoinUserAndUserProduct(@Param(value = "customerId") String customerId,
                                                  @Param(value = "deviceNo") String deviceNo,
                                                  Pageable pageable);
 
 
-    @Query("select up from UserProduct up, User u " +
-            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=up.fk451a778a and up.id=?3 ")
+    @Query(value = "select * from user_product up where up.fk451a778a in (" +
+            "select user_id from user where customer_id=?1 and device_no=?2) " +
+            "and up.id=?3", nativeQuery = true)
     UserProduct findJoinUserAndUserProductDetail(@Param(value = "customerId") String customerId,
                                                  @Param(value = "deviceNo") String deviceNo,
                                                  @Param(value = "id") String id);

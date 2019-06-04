@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class UserRoleDTO {
 
-    private String userid;
+    private String userId;
 
     private Integer roleId;
 

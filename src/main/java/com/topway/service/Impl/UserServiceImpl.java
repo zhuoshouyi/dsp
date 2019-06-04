@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         Page<Customer> customerPage = userDao.findByDeviceNoToCustomer(deviceNo, pageable);
 
         for (Customer customer : customerPage){
-            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
+            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
             customerDTOList.add(customerDTO);
         }
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
         Page<Customer> customerPage = customerDao.findByPhoneLike("%" + phone + "%", pageable);
         for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
+            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
 
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
         Page<Customer> customerPage = customerDao.findByCustomerNameLike("%" + customerName + "%", pageable);
         for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
+            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
 
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
 
         Page<Customer> customerPage = customerDao.findByCustomerIdLike("%" + customerId + "%", pageable);
         for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByFk572f5a34(customer.getCustomerId());
+            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
 
             CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
             customerDTOList.add(customerDTO);
@@ -163,29 +163,38 @@ public class UserServiceImpl implements UserService {
         customerDTO.setPaperNo(customer.getPaperNo());
         customerDTO.setCustomerId(customer.getCustomerId());
 
-        List<User> userList = userDao.findByFk572f5a34(customerId);
+        // 查找此 customerId 所有的 user, 如果 user 不为null或空,则取第一个 address
+        List<User> userList = userDao.findByCustomerId(customerId);
         if (userList!=null && !userList.isEmpty())
-            customerDTO.setAddress(userList.get(0).getFkc398514b());
+            customerDTO.setAddress(userList.get(0).getAddress());
+
+        // 创建一个不可重复的 Set 集合,存放此 customer 的所有的融合编码
         Set<String> mixSet = new HashSet<>();
         for (User user : userList){
-            if (user.getFk4f5972b7() != null)
-                mixSet.add(user.getFk4f5972b7());
+            if (user.getMixNo() != null && !user.getMixNo().isEmpty())
+                mixSet.add(user.getMixNo());
         }
 
-//        Set<String> mixSet = userList.stream().map(e -> e.getFk4f5972b7()).collect(Collectors.toSet());
+        // 创建一个二维数组存放deviceNo
         List<List<String>> deviceList = new ArrayList<>(new ArrayList<>());
 
+        // 遍历融合编码的数组,遍历每一个融合编码的用户,找到两个融合编码相同的 deviceNo,将其拼装成 list,添加到 deviceList 中。
+        mixSet.stream().forEach(x -> {
+            List<String> list = new ArrayList<>();
+            for (User user : userList){
+                if (user.getMixNo()!=null && !user.getMixNo().isEmpty())
+                    if (user.getMixNo().equals(x)) list.add(user.getDeviceNo());
+            }
+            deviceList.add(list);
+        });
+
+        // 遍历完所有有融合编码的 user 后,遍历所有没有融合编码的 user,将他们的 deviceNo 单独建立 list 存入 deviceList 中。
         userList.stream().forEach(x -> {
             List<String> list = new ArrayList<>();
-            // 如果融合列表为空,则跳过此阶段
-            if (!mixSet.isEmpty()){
-                mixSet.stream().forEach(e -> {
-                    if (x.getFk4f5972b7().equals(e)) list.add(x.getFkdf1e945e());
-                });
+            if (x.getMixNo()==null || x.getMixNo().isEmpty()){
+                list.add(x.getDeviceNo());
+                deviceList.add(list);
             }
-            // 如果融合列表遍历完后未发现匹配的,就将deviceNo单独加入list中
-            if (list.isEmpty()) list.add(x.getFkdf1e945e());
-            deviceList.add(list);
         });
 
         customerDTO.setArrDeviceNoList(deviceList);
@@ -201,7 +210,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public DeviceBasicInfoDTO findDeviceBasicInfoDTO(String customerId, String deviceNo) {
-        User user = userDao.findByFk572f5a34AndFkdf1e945e(customerId, deviceNo);
+        User user = userDao.findByCustomerIdAndDeviceNo(customerId, deviceNo);
 
         return User2DeviceBasicInfoDTOConvert.convert(user);
 
@@ -296,9 +305,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public DeviceWorkOrderDetailDTO findDeviceWorkOrderDetailDTO(String customerId, String deviceNo, String id) {
-        WorkForm workForm = workFormDao.findJoinWorkFormAndUserDetail(customerId, deviceNo, id);
+        WorkForm workFormTemp = workFormDao.findJoinWorkFormAndUserDetail(customerId, deviceNo, id);
 
-        return WorkForm2DeviceWorkOrderDetailDTOConvert.convert(workForm);
+        return WorkForm2DeviceWorkOrderDetailDTOConvert.convert(workFormTemp);
     }
 
     /**
@@ -309,21 +318,21 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public DeviceComplaintDetailDTO findDeviceComplaintDetailDTO(String customerId, String deviceNo, String id) {
-        Complaint complaint = complaintDao.findJoinComplaintAndUserDetail(customerId, deviceNo, id);
+        Complaint Complaint = complaintDao.findJoinComplaintAndUserDetail(customerId, deviceNo, id);
         DeviceComplaintDetailDTO deviceComplaintDetailDTO = new DeviceComplaintDetailDTO();
         List<DealWithMessageDTO> dealWithMessageDTOList = new ArrayList<>();
         ComplaintDTO complaintDTO = new ComplaintDTO();
 
         // fk2d546781 投诉编码
-        complaintDTO.setOrderId(complaint.getFk2d546781());
+        complaintDTO.setOrderId(Complaint.getComplaintId());
         // fk0b5c4bd1 受理时间
-        complaintDTO.setAcceptTime(complaint.getFk0b5c4bd1());
+        complaintDTO.setAcceptTime(Complaint.getAcceptTime());
         // fkee9a3c22 投诉来源
-        complaintDTO.setComplaintFrom(complaint.getFkee9a3c22());
+        complaintDTO.setComplaintFrom(Complaint.getComplaintForm());
         // fk25c3d8d3 结单时间
-        complaintDTO.setEndTime(complaint.getFk25c3d8d3());
+        complaintDTO.setEndTime(Complaint.getOverTime());
         // fk7fadbec0 处理方式分类一 fk14d9b227 处理方式分类二
-        complaintDTO.setDealWithWay(complaint.getFk7fadbec0() + "/" + complaint.getFk14d9b227());
+        complaintDTO.setDealWithWay(Complaint.getProcessMode1() + "/" + Complaint.getProcessMode2());
         // fkcf8c69a6 投诉单内容
 
         // TODO

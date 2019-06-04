@@ -19,11 +19,11 @@ public class Complaint2DeviceComplaintDTOConvert {
         // id
         deviceComplaintDTO.setId(complaint.getId());
         // fk0b5c4bd1 受理时间
-        deviceComplaintDTO.setAcceptTime(complaint.getFk0b5c4bd1());
+        deviceComplaintDTO.setAcceptTime(complaint.getAcceptTime());
         // 联系电话
         deviceComplaintDTO.setPhone("");
         // fkcf8c69a6 投诉单内容
-        deviceComplaintDTO.setContent(complaint.getFkcf8c69a6());
+        deviceComplaintDTO.setContent(complaint.getComplaintContent());
         return deviceComplaintDTO;
 
     }

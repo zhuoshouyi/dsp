@@ -12,18 +12,19 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface ComplaintDao extends JpaRepository<Complaint, Integer> {
 
-    @Query("select c from Complaint c, User u " +
-            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=c.fk4b0f0ba1 " +
-            "order by c.fk0b5c4bd1 desc")
+    @Query(value = "select * from complaint c where c.user_id in (" +
+            "select u.user_id from user u where u.customer_id=?1 and u.device_no=?2) " +
+            "order by c.accept_time", nativeQuery = true)
     Page<Complaint> findJoinComplaintAndUser(@Param(value = "customerId") String customerId,
-                                             @Param(value = "deviceNo") String deviceNo,
-                                             Pageable pageable);
+                                                  @Param(value = "deviceNo") String deviceNo,
+                                                  Pageable pageable);
 
 
-    @Query("select c from Complaint c, User u " +
-            "where u.fk572f5a34=?1 and u.fkdf1e945e=?2 and u.fk74dd6ddc=c.fk4b0f0ba1 and c.id=?3 ")
+    @Query(value = "select * from complaint c where c.user_id in (" +
+            "select u.user_id from user u where u.customer_id=?1 and u.device_no=?2) " +
+            "and c.id=?3", nativeQuery = true)
     Complaint findJoinComplaintAndUserDetail(@Param(value = "customerId") String customerId,
-                                             @Param(value = "deviceNo") String deviceNo,
-                                             @Param(value = "id") String id);
+                                                  @Param(value = "deviceNo") String deviceNo,
+                                                  @Param(value = "id") String id);
 
 }

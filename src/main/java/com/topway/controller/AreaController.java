@@ -153,6 +153,8 @@ public class AreaController {
         Property property = new Property();
         if (areaService.findProperty(AREAID)!=null)
             property = areaService.findProperty(AREAID);
+        List<HistoryMarket> historyMarketList = areaService.findHistoryMarket(AREAID);
+        property.setHistoryMarket(historyMarketList.size());
 
         /** 7.将所有信息组装在一起 */
         areaDetailDTO.setBasicInfo(areaBasicInfoDTO);
@@ -232,14 +234,17 @@ public class AreaController {
 
         /** 2.更新物业信息 */
         Property property = new Property();
-        if (areaService.findProperty(AREAID)!=null) areaService.findProperty(AREAID);
+        // 查找数据库中是否有此小区的物业信息
+        if (areaService.findProperty(AREAID)!=null) {
+            property = areaService.findProperty(AREAID);
+        }
         property.setAreaId(AREAID);
         if (!propertyForm.getPropertyName().isEmpty()) property.setPropertyName(propertyForm.getPropertyName());
-        if (!propertyForm.getPropertyAddress().isEmpty()) property.setPropertyName(propertyForm.getPropertyAddress());
-        if (!propertyForm.getPropertyManagerName().isEmpty()) property.setPropertyName(propertyForm.getPropertyManagerName());
-        if (!propertyForm.getPropertyManagerPhone().isEmpty()) property.setPropertyName(propertyForm.getPropertyManagerPhone());
-        if (!propertyForm.getElectricianName().isEmpty()) property.setPropertyName(propertyForm.getElectricianName());
-        if (!propertyForm.getElectricianPhone().isEmpty()) property.setPropertyName(propertyForm.getElectricianPhone());
+        if (!propertyForm.getPropertyAddress().isEmpty()) property.setPropertyAddress(propertyForm.getPropertyAddress());
+        if (!propertyForm.getPropertyManagerName().isEmpty()) property.setPropertyManagerName(propertyForm.getPropertyManagerName());
+        if (!propertyForm.getPropertyManagerPhone().isEmpty()) property.setPropertyManagerPhone(propertyForm.getPropertyManagerPhone());
+        if (!propertyForm.getElectricianName().isEmpty()) property.setElectricianName(propertyForm.getElectricianName());
+        if (!propertyForm.getElectricianPhone().isEmpty()) property.setElectricianPhone(propertyForm.getElectricianPhone());
 
         List<HistoryMarket> historyMarketList = areaService.findHistoryMarket(AREAID);
         property.setHistoryMarket(historyMarketList.size());
