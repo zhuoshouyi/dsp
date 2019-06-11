@@ -38,7 +38,7 @@ public interface AreaService {
 
     void saveAreaLabel(AreaLabel areaLabel);
 
-    List<HistoryMarket> findHistoryMarket(String areaId);
+    Page<HistoryMarket> findHistoryMarket(String areaId, Pageable pageable);
 
     void saveHistoryMarket(HistoryMarketForm historyMarketForm, String date);
 

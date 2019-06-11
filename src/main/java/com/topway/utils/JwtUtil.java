@@ -5,7 +5,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.topway.pojo.UserRole;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +23,10 @@ public class JwtUtil {
     /**
      * 生成token方法
      *
-     * @param userid 用户的唯一标识
+     * @param userRole 用户信息
      * @return
      */
-    public static String encode(String userid){
+    public static String encode(UserRole userRole){
 
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         // 头部信息
@@ -39,11 +41,16 @@ public class JwtUtil {
                 /* 设置头部信息 Header */
                 .withHeader(map)
                 /* 设置载荷Payload */
-                .withClaim("userid", userid)
+                .withClaim("userId", userRole.getUserId())
+                .withClaim("userName", userRole.getUserName())
+                .withClaim("roleName", userRole.getUserRole())
+                .withClaim("spcodeId", userRole.getSpcodeId())
+                .withClaim("businessOfficeId", userRole.getBusinessOfficeId())
+                .withClaim("openId", userRole.getOpenId())
                 .withIssuer("SERVICE")  // 签名是由谁生成,例如 服务器
 //                .withSubject("this is test token")  // 签名的主题
 //                .withNotBefore(new Date())  // 定义在什么时间之前,该jwt都是不可用的
-                .withAudience(userid)  // 签名的观众(谁接受的签名)
+                .withAudience(userRole.getUserId())  // 签名的观众(谁接受的签名)
                 .withIssuedAt(nowDate)  // 生成签名的时间
 //                .withExpiresAt(expireDate)  // 签名过期的时间
                 /* 签名 Signature */
@@ -59,7 +66,7 @@ public class JwtUtil {
      * @param token
      * @return userId
      */
-    public static String decode(String token) {
+    public static Map<String, Claim> decode(String token) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer("SERVICE")
@@ -67,12 +74,17 @@ public class JwtUtil {
         DecodedJWT jwt = verifier.verify(token);
 //        String subject = jwt.getSubject();  // 获取token签名主题
         Map<String, Claim> claims = jwt.getClaims();  // 获取token的内容
-        Claim claim = claims.get("userid");  // 获取userid的值
-        System.out.println(claim.asString());
 
         List<String> audience = jwt.getAudience();
-        System.out.println(audience.get(0));
+//        System.out.println(audience.get(0));
 
-        return claim.asString();
+        return claims;
+    }
+
+    public static Map<String, Claim> getToken(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Map<String, Claim> claimMap = decode(token);
+
+        return claimMap;
     }
 }

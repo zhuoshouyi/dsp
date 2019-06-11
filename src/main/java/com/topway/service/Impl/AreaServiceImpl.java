@@ -268,8 +268,8 @@ public class AreaServiceImpl implements AreaService{
      * @return
      */
     @Override
-    public List<HistoryMarket> findHistoryMarket(String areaId){
-        return historyMarketDao.findByAreaIdOrderByCreateTimeDesc(areaId);
+    public Page<HistoryMarket> findHistoryMarket(String areaId, Pageable pageable){
+        return historyMarketDao.findByAreaIdOrderByCreateTimeDesc(areaId, pageable);
     }
 
 

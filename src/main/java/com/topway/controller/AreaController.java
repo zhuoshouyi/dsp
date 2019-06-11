@@ -153,8 +153,9 @@ public class AreaController {
         Property property = new Property();
         if (areaService.findProperty(AREAID)!=null)
             property = areaService.findProperty(AREAID);
-        List<HistoryMarket> historyMarketList = areaService.findHistoryMarket(AREAID);
-        property.setHistoryMarket(historyMarketList.size());
+        PageRequest pageRequest = new PageRequest(0, 100);
+        Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
+        property.setHistoryMarket(historyMarketPage.getTotalPages());
 
         /** 7.将所有信息组装在一起 */
         areaDetailDTO.setBasicInfo(areaBasicInfoDTO);
@@ -246,8 +247,9 @@ public class AreaController {
         if (!propertyForm.getElectricianName().isEmpty()) property.setElectricianName(propertyForm.getElectricianName());
         if (!propertyForm.getElectricianPhone().isEmpty()) property.setElectricianPhone(propertyForm.getElectricianPhone());
 
-        List<HistoryMarket> historyMarketList = areaService.findHistoryMarket(AREAID);
-        property.setHistoryMarket(historyMarketList.size());
+        PageRequest pageRequest = new PageRequest(0, 100);
+        Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
+        property.setHistoryMarket(historyMarketPage.getTotalPages());
 
         areaService.saveProperty(property);
         log.info("【写入成功】物业信息修改成功.");
@@ -268,6 +270,8 @@ public class AreaController {
                                BindingResult bindingResult){
 
         final String AREAID = areaIdForm.getAreaId();
+        final int PAGENO = areaIdForm.getPageNo();
+        final int PAGESIZE = areaIdForm.getPageSize();
 
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()) {
@@ -277,9 +281,10 @@ public class AreaController {
         }
 
         /** 2.查询历史营销进场记录 */
-        List<HistoryMarket> historyMarketList = areaService.findHistoryMarket(AREAID);
+        PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
+        Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
 
-        return ResultVOUtil.success(historyMarketList);
+        return ResultVOUtil.successPage(historyMarketPage.getContent(), PAGENO, PAGESIZE, historyMarketPage.getTotalElements());
     }
 
     /**

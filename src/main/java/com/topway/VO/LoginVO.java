@@ -1,6 +1,6 @@
 package com.topway.VO;
 
-import com.topway.dto.UserRoleDTO;
+import com.topway.pojo.UserRole;
 import lombok.Data;
 
 /**
@@ -10,7 +10,7 @@ import lombok.Data;
 public class LoginVO {
 
     /** 用户信息. */
-    private UserRoleDTO userInfo;
+    private UserRole userInfo;
 
     /** jwt认证. */
     private String bearer;

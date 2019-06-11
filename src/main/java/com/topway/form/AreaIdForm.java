@@ -15,4 +15,14 @@ public class AreaIdForm {
      */
     @NotEmpty(message = "areaId,必填")
     private String areaId;
+
+    /**
+     * pageNo
+     */
+    private Integer pageNo = 0;
+
+    /**
+     * pageSize
+     */
+    private Integer pageSize = 5;
 }

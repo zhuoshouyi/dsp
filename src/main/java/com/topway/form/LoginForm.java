@@ -11,9 +11,32 @@ import javax.validation.constraints.NotEmpty;
 public class LoginForm {
 
     /**
-     * token
+     * 门户id
      */
-    @NotEmpty(message = "token必填")
-    private String token;
+    @NotEmpty(message = "openId 必填")
+    private String openId;
+
+    /**
+     * 门户名字
+     */
+    @NotEmpty(message = "userName 必填")
+    private String userName;
+
+    /**
+     * 工单用户id
+     */
+    private String userId = "";
+
+    /**
+     * 运营商id
+     */
+    @NotEmpty(message = "spcodeId 必填")
+    private String spcodeId;
+
+    /**
+     * 分公司id
+     */
+    @NotEmpty(message = "businessOfficeId 必填")
+    private String businessOfficeId;
 
 }
