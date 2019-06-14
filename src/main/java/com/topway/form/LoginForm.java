@@ -13,30 +13,30 @@ public class LoginForm {
     /**
      * 门户id
      */
-    @NotEmpty(message = "openId 必填")
-    private String openId;
+    @NotEmpty(message = "userid 必填")
+    private String userid;
 
     /**
      * 门户名字
      */
-    @NotEmpty(message = "userName 必填")
-    private String userName;
+    @NotEmpty(message = "username 必填")
+    private String username;
 
     /**
      * 工单用户id
      */
-    private String userId = "";
+    private String us_id = "";
 
     /**
      * 运营商id
      */
-    @NotEmpty(message = "spcodeId 必填")
-    private String spcodeId;
+    @NotEmpty(message = "operator 必填")
+    private String operator;
 
     /**
      * 分公司id
      */
-    @NotEmpty(message = "businessOfficeId 必填")
-    private String businessOfficeId;
+    @NotEmpty(message = "branch 必填")
+    private String branch;
 
 }

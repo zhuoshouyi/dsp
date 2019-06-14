@@ -1,17 +1,19 @@
 package com.topway.controller;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.topway.VO.ResultVO;
 import com.topway.convert.Area2AreaBasicInfoDTOConvert;
 import com.topway.convert.Area2AreaListDTOConvert;
+import com.topway.convert.String2ListConvert;
 import com.topway.dto.*;
 import com.topway.enums.ResultEnum;
 import com.topway.exception.ParamException;
-import com.topway.exception.ResultNotFoundException;
 import com.topway.form.*;
 import com.topway.pojo.Area;
 import com.topway.pojo.HistoryMarket;
 import com.topway.pojo.Property;
 import com.topway.service.Impl.AreaServiceImpl;
+import com.topway.utils.JwtUtil;
 import com.topway.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -49,7 +53,8 @@ public class AreaController {
      * @return
      */
     @PostMapping("/list")
-    public ResultVO list(@RequestBody AreaListForm areaListForm,
+    public ResultVO list(HttpServletRequest httpServletRequest,
+                         @RequestBody AreaListForm areaListForm,
                          BindingResult bindingResult){
 
         // 参数1,搜索的关键字
@@ -66,19 +71,44 @@ public class AreaController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】keyword不正确,keyword={}", KEYWORD);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.判断用户是使用"小区编码"搜索的还是使用"小区名称"搜索的 */
+        /** 2.识别用户身份,判断权限 */
+        log.info("【认证】识别用户身份,判断权限");
+        Map<String, Claim> claimMap = JwtUtil.getToken(httpServletRequest);
+        UserRoleDTO userRoleDTO = new UserRoleDTO();
+        userRoleDTO.setOpenId((claimMap.get("openId") == null? null : claimMap.get("openId").asString()));
+        log.info("【认证】openId:" + (claimMap.get("openId") == null? null : claimMap.get("openId").asString()));
+
+        userRoleDTO.setUserId((claimMap.get("userId") == null? null : claimMap.get("userId").asString()));
+        log.info("【认证】userId:" + (claimMap.get("userId") == null? null : claimMap.get("userId").asString()));
+
+        userRoleDTO.setUserName((claimMap.get("userName") == null? null : claimMap.get("userName").asString()));
+        log.info("【认证】userName:" + (claimMap.get("userName") == null? null : claimMap.get("userName").asString()));
+
+        userRoleDTO.setUserRole((claimMap.get("userRole") == null? null : claimMap.get("userRole").asString()));
+        log.info("【认证】userRole:" + (claimMap.get("userRole") == null? null : claimMap.get("userRole").asString()));
+
+        userRoleDTO.setServiceGridId(claimMap.get("serviceGridId") == null? null : String2ListConvert.convert(claimMap.get("serviceGridId").asString()));
+        log.info("【认证】serviceGridId:" + (claimMap.get("serviceGridId") == null? null : String2ListConvert.convert(claimMap.get("serviceGridId").asString())));
+
+        userRoleDTO.setSpcodeId(claimMap.get("spcodeId") == null? null : String2ListConvert.convert(claimMap.get("spcodeId").asString()));
+        log.info("【认证】spcodeId:" + (claimMap.get("spcodeId") == null? null : String2ListConvert.convert(claimMap.get("spcodeId").asString())));
+
+        userRoleDTO.setBusinessOfficeId((claimMap.get("businessOfficeId") == null? null : String2ListConvert.convert(claimMap.get("businessOfficeId").asString())));
+        log.info("【认证】businessOfficeId:" + (claimMap.get("businessOfficeId") == null? null : String2ListConvert.convert(claimMap.get("businessOfficeId").asString())));
+
+        /** 3.判断用户是使用"小区编码"搜索的还是使用"小区名称"搜索的 */
         try {
             if (Pattern.matches("^\\w{4}$", KEYWORD)) {
-                log.info("匹配结果为小区编码");
+                log.info("【小区搜索】小区编码搜索:" + KEYWORD);
                 /** 如果是四位数字或字母,则认为是使用小区编码搜索,小区编码不能模糊搜索 */
 
                 // 将查询出来的Area转换成AreaListDTO显示
                 List<AreaListDTO> areaListDTOList = new ArrayList<>();
-                Area area = areaService.findByAreaId(KEYWORD);
+                Area area = areaService.findByAreaId(KEYWORD, userRoleDTO);
                 AreaListDTO areaListDTO = Area2AreaListDTOConvert.convert(area);
                 areaListDTO.setFka9350c89(areaListDTO.getFka9350c89().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
                 areaListDTOList.add(areaListDTO);
@@ -87,12 +117,12 @@ public class AreaController {
 
             }else {
                 /** 否则认为是小区名称,小区名称可以模糊搜索 */
-                log.info("匹配结果为小区名称");
+                log.info("【小区搜索】小区名称搜索:" + KEYWORD);
                 PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
 
-                Page<Area> areaPage = areaService.findByAreaNameLike(KEYWORD, pageRequest);
+                Page<Area> areaPage = areaService.findByAreaNameLike(KEYWORD, userRoleDTO, pageRequest);
 
-                /** 3.查询出结果后,拼装json串 */
+                /** 4.查询出结果后,拼装json串 */
                 List<AreaListDTO> areaListDTOList = new ArrayList<>();
                 total = areaPage.getTotalElements();  // 搜索出结果的条数
                 for (Area area : areaPage) {
@@ -108,8 +138,10 @@ public class AreaController {
 
         }catch (Exception e){
             log.error("【结果未找到】未匹配到条件对应的结果");
-            throw new ResultNotFoundException(ResultEnum.RESULT_NOT_FOUND.getCode(),
+            return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
                     ResultEnum.RESULT_NOT_FOUND.getDesc());
+//            throw new ResultNotFoundException(ResultEnum.RESULT_NOT_FOUND.getCode(),
+//                    ResultEnum.RESULT_NOT_FOUND.getDesc());
         }
 
     }
@@ -126,6 +158,8 @@ public class AreaController {
         final String AREAID = areaIdForm.getAreaId();
         AreaDetailDTO areaDetailDTO = new AreaDetailDTO();
 
+        UserRoleDTO userRoleDTO = new UserRoleDTO();
+
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】areaId不正确,areaId={}", AREAID);
@@ -136,7 +170,7 @@ public class AreaController {
         /** 2.根据areaId查询出基本信息 */
         AreaBasicInfoDTO areaBasicInfoDTO = new AreaBasicInfoDTO();
         // TODO 计算天威客户数,覆盖住户数
-        Area area = areaService.findByAreaId(AREAID);
+        Area area = areaService.findByAreaId(AREAID, userRoleDTO);
         areaBasicInfoDTO = Area2AreaBasicInfoDTOConvert.convert(area, 0, 0);
 
 

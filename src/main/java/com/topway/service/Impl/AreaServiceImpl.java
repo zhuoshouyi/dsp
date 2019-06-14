@@ -8,12 +8,14 @@ import com.topway.convert.HistoryMarketForm2HistoryMarketConvert;
 import com.topway.dto.AreaBusinessDTO;
 import com.topway.dto.AreaLabelShowDTO;
 import com.topway.dto.AreaMonthlyDevelopmentDTO;
+import com.topway.dto.UserRoleDTO;
 import com.topway.form.HistoryMarketForm;
 import com.topway.pojo.Area;
 import com.topway.pojo.AreaLabel;
 import com.topway.pojo.HistoryMarket;
 import com.topway.pojo.Property;
 import com.topway.service.AreaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,7 @@ import java.util.List;
  * Created by haizhi on 2019/5/22.
  */
 @Service
+@Slf4j
 public class AreaServiceImpl implements AreaService{
 
     // 实例化当天的日期
@@ -56,18 +59,63 @@ public class AreaServiceImpl implements AreaService{
     }
 
     @Override
-    public Area findByAreaId(String areaId) {
+    public Area findByAreaId(String areaId, UserRoleDTO userRoleDTO) {
         // TODO 修改日期,改为昨天
         // select * from area where fka9350c89="6641" and fk560a959b="收费" and fkfceb956f="2019-05-27 00:00:00" ;
-        Area area = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "收费", "2019-05-27 00:00:00");
-//        Area area = dao.findByFka9350c89(areaId);
+//        Area area = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "收费", "2019-05-27 00:00:00");
+        Area area = null;
+        switch (userRoleDTO.getUserRole()){
+            case "基础网格员":
+            case "支撑网格员":
+            case "站长":
+                log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
+                area = dao.findByAreaId(
+                        areaId, "收费", "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null);
+                break;
+
+            case "公司领导":
+            case "业务部门":
+                log.info("【认证】身份为 公司领导 或 业务部门");
+                area = dao.findByAreaId(
+                        areaId, "收费", "2019-05-27 00:00:00", null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
+                break;
+
+            default:
+                // TODO
+                break;
+        }
         return area;
     }
 
     @Override
-    public Page<Area> findByAreaNameLike(String areaName, Pageable pageable) {
+    public Page<Area> findByAreaNameLike(String areaName, UserRoleDTO userRoleDTO, Pageable pageable) {
         // TODO 修改日期,改为昨天
-        Page<Area> areaPage = dao.findByFk999cd340Like(areaName, "2019-05-27 00:00:00" , pageable);
+        Page<Area> areaPage = null;
+        log.info("【查询】userRole=" + userRoleDTO.getUserRole());
+        switch (userRoleDTO.getUserRole()){
+            case "基础网格员":
+            case "支撑网格员":
+            case "站长":
+                log.info("【查询】网格查找");
+//                log.info("【查询】serviceGridId=" + userRoleDTO.getServiceGridId().toString());
+                areaPage = dao.findByFk999cd340Like(
+                        areaName, "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null, pageable);
+                break;
+
+            case "公司领导":
+            case "业务部门":
+                log.info("【查询】运营商分公司查找");
+                areaPage = dao.findByFk999cd340Like(
+                        areaName, "2019-05-27 00:00:00", null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
+                break;
+
+            default:
+                // TODO
+                log.info("【查询】无用户身份,默认网格员");
+                areaPage = dao.findByFk999cd340Like(
+                        areaName, "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null, pageable);
+                break;
+        }
         return areaPage;
     }
 
@@ -94,8 +142,7 @@ public class AreaServiceImpl implements AreaService{
         areaBusinessDTO.setF1(area1.getFk06266ce4());
 
         // 2 单电视+单宽用户(fk20d1fbb4 单电视用户数, fkcef5362c 单宽用户数)
-        areaBusinessDTO.setF2(area1.getFk20d1fbb4() +
-                area1.getFkcef5362c());
+        areaBusinessDTO.setF2(area1.getFk20d1fbb4() + area1.getFkcef5362c());
 
         // 3 高清双向终端(fk2d7cd0f7 高清双向用户数)
         areaBusinessDTO.setF3(area1.getFk2d7cd0f7());

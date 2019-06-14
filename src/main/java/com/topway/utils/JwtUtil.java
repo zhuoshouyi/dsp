@@ -43,7 +43,8 @@ public class JwtUtil {
                 /* 设置载荷Payload */
                 .withClaim("userId", userRole.getUserId())
                 .withClaim("userName", userRole.getUserName())
-                .withClaim("roleName", userRole.getUserRole())
+                .withClaim("userRole", userRole.getUserRole())
+                .withClaim("serviceGridId", userRole.getServiceGridId())
                 .withClaim("spcodeId", userRole.getSpcodeId())
                 .withClaim("businessOfficeId", userRole.getBusinessOfficeId())
                 .withClaim("openId", userRole.getOpenId())

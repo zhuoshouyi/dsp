@@ -3,6 +3,7 @@ package com.topway.service;
 import com.topway.dto.AreaBusinessDTO;
 import com.topway.dto.AreaLabelShowDTO;
 import com.topway.dto.AreaMonthlyDevelopmentDTO;
+import com.topway.dto.UserRoleDTO;
 import com.topway.form.HistoryMarketForm;
 import com.topway.pojo.Area;
 import com.topway.pojo.AreaLabel;
@@ -22,9 +23,9 @@ public interface AreaService {
 
     List<Area> findByAreaList();
 
-    Area findByAreaId(String areaId);
+    Area findByAreaId(String areaId, UserRoleDTO userRoleDTO);
 
-    Page<Area> findByAreaNameLike(String areaName, Pageable pageable);
+    Page<Area> findByAreaNameLike(String areaName, UserRoleDTO userRoleDTO, Pageable pageable);
 
     Property findProperty(String areaId);
 

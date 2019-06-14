@@ -4,6 +4,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.topway.DAO.ServiceGridOptDao;
 import com.topway.DAO.UserRoleDao;
 import com.topway.VO.LoginVO;
+import com.topway.convert.List2StringConvert;
 import com.topway.enums.ResultEnum;
 import com.topway.exception.UserNotFoundException;
 import com.topway.form.LoginForm;
@@ -54,19 +55,21 @@ public class LoginConfirm {
 
         /** 1.获取传输参数 */
         log.info("【登陆】获取传输参数");
-        final String OPENID = loginForm.getOpenId();
-        final String USERNAME = loginForm.getUserName();
-        final String USERID = loginForm.getUserId();
-        final String SPCODEID = loginForm.getSpcodeId();
-        final String BUSINESSOFFICEID = loginForm.getBusinessOfficeId();
+        final String OPENID = loginForm.getUserid();
+        final String USERNAME = loginForm.getUsername();
+        final String USERID = loginForm.getUs_id();
+        final String SPCODEID = loginForm.getOperator();
+        final String BUSINESSOFFICEID = loginForm.getBranch();
 
 
         /** 2.判断传输参数是否正确 */
         log.info("【登陆】检查参数是否正确");
         if (bindingResult.hasErrors()) {
             log.error("【登陆】登陆失败,参数不正确, loginForm={}", loginForm);
-            throw new UserNotFoundException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
+//            throw new UserNotFoundException(ResultEnum.PARAM_ERROR.getCode(),
+//                    bindingResult.getFieldError().getDefaultMessage());
         }
 
         /** 3.验证用户身份 */
@@ -83,13 +86,23 @@ public class LoginConfirm {
             List<String> serviceGridIdList =
                     serviceGridOptList.stream().map(e -> e.getServiceGridId()).collect(Collectors.toList());
 
-            userRole = userRoleDao.findByUserId(USERID);
-            userRole.setServiceGridId(serviceGridIdList.toString());
+            try {
+                userRole = userRoleDao.findByUserId(USERID);
+
+                // TODO 细化区分五种权限类型
+//            userRole.setUserRole("支撑网格员");
+                userRole.setServiceGridId(List2StringConvert.convert(serviceGridIdList));
+
+            }catch (Exception e){
+                // 根据userid查询不到用户,无此用户
+                return ResultVOUtil.error(ResultEnum.USER_NOT_FOUND.getCode(),
+                        ResultEnum.USER_NOT_FOUND.getDesc());
+            }
 
 
         }else {
             // 公司领导和业务部门即使用它们的运营商和分公司进行区分
-
+            // TODO 添加公司领导权限
 
         }
 
