@@ -11,22 +11,22 @@ public class AreaListDTO {
 
     /** 小区名称. */
     @JsonProperty("areaName")
-    private String fk999cd340 = "";
+    private String areaName = "";
 
     /** 小区代码. */
     @JsonProperty("areaId")
-    private String fka9350c89 = "";
+    private String areaId = "";
 
     /** 网格名称. */
     @JsonProperty("grid")
-    private String fk3c052170 = "";
+    private String gridName = "";
 
     /** 城中村标识. */
     @JsonProperty("attribute")
-    private String fkfeffc5ea = "";
+    private String buildAttrbute = "";
 
     /** 维护站名称. */
     @JsonProperty("station")
-    private String fk75638e31 = "";
+    private String station = "";
 
 }

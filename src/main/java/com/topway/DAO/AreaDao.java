@@ -24,7 +24,7 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      * fk560a959b 缴费类型
      * fkfceb956f 统计日期
      */
-    Area findByFka9350c89AndFk560a959bAndFkfceb956f(String areaId, String fk560a959b, String yesterday);
+    Area findByAreaIdAndPaymentTypeAndDate(String areaId, String paymentType, String yesterday);
 
 
     /**
@@ -38,16 +38,16 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      * fk93e2d7ec 区域分公司
      */
     @Query(value = "select a from Area a " +
-            "where a.fka9350c89=?1 and a.fk560a959b=?2 and a.fkfceb956f=?3 " +
-            "and a.fk89cc3f4d in (coalesce(?4, a.fk89cc3f4d)) " +
-            "and a.fkeef0a02b in (coalesce(?5, a.fkeef0a02b)) " +
-            "and a.fk93e2d7ec in (coalesce(?6, a.fk93e2d7ec))")
+            "where a.areaId=?1 and a.paymentType=?2 and a.date=?3 " +
+            "and a.gridId in (coalesce(?4, a.gridId)) " +
+            "and a.spcode in (coalesce(?5, a.spcode)) " +
+            "and a.branch in (coalesce(?6, a.branch))")
     Area findByAreaId(String areaId,
-                      String free,
-                      String yesterday,
-                      List<String> grid,
-                      List<String> spcodeId,
-                      List<String> businessOfficeId);
+                           String free,
+                           String yesterday,
+                           List<String> grid,
+                           List<String> spcodeId,
+                           List<String> businessOfficeId);
 
 
     /**
@@ -55,7 +55,7 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      *
      * fka9350c89 小区编码
      */
-    Area findByFka9350c89(String areaId);
+    Area findByAreaId(String areaId);
 
     /**
      * 通过小区名称查找一批小区信息
@@ -63,18 +63,17 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      * fk999cd340 小区名称
      */
     @Query("select a from Area a " +
-            "where a.fk999cd340 like CONCAT('%',?1,'%') and a.fkfceb956f=?2 and a.fk560a959b='收费'" +
-            "and a.fk89cc3f4d in (coalesce(?3, a.fk89cc3f4d)) " +
-            "and a.fkeef0a02b in (coalesce(?4, a.fkeef0a02b)) " +
-            "and a.fk93e2d7ec in (coalesce(?5, a.fk93e2d7ec))")
-    Page<Area> findByFk999cd340Like(String areaName,
-                                    String date,
-                                    List<String> grid,
-                                    List<String> spcodeId,
-                                    List<String> businessOfficeId,
-                                    Pageable pageable);
+            "where a.areaName like CONCAT('%',?1,'%') and a.date=?2 and a.paymentType='收费'" +
+            "and a.gridId in (coalesce(?3, a.gridId)) " +
+            "and a.spcode in (coalesce(?4, a.spcode)) " +
+            "and a.branch in (coalesce(?5, a.branch))")
+    Page<Area> findByAreaNameLike(String areaName,
+                                         String date,
+                                         List<String> grid,
+                                         List<String> spcodeId,
+                                         List<String> businessOfficeId,
+                                         Pageable pageable);
 
 
-    // "and a.fk89cc3f4d in (coalesce(?3, a.fk89cc3f4d)) " +
 
 }

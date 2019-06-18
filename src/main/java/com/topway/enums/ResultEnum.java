@@ -17,7 +17,7 @@ public enum ResultEnum {
     RESULT_NOT_FOUND(2, "结果不存在"),
 
     USER_NOT_FOUND(401, "登陆失效或用户不存在"),
-    USER_HAVE_NOT_PRIVILEGE(403, "用户无查看权限"),
+    USER_HAVE_NOT_PRIVILEGE(403, "用户无查看或修改权限"),
     ;
 
     private Integer code;

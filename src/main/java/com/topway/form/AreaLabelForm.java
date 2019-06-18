@@ -19,46 +19,46 @@ public class AreaLabelForm {
     /**
      * 楼盘属性
      */
-    private String buildAttrbute;
+    private String buildAttrbute = "";
 
     /**
      * 小区自住比例
      */
-    private String areaLiveProportion;
+    private String areaLiveProportion = "";
 
     /**
      * 是否合同小区
      */
-    private String isContractArea;
+    private Integer isContractArea = -1;
 
     /**
      * 是否可以进场
      */
-    private String isPermittedAdmission;
+    private Integer isPermittedAdmission = -1;
 
     /**
      * 是否竞争小区
      */
-    private String isCompeteArea;
+    private Integer isCompeteArea = -1;
 
     /**
      * 是否正轨覆盖
      */
-    private String isRegularCover;
+    private Integer isRegularCover = -1;
 
     /**
      * 网络覆盖属性
      */
-    private String networkCoverageProperties;
+    private String networkCoverageProperties = "";
 
     /**
      * 小区住户稳定性
      */
-    private String isStabilityLiver;
+    private Integer isStabilityLiver = -1;
 
     /**
      * 客户自定义标签
      */
-    private String customFields;
+    private String customFields = "";
 
 }

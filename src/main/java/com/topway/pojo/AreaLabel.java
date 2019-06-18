@@ -31,22 +31,22 @@ public class AreaLabel {
     private String areaLiveProportion;
 
     /** 是否合同小区. */
-    private String isContractArea;
+    private Integer isContractArea;
 
     /** 是否可以进场. */
-    private String isPermittedAdmission;
+    private Integer isPermittedAdmission;
 
     /** 是否竞争小区. */
-    private String isCompeteArea;
+    private Integer isCompeteArea;
 
     /** 是否正规覆盖. */
-    private String isRegularCover;
+    private Integer isRegularCover;
 
     /** 网络覆盖属性. */
     private String networkCoverageProperties;
 
     /** 小区住户稳定性. */
-    private String isStabilityLiver;
+    private Integer isStabilityLiver;
 
     /** 客户自定义标签. */
     private String customFields;

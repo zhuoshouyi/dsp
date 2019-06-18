@@ -19,11 +19,11 @@ public class UserProduct2DeviceBusinessInfoDTOConvert {
         // id
         deviceBusinessInfoDTO.setId(userProduct.getId());
         // fk795b247c 产品名称
-        deviceBusinessInfoDTO.setProductName(userProduct.getFk795b247c());
+        deviceBusinessInfoDTO.setProductName(userProduct.getProductName());
         // fk918097a6 授权开始时间
-        deviceBusinessInfoDTO.setOpenTime(userProduct.getFk918097a6());
+        deviceBusinessInfoDTO.setOpenTime(userProduct.getAuthorizationStartTime());
         // fkb8be2a22 订购状态
-        deviceBusinessInfoDTO.setStatus(userProduct.getFkb8be2a22());
+        deviceBusinessInfoDTO.setStatus(userProduct.getOrderStatus());
         return deviceBusinessInfoDTO;
 
     }

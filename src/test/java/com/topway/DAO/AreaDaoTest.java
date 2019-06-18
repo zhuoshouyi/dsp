@@ -84,10 +84,11 @@ public class AreaDaoTest{
         PageRequest pageRequest = new PageRequest(0, 5);
 
         List<String> gridList = new ArrayList<>();
-        gridList.add("705");
-        gridList.add("742");
+        gridList.add("768");
+        gridList.add("1319");
+        gridList.add("1234");
 
-        Page<Area> areaPage = dao.findByFk999cd340Like("光明", "2019-05-27 00:00:00", gridList, null, null, pageRequest);
+        Page<Area> areaPage = dao.findByAreaNameLike("罗湖", "2019-05-27 00:00:00", gridList, null, null, pageRequest);
         System.out.println("");
     }
 

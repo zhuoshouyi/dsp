@@ -1,20 +1,18 @@
 package com.topway.controller;
 
-import com.auth0.jwt.interfaces.Claim;
 import com.topway.VO.ResultVO;
 import com.topway.convert.Area2AreaBasicInfoDTOConvert;
 import com.topway.convert.Area2AreaListDTOConvert;
-import com.topway.convert.String2ListConvert;
 import com.topway.dto.*;
 import com.topway.enums.ResultEnum;
-import com.topway.exception.ParamException;
 import com.topway.form.*;
 import com.topway.pojo.Area;
+import com.topway.pojo.AreaLabel;
 import com.topway.pojo.HistoryMarket;
 import com.topway.pojo.Property;
 import com.topway.service.Impl.AreaServiceImpl;
-import com.topway.utils.JwtUtil;
 import com.topway.utils.ResultVOUtil;
+import com.topway.utils.UserAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -54,7 +52,7 @@ public class AreaController {
      */
     @PostMapping("/list")
     public ResultVO list(HttpServletRequest httpServletRequest,
-                         @RequestBody AreaListForm areaListForm,
+                         @Valid @RequestBody AreaListForm areaListForm,
                          BindingResult bindingResult){
 
         // 参数1,搜索的关键字
@@ -76,29 +74,7 @@ public class AreaController {
         }
 
         /** 2.识别用户身份,判断权限 */
-        log.info("【认证】识别用户身份,判断权限");
-        Map<String, Claim> claimMap = JwtUtil.getToken(httpServletRequest);
-        UserRoleDTO userRoleDTO = new UserRoleDTO();
-        userRoleDTO.setOpenId((claimMap.get("openId") == null? null : claimMap.get("openId").asString()));
-        log.info("【认证】openId:" + (claimMap.get("openId") == null? null : claimMap.get("openId").asString()));
-
-        userRoleDTO.setUserId((claimMap.get("userId") == null? null : claimMap.get("userId").asString()));
-        log.info("【认证】userId:" + (claimMap.get("userId") == null? null : claimMap.get("userId").asString()));
-
-        userRoleDTO.setUserName((claimMap.get("userName") == null? null : claimMap.get("userName").asString()));
-        log.info("【认证】userName:" + (claimMap.get("userName") == null? null : claimMap.get("userName").asString()));
-
-        userRoleDTO.setUserRole((claimMap.get("userRole") == null? null : claimMap.get("userRole").asString()));
-        log.info("【认证】userRole:" + (claimMap.get("userRole") == null? null : claimMap.get("userRole").asString()));
-
-        userRoleDTO.setServiceGridId(claimMap.get("serviceGridId") == null? null : String2ListConvert.convert(claimMap.get("serviceGridId").asString()));
-        log.info("【认证】serviceGridId:" + (claimMap.get("serviceGridId") == null? null : String2ListConvert.convert(claimMap.get("serviceGridId").asString())));
-
-        userRoleDTO.setSpcodeId(claimMap.get("spcodeId") == null? null : String2ListConvert.convert(claimMap.get("spcodeId").asString()));
-        log.info("【认证】spcodeId:" + (claimMap.get("spcodeId") == null? null : String2ListConvert.convert(claimMap.get("spcodeId").asString())));
-
-        userRoleDTO.setBusinessOfficeId((claimMap.get("businessOfficeId") == null? null : String2ListConvert.convert(claimMap.get("businessOfficeId").asString())));
-        log.info("【认证】businessOfficeId:" + (claimMap.get("businessOfficeId") == null? null : String2ListConvert.convert(claimMap.get("businessOfficeId").asString())));
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
 
         /** 3.判断用户是使用"小区编码"搜索的还是使用"小区名称"搜索的 */
         try {
@@ -110,7 +86,7 @@ public class AreaController {
                 List<AreaListDTO> areaListDTOList = new ArrayList<>();
                 Area area = areaService.findByAreaId(KEYWORD, userRoleDTO);
                 AreaListDTO areaListDTO = Area2AreaListDTOConvert.convert(area);
-                areaListDTO.setFka9350c89(areaListDTO.getFka9350c89().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
+                areaListDTO.setAreaId(areaListDTO.getAreaId().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
                 areaListDTOList.add(areaListDTO);
 
                 return ResultVOUtil.successPage(areaListDTOList, 0, 1, 1L);
@@ -129,7 +105,7 @@ public class AreaController {
                     // 使用工具类将Area转换成AreaListDTO
                     AreaListDTO areaListDTO = Area2AreaListDTOConvert.convert(area);
                     // 将关键字加上<em>,前端可高亮显示
-                    areaListDTO.setFk999cd340(areaListDTO.getFk999cd340().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
+                    areaListDTO.setAreaName(areaListDTO.getAreaName().replace(KEYWORD, "<em>"+KEYWORD+"</em>"));
                     areaListDTOList.add(areaListDTO);
                 }
 
@@ -152,38 +128,44 @@ public class AreaController {
      * @return
      */
     @PostMapping("/detail")
-    public ResultVO detail(@RequestBody AreaIdForm areaIdForm,
+    public ResultVO detail(HttpServletRequest httpServletRequest,
+                           @Valid @RequestBody AreaIdForm areaIdForm,
                            BindingResult bindingResult){
 
         final String AREAID = areaIdForm.getAreaId();
         AreaDetailDTO areaDetailDTO = new AreaDetailDTO();
 
-        UserRoleDTO userRoleDTO = new UserRoleDTO();
-
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】areaId不正确,areaId={}", AREAID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.根据areaId查询出基本信息 */
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        /** 3.根据areaId查询出基本信息 */
         AreaBasicInfoDTO areaBasicInfoDTO = new AreaBasicInfoDTO();
         // TODO 计算天威客户数,覆盖住户数
         Area area = areaService.findByAreaId(AREAID, userRoleDTO);
         areaBasicInfoDTO = Area2AreaBasicInfoDTOConvert.convert(area, 0, 0);
 
 
-        /** 3.根据areaId查询出label */
-        List<String> label = areaService.findAreaLabelOne(AREAID);
+        /** 4.根据areaId查询出label */
+        List<String> label = new ArrayList<>();
+        List<AreaLabelShowDTO> areaLabelShowDTOList = areaService.findAreaLabelShow(AREAID);
+        if (areaLabelShowDTOList.size()>0){
+            label = areaLabelShowDTOList.get(0).getLabelList();
+        }
 
-        /** 4.根据areaId计算出business */
+        /** 5.根据areaId计算出business */
         AreaBusinessDTO areaBusinessDTO = areaService.calAreaBusiness(AREAID);
 
-        /** 5.根据areaId计算出monthlyDevelopment */
+        /** 6.根据areaId计算出monthlyDevelopment */
         AreaMonthlyDevelopmentDTO areaMonthlyDevelopmentDTO = areaService.calMonthlyDevelopment(AREAID);
 
-        /** 6.根据areaId关联出propertyInfo */
+        /** 7.根据areaId关联出propertyInfo */
         Property property = new Property();
         if (areaService.findProperty(AREAID)!=null)
             property = areaService.findProperty(AREAID);
@@ -191,7 +173,7 @@ public class AreaController {
         Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
         property.setHistoryMarket(historyMarketPage.getTotalPages());
 
-        /** 7.将所有信息组装在一起 */
+        /** 8.将所有信息组装在一起 */
         areaDetailDTO.setBasicInfo(areaBasicInfoDTO);
         areaDetailDTO.setLabel(label);
         areaDetailDTO.setBusiness(areaBusinessDTO);
@@ -208,7 +190,7 @@ public class AreaController {
      * @return
      */
     @PostMapping("/label/list")
-    public ResultVO labelList(@RequestBody AreaIdForm areaIdForm,
+    public ResultVO labelList(@Valid @RequestBody AreaIdForm areaIdForm,
                               BindingResult bindingResult){
 
         final String AREAID = areaIdForm.getAreaId();
@@ -216,11 +198,11 @@ public class AreaController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】areaId不正确,areaId={}", AREAID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        List<AreaLabelShowDTO> areaLabelShowDTOList = areaService.findAreaLabel(AREAID);
+        List<AreaLabelShowDTO> areaLabelShowDTOList = areaService.findAreaLabelShow(AREAID);
 
         return ResultVOUtil.success(areaLabelShowDTOList);
     }
@@ -231,7 +213,8 @@ public class AreaController {
      * @return
      */
     @PostMapping("/label/save")
-    public ResultVO labelSave(@RequestBody AreaLabelForm areaLabelForm,
+    public ResultVO labelSave(HttpServletRequest httpServletRequest,
+                              @Valid @RequestBody AreaLabelForm areaLabelForm,
                               BindingResult bindingResult){
 
         final String AREAID = areaLabelForm.getAreaId();
@@ -239,14 +222,20 @@ public class AreaController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】areaId不正确,areaId={}", AREAID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.更新标签信息 */
-        // TODO 小区标签编辑开发
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
 
-        return ResultVOUtil.success();
+        /** 3.更新标签信息 */
+        // 查找出现有的标签
+        AreaLabel areaLabel = new AreaLabel();
+        List<AreaLabel> areaLabelList = areaService.findAreaLabel(AREAID);
+        if (areaLabelList.size() > 0) areaLabel = areaLabelList.get(0);
+
+        return areaService.saveAreaLabel(userRoleDTO, areaLabel, areaLabelForm);
     }
 
     /**
@@ -255,7 +244,8 @@ public class AreaController {
      * @return
      */
     @PostMapping("/property/save")
-    public ResultVO propertySave(@RequestBody PropertyForm propertyForm,
+    public ResultVO propertySave(HttpServletRequest httpServletRequest,
+                                 @Valid @RequestBody PropertyForm propertyForm,
                                  BindingResult bindingResult){
 
         final String AREAID = propertyForm.getAreaId();
@@ -263,32 +253,26 @@ public class AreaController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()) {
             log.error("【参数错误】areaId不正确,areaId={}", AREAID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.更新物业信息 */
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        /** 3.更新物业信息 */
         Property property = new Property();
         // 查找数据库中是否有此小区的物业信息
         if (areaService.findProperty(AREAID)!=null) {
             property = areaService.findProperty(AREAID);
         }
         property.setAreaId(AREAID);
-        if (!propertyForm.getPropertyName().isEmpty()) property.setPropertyName(propertyForm.getPropertyName());
-        if (!propertyForm.getPropertyAddress().isEmpty()) property.setPropertyAddress(propertyForm.getPropertyAddress());
-        if (!propertyForm.getPropertyManagerName().isEmpty()) property.setPropertyManagerName(propertyForm.getPropertyManagerName());
-        if (!propertyForm.getPropertyManagerPhone().isEmpty()) property.setPropertyManagerPhone(propertyForm.getPropertyManagerPhone());
-        if (!propertyForm.getElectricianName().isEmpty()) property.setElectricianName(propertyForm.getElectricianName());
-        if (!propertyForm.getElectricianPhone().isEmpty()) property.setElectricianPhone(propertyForm.getElectricianPhone());
 
         PageRequest pageRequest = new PageRequest(0, 100);
         Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
         property.setHistoryMarket(historyMarketPage.getTotalPages());
 
-        areaService.saveProperty(property);
-        log.info("【写入成功】物业信息修改成功.");
-
-        return ResultVOUtil.success();
+        return areaService.saveProperty(userRoleDTO, property, propertyForm, historyMarketPage.getTotalPages());
     }
 
 
@@ -300,7 +284,8 @@ public class AreaController {
      * @return
      */
     @PostMapping("/market/list")
-    public ResultVO marketList(@RequestBody AreaIdForm areaIdForm,
+    public ResultVO marketList(HttpServletRequest httpServletRequest,
+                               @Valid @RequestBody AreaIdForm areaIdForm,
                                BindingResult bindingResult){
 
         final String AREAID = areaIdForm.getAreaId();
@@ -310,11 +295,14 @@ public class AreaController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()) {
             log.error("【参数错误】areaId不正确,areaId={}", AREAID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.查询历史营销进场记录 */
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        /** 3.查询历史营销进场记录 */
         PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
         Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
 
@@ -327,7 +315,8 @@ public class AreaController {
      * @return
      */
     @PostMapping("/market/save")
-    public ResultVO marketSave(@RequestBody HistoryMarketForm historyMarketForm,
+    public ResultVO marketSave(HttpServletRequest httpServletRequest,
+                               @Valid @RequestBody HistoryMarketForm historyMarketForm,
                                BindingResult bindingResult){
 
         final String AREAID = historyMarketForm.getAreaId();
@@ -335,16 +324,17 @@ public class AreaController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()) {
             log.error("【参数错误】参数不正确,historyMarketForm={}", historyMarketForm);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.插入历史营销进场记录 */
-        String date = FMT.format(new Date());
-        areaService.saveHistoryMarket(historyMarketForm, date);
-        log.info("【写入成功】历史营销进场记录数据库写入成功.");
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
 
-        return ResultVOUtil.success();
+        /** 3.插入历史营销进场记录 */
+        String date = FMT.format(new Date());
+
+        return areaService.saveHistoryMarket(userRoleDTO, historyMarketForm, date);
     }
 
 }

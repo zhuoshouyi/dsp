@@ -18,13 +18,13 @@ public class Area2AreaBasicInfoDTOConvert {
      */
     public static AreaBasicInfoDTO convert(Area area, Integer customNum, Integer coverNum){
         AreaBasicInfoDTO areaBasicInfoDTO = new AreaBasicInfoDTO();
-        areaBasicInfoDTO.setAreaName(area.getFk999cd340());
-        areaBasicInfoDTO.setAreaId(area.getFka9350c89());
-        areaBasicInfoDTO.setAttribute(area.getFkfeffc5ea().equals("非城中村")?"花园小区":"城中村");
-        areaBasicInfoDTO.setAddress(area.getFk999cd340());
-        areaBasicInfoDTO.setGridId(area.getFk89cc3f4d());
-        areaBasicInfoDTO.setGridName(area.getFk3c052170());
-        areaBasicInfoDTO.setStation(area.getFk75638e31());
+        areaBasicInfoDTO.setAreaName(area.getAreaName());
+        areaBasicInfoDTO.setAreaId(area.getAreaId());
+        areaBasicInfoDTO.setAttribute(area.getBuildAttrbute().equals("非城中村")?"花园小区":"城中村");
+        areaBasicInfoDTO.setAddress(area.getAreaName());
+        areaBasicInfoDTO.setGridId(area.getGridId());
+        areaBasicInfoDTO.setGridName(area.getGridName());
+        areaBasicInfoDTO.setStation(area.getStation());
         areaBasicInfoDTO.setCustomNum(customNum);
         areaBasicInfoDTO.setCoverNum(coverNum);
         return areaBasicInfoDTO;
