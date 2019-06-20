@@ -153,6 +153,7 @@ public class AreaController {
 
 
         /** 4.根据areaId查询出label */
+        log.info("【小区详情】查询小区标签");
         List<String> label = new ArrayList<>();
         List<AreaLabelShowDTO> areaLabelShowDTOList = areaService.findAreaLabelShow(AREAID);
         if (areaLabelShowDTOList.size()>0){
@@ -160,18 +161,21 @@ public class AreaController {
         }
 
         /** 5.根据areaId计算出business */
+        log.info("【小区详情】查询小区业务在线情况");
         AreaBusinessDTO areaBusinessDTO = areaService.calAreaBusiness(AREAID);
 
         /** 6.根据areaId计算出monthlyDevelopment */
+        log.info("【小区详情】查询小区终端阅读发展情况");
         AreaMonthlyDevelopmentDTO areaMonthlyDevelopmentDTO = areaService.calMonthlyDevelopment(AREAID);
 
         /** 7.根据areaId关联出propertyInfo */
+        log.info("【小区详情】查询小区物业信息");
         Property property = new Property();
         if (areaService.findProperty(AREAID)!=null)
             property = areaService.findProperty(AREAID);
         PageRequest pageRequest = new PageRequest(0, 100);
         Page<HistoryMarket> historyMarketPage = areaService.findHistoryMarket(AREAID, pageRequest);
-        property.setHistoryMarket(historyMarketPage.getTotalPages());
+        property.setHistoryMarket((int)historyMarketPage.getTotalElements());
 
         /** 8.将所有信息组装在一起 */
         areaDetailDTO.setBasicInfo(areaBasicInfoDTO);

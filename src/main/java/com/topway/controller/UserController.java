@@ -7,6 +7,7 @@ import com.topway.exception.ParamException;
 import com.topway.form.*;
 import com.topway.service.Impl.UserServiceImpl;
 import com.topway.utils.ResultVOUtil;
+import com.topway.utils.UserAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +45,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/list")
-    public ResultVO list(@RequestBody UserListForm userListForm,
+    public ResultVO list(HttpServletRequest httpServletRequest,
+                         @Valid @RequestBody UserListForm userListForm,
                          BindingResult bindingResult){
 
         // 参数1,搜索的关键字
@@ -65,35 +69,38 @@ public class UserController {
         }
 
 
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
         PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
         Page<CustomerDTO> customerDTOPage;
-        /** 2.判断用户是使用什么类型搜索的 */
+        /** 3.判断用户是使用什么类型搜索的 */
         switch (SEARCHTYPE){
             // 资源号查询
             case "deviceNo":
                 log.info("【资源号查询】查询资源号为" + KEYWORD);
-                customerDTOPage = userService.findByDeviceNoLike(KEYWORD, pageRequest);
+                customerDTOPage = userService.findByDeviceNoLike(userRoleDTO, KEYWORD, pageRequest);
                 total = customerDTOPage.getTotalElements();
                 break;
 
             // 电话号码查询
             case "phone":
                 log.info("【电话号码查询】查询电话号码为" + KEYWORD);
-                customerDTOPage = userService.findByPhoneLike(KEYWORD, pageRequest);
+                customerDTOPage = userService.findByPhoneLike(userRoleDTO, KEYWORD, pageRequest);
                 total = customerDTOPage.getTotalElements();
                 break;
 
             // 客户名称查询
             case "customerName":
                 log.info("【客户名称查询】查询名称为" + KEYWORD);
-                customerDTOPage = userService.findByCustomerNameLike(KEYWORD, pageRequest);
+                customerDTOPage = userService.findByCustomerNameLike(userRoleDTO, KEYWORD, pageRequest);
                 total = customerDTOPage.getTotalElements();
                 break;
 
             // 客户编码查询
             case "customerId":
                 log.info("【客户编码查询】查询编码为" + KEYWORD);
-                customerDTOPage = userService.findByCustomerIdLike(KEYWORD, pageRequest);
+                customerDTOPage = userService.findByCustomerIdLike(userRoleDTO, KEYWORD, pageRequest);
                 total = customerDTOPage.getTotalElements();
                 break;
 

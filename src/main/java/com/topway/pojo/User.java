@@ -57,5 +57,14 @@ public class User {
     /** 账户银行账号.fk53c01bbd */
     private String bankNo;
 
+    /** 运营商. fk67623064 */
+    private String spcode;
+
+    /** 区域分公司. fk41873d1c */
+    private String branch;
+
+    /** 网格编码. fk00e197e4 */
+    private String gridId;
+
 
 }

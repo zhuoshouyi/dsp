@@ -19,10 +19,10 @@ public class AreaListForm {
     /**
      * 查看第几页
      */
-    private int pageNo = -1;
+    private int pageNo = 0;
 
     /**
      * 每一页显示的个数
      */
-    private int pageSize = -1;
+    private int pageSize = 10;
 }

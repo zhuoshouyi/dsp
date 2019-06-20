@@ -30,13 +30,11 @@ public class LoginForm {
     /**
      * 运营商id
      */
-    @NotEmpty(message = "operator 必填")
-    private String operator;
+    private String operator = "";
 
     /**
      * 分公司id
      */
-    @NotEmpty(message = "branch 必填")
-    private String branch;
+    private String branch = "";
 
 }

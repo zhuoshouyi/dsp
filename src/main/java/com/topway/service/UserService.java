@@ -16,16 +16,16 @@ import java.util.List;
 public interface UserService {
 
     /** 通过资源号模糊查询. */
-    Page<CustomerDTO> findByDeviceNoLike(String deviceNo, Pageable pageable);
+    Page<CustomerDTO> findByDeviceNoLike(UserRoleDTO userRoleDTO, String deviceNo, Pageable pageable);
 
     /** 通过电话号码模糊查询. */
-    Page<CustomerDTO> findByPhoneLike(String phone, Pageable pageable);
+    Page<CustomerDTO> findByPhoneLike(UserRoleDTO userRoleDTO, String phone, Pageable pageable);
 
     /** 通过客户名称模糊查询. */
-    Page<CustomerDTO> findByCustomerNameLike(String customerName, Pageable pageable);
+    Page<CustomerDTO> findByCustomerNameLike(UserRoleDTO userRoleDTO, String customerName, Pageable pageable);
 
     /** 通过客户编码模糊查询. */
-    Page<CustomerDTO> findByCustomerIdLike(String customerId, Pageable pageable);
+    Page<CustomerDTO> findByCustomerIdLike(UserRoleDTO userRoleDTO, String customerId, Pageable pageable);
 
     /** 通过客户编码查询. */
     CustomerDTO findByCustomerId(String customerId);

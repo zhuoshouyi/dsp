@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -44,6 +43,15 @@ public interface UserDao extends JpaRepository<User, Integer> {
 //    @Query("select distinct c from User u, Customer c where u.fk572f5a34=c.customerId and u.fkdf1e945e like concat('%', ?1, '%') ")
 //    Page<Customer> findByDeviceNoToCustomer(@Param("deviceNo") String deviceNo, Pageable pageable);
 
-    @Query("select distinct c from User u, Customer c where u.customerId=c.customerId and u.deviceNo like concat('%', ?1, '%') ")
-    Page<Customer> findByDeviceNoToCustomer(@Param("deviceNo") String deviceNo, Pageable pageable);
+    @Query("select distinct c " +
+            "from User u, Customer c " +
+            "where u.customerId=c.customerId and u.deviceNo like concat('%', ?1, '%') " +
+            "and u.gridId in (coalesce(?2, u.gridId)) " +
+            "and u.spcode in (coalesce(?3, u.spcode)) " +
+            "and u.branch in (coalesce(?4, u.branch)) ")
+    Page<Customer> findByDeviceNoToCustomer(String deviceNo,
+                                            List<String> gridId,
+                                            List<String> spcodeId,
+                                            List<String> businessOfficeId,
+                                            Pageable pageable);
 }

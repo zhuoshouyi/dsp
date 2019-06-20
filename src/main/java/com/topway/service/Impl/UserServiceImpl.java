@@ -6,6 +6,7 @@ import com.topway.dto.*;
 import com.topway.form.UserLabelForm;
 import com.topway.pojo.*;
 import com.topway.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +23,7 @@ import java.util.Set;
  * Created by haizhi on 2019/5/23.
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -52,16 +54,52 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Page<CustomerDTO> findByDeviceNoLike(String deviceNo, Pageable pageable) {
+    public Page<CustomerDTO> findByDeviceNoLike(UserRoleDTO userRoleDTO, String deviceNo, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
-        Page<Customer> customerPage = userDao.findByDeviceNoToCustomer(deviceNo, pageable);
+        Page<Customer> customerPage;
+        switch (userRoleDTO.getUserRole()){
+            case "基础网格员":
+            case "支撑网格员":
+            case "站长":
+                log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
 
-        for (Customer customer : customerPage){
-            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
-            CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
-            customerDTOList.add(customerDTO);
+                customerPage = userDao.findByDeviceNoToCustomer(deviceNo, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                for (Customer customer : customerPage){
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
+                    customerDTOList.add(customerDTO);
+                }
+
+
+                break;
+
+            case "公司领导":
+            case "业务部门":
+                log.info("【认证】身份为 公司领导 或 业务部门");
+                customerPage = userDao.findByDeviceNoToCustomer(deviceNo, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
+
+                for (Customer customer : customerPage){
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
+                    customerDTOList.add(customerDTO);
+                }
+                break;
+
+            default:
+                log.info("【认证】无用户身份,默认网格员");
+                customerPage = userDao.findByDeviceNoToCustomer(deviceNo, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                for (Customer customer : customerPage){
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
+                    customerDTOList.add(customerDTO);
+                }
+                break;
         }
+
+
 
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
@@ -72,7 +110,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Page<CustomerDTO> findByPhoneLike(String phone, Pageable pageable) {
+    public Page<CustomerDTO> findByPhoneLike(UserRoleDTO userRoleDTO, String phone, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
 
@@ -96,7 +134,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Page<CustomerDTO> findByCustomerNameLike(String customerName, Pageable pageable) {
+    public Page<CustomerDTO> findByCustomerNameLike(UserRoleDTO userRoleDTO, String customerName, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
 
@@ -120,7 +158,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Page<CustomerDTO> findByCustomerIdLike(String customerId, Pageable pageable) {
+    public Page<CustomerDTO> findByCustomerIdLike(UserRoleDTO userRoleDTO, String customerId, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
 

@@ -144,7 +144,8 @@ public class AreaServiceImpl implements AreaService{
     @Override
     public ResultVO saveProperty(UserRoleDTO userRoleDTO, Property property, PropertyForm propertyForm, Integer historyMarketNum){
 
-        if (userRoleDTO.getUserRole()=="站长" || userRoleDTO.getUserRole()=="管理员"){
+        log.info("【物业信息编辑】用户身份:" + userRoleDTO.getUserRole());
+        if (userRoleDTO.getUserRole().equals("站长") || userRoleDTO.getUserRole().equals("管理员")){
 
             // 站长和管理员有物业信息的编辑权限
             if (!propertyForm.getPropertyName().isEmpty()) property.setPropertyName(propertyForm.getPropertyName());
@@ -154,7 +155,7 @@ public class AreaServiceImpl implements AreaService{
             if (!propertyForm.getElectricianName().isEmpty()) property.setElectricianName(propertyForm.getElectricianName());
             if (!propertyForm.getElectricianPhone().isEmpty()) property.setElectricianPhone(propertyForm.getElectricianPhone());
 
-        }else if (userRoleDTO.getUserRole()=="支撑网格员" || userRoleDTO.getUserRole()=="基础网格员"){
+        }else if (userRoleDTO.getUserRole().equals("支撑网格员") || userRoleDTO.getUserRole().equals("基础网格员")){
 
             // 支撑网格员和基础网格员只有第一次编辑的权限
             // 物业名称
@@ -380,23 +381,33 @@ public class AreaServiceImpl implements AreaService{
     @Override
     public ResultVO saveAreaLabel(UserRoleDTO userRoleDTO, AreaLabel areaLabel, AreaLabelForm areaLabelForm){
 
-        if (userRoleDTO.getUserRole()=="业务部门" || userRoleDTO.getUserRole()=="站长" || userRoleDTO.getUserRole()=="支撑网格员"
-                || userRoleDTO.getUserRole()=="基础网格员" || userRoleDTO.getUserRole()=="管理员") {
+        if (userRoleDTO.getUserRole().equals("业务部门") || userRoleDTO.getUserRole().equals("站长") || userRoleDTO.getUserRole().equals("支撑网格员")
+                || userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("管理员") || userRoleDTO.getUserRole().equals("")) {
 
-            log.info("用户身份:" + userRoleDTO.getUserRole());
+            log.info("【小区标签编辑】用户身份:" + userRoleDTO.getUserRole());
 
-            areaLabel.setAreaId(areaLabelForm.getAreaId());
-            if (!areaLabelForm.getBuildAttrbute().isEmpty()) areaLabel.setBuildAttrbute(areaLabelForm.getBuildAttrbute());
-            if (!areaLabelForm.getAreaLiveProportion().isEmpty()) areaLabel.setAreaLiveProportion(areaLabelForm.getAreaLiveProportion());
-            if (areaLabelForm.getIsContractArea()!=-1) areaLabel.setIsContractArea(areaLabelForm.getIsContractArea());
-            if (areaLabelForm.getIsPermittedAdmission()!=-1) areaLabel.setIsPermittedAdmission(areaLabelForm.getIsPermittedAdmission());
-            if (areaLabelForm.getIsCompeteArea()!=-1) areaLabel.setIsCompeteArea(areaLabelForm.getIsCompeteArea());
-            if (areaLabelForm.getIsRegularCover()!=-1) areaLabel.setIsRegularCover(areaLabelForm.getIsRegularCover());
-            if (!areaLabelForm.getNetworkCoverageProperties().isEmpty()) areaLabel.setNetworkCoverageProperties(areaLabelForm.getNetworkCoverageProperties());
-            if (areaLabelForm.getIsStabilityLiver()!=-1) areaLabel.setIsStabilityLiver(areaLabelForm.getIsStabilityLiver());
-            if (!areaLabelForm.getCustomFields().isEmpty()) areaLabel.setCustomFields(areaLabelForm.getCustomFields());
-            areaLabel.setCreateTime(FMT.format(new Date()));
-            areaLabelDao.save(areaLabel);
+            AreaLabel areaLabelNew = new AreaLabel();
+            areaLabelNew.setBuildAttrbute(areaLabel.getBuildAttrbute());
+            areaLabelNew.setAreaLiveProportion(areaLabel.getAreaLiveProportion());
+            areaLabelNew.setIsContractArea(areaLabel.getIsContractArea());
+            areaLabelNew.setIsPermittedAdmission(areaLabel.getIsPermittedAdmission());
+            areaLabelNew.setIsCompeteArea(areaLabel.getIsCompeteArea());
+            areaLabelNew.setIsRegularCover(areaLabel.getIsRegularCover());
+            areaLabelNew.setNetworkCoverageProperties(areaLabel.getNetworkCoverageProperties());
+            areaLabelNew.setIsStabilityLiver(areaLabel.getIsStabilityLiver());
+
+            areaLabelNew.setAreaId(areaLabelForm.getAreaId());
+            if (!areaLabelForm.getBuildAttrbute().isEmpty()) areaLabelNew.setBuildAttrbute(areaLabelForm.getBuildAttrbute());
+            if (!areaLabelForm.getAreaLiveProportion().isEmpty()) areaLabelNew.setAreaLiveProportion(areaLabelForm.getAreaLiveProportion());
+            if (areaLabelForm.getIsContractArea()!=-1) areaLabelNew.setIsContractArea(areaLabelForm.getIsContractArea());
+            if (areaLabelForm.getIsPermittedAdmission()!=-1) areaLabelNew.setIsPermittedAdmission(areaLabelForm.getIsPermittedAdmission());
+            if (areaLabelForm.getIsCompeteArea()!=-1) areaLabelNew.setIsCompeteArea(areaLabelForm.getIsCompeteArea());
+            if (areaLabelForm.getIsRegularCover()!=-1) areaLabelNew.setIsRegularCover(areaLabelForm.getIsRegularCover());
+            if (!areaLabelForm.getNetworkCoverageProperties().isEmpty()) areaLabelNew.setNetworkCoverageProperties(areaLabelForm.getNetworkCoverageProperties());
+            if (areaLabelForm.getIsStabilityLiver()!=-1) areaLabelNew.setIsStabilityLiver(areaLabelForm.getIsStabilityLiver());
+            if (!areaLabelForm.getCustomFields().isEmpty()) areaLabelNew.setCustomFields(areaLabelForm.getCustomFields());
+            areaLabelNew.setCreateTime(FMT.format(new Date()));
+            areaLabelDao.save(areaLabelNew);
 
         }else {
             log.info("【小区标签编辑】无编辑权限.");
@@ -421,7 +432,8 @@ public class AreaServiceImpl implements AreaService{
     @Override
     public ResultVO saveHistoryMarket(UserRoleDTO userRoleDTO, HistoryMarketForm historyMarketForm, String date){
 
-        if (userRoleDTO.getUserRole()=="站长" || userRoleDTO.getUserRole()=="管理员" ) {
+        log.info("【营销记录编辑】用户身份:" + userRoleDTO.getUserRole());
+        if (userRoleDTO.getUserRole().equals("站长") || userRoleDTO.getUserRole().equals("管理员") ) {
             // 将 historyMarketForm 转成 HistoryMarket
             HistoryMarket historyMarket = HistoryMarketForm2HistoryMarketConvert.convert(historyMarketForm);
 
