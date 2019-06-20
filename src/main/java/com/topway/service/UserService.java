@@ -1,5 +1,6 @@
 package com.topway.service;
 
+import com.topway.VO.ResultVO;
 import com.topway.dto.*;
 import com.topway.form.UserLabelForm;
 import org.springframework.data.domain.Page;
@@ -62,6 +63,8 @@ public interface UserService {
     /** 标签 */
     List<UserLabelShowDTO> findUserLabelShowDTO(String customerId);
 
-    void saveUserLabel(UserLabelForm userLabelForm, String date);
+    ResultVO saveUserLabel(UserRoleDTO userRoleDTO, UserLabelForm userLabelForm, String date);
+
+    ResultVO findUserLabelLastRecord(String customerId);
 
 }

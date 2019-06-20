@@ -5,6 +5,7 @@ import com.topway.DAO.AreaLabelDao;
 import com.topway.DAO.HistoryMarketDao;
 import com.topway.DAO.PropertyDao;
 import com.topway.VO.ResultVO;
+import com.topway.convert.AreaLabel2AreaLabelFormConvert;
 import com.topway.convert.AreaLabel2AreaLabelShowDTOConvert;
 import com.topway.convert.HistoryMarketForm2HistoryMarketConvert;
 import com.topway.dto.AreaBusinessDTO;
@@ -22,6 +23,7 @@ import com.topway.pojo.Property;
 import com.topway.service.AreaService;
 import com.topway.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -376,38 +378,43 @@ public class AreaServiceImpl implements AreaService{
         return areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId);
     }
 
+    /** 小区标签查询最后一条 */
+    @Override
+    public ResultVO findAreaLabelLastRecord(String areaId){
+        List<AreaLabel> areaLabelList = areaLabelDao.findByAreaIdOrderByCreateTimeDesc(areaId);
+        if (areaLabelList.size()>0) {
+            AreaLabel areaLabel = areaLabelList.get(0);
+            AreaLabelForm areaLabelForm = AreaLabel2AreaLabelFormConvert.convert(areaLabel);
+            return ResultVOUtil.success(areaLabelForm);
+        }else {
+            return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
+                    ResultEnum.RESULT_NOT_FOUND.getDesc());
+        }
+    }
 
     /** 更新小区标签 */
     @Override
-    public ResultVO saveAreaLabel(UserRoleDTO userRoleDTO, AreaLabel areaLabel, AreaLabelForm areaLabelForm){
+    public ResultVO saveAreaLabel(UserRoleDTO userRoleDTO, AreaLabelForm areaLabelForm){
 
         if (userRoleDTO.getUserRole().equals("业务部门") || userRoleDTO.getUserRole().equals("站长") || userRoleDTO.getUserRole().equals("支撑网格员")
                 || userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("管理员") || userRoleDTO.getUserRole().equals("")) {
 
             log.info("【小区标签编辑】用户身份:" + userRoleDTO.getUserRole());
 
-            AreaLabel areaLabelNew = new AreaLabel();
-            areaLabelNew.setBuildAttrbute(areaLabel.getBuildAttrbute());
-            areaLabelNew.setAreaLiveProportion(areaLabel.getAreaLiveProportion());
-            areaLabelNew.setIsContractArea(areaLabel.getIsContractArea());
-            areaLabelNew.setIsPermittedAdmission(areaLabel.getIsPermittedAdmission());
-            areaLabelNew.setIsCompeteArea(areaLabel.getIsCompeteArea());
-            areaLabelNew.setIsRegularCover(areaLabel.getIsRegularCover());
-            areaLabelNew.setNetworkCoverageProperties(areaLabel.getNetworkCoverageProperties());
-            areaLabelNew.setIsStabilityLiver(areaLabel.getIsStabilityLiver());
+            AreaLabel areaLabel = new AreaLabel();
 
-            areaLabelNew.setAreaId(areaLabelForm.getAreaId());
-            if (!areaLabelForm.getBuildAttrbute().isEmpty()) areaLabelNew.setBuildAttrbute(areaLabelForm.getBuildAttrbute());
-            if (!areaLabelForm.getAreaLiveProportion().isEmpty()) areaLabelNew.setAreaLiveProportion(areaLabelForm.getAreaLiveProportion());
-            if (areaLabelForm.getIsContractArea()!=-1) areaLabelNew.setIsContractArea(areaLabelForm.getIsContractArea());
-            if (areaLabelForm.getIsPermittedAdmission()!=-1) areaLabelNew.setIsPermittedAdmission(areaLabelForm.getIsPermittedAdmission());
-            if (areaLabelForm.getIsCompeteArea()!=-1) areaLabelNew.setIsCompeteArea(areaLabelForm.getIsCompeteArea());
-            if (areaLabelForm.getIsRegularCover()!=-1) areaLabelNew.setIsRegularCover(areaLabelForm.getIsRegularCover());
-            if (!areaLabelForm.getNetworkCoverageProperties().isEmpty()) areaLabelNew.setNetworkCoverageProperties(areaLabelForm.getNetworkCoverageProperties());
-            if (areaLabelForm.getIsStabilityLiver()!=-1) areaLabelNew.setIsStabilityLiver(areaLabelForm.getIsStabilityLiver());
-            if (!areaLabelForm.getCustomFields().isEmpty()) areaLabelNew.setCustomFields(areaLabelForm.getCustomFields());
-            areaLabelNew.setCreateTime(FMT.format(new Date()));
-            areaLabelDao.save(areaLabelNew);
+            areaLabel.setAreaId(areaLabelForm.getAreaId());
+            areaLabel.setBuildAttrbute(areaLabelForm.getBuildAttrbute());
+            areaLabel.setAreaLiveProportion(areaLabelForm.getAreaLiveProportion());
+            areaLabel.setIsContractArea(areaLabelForm.getIsContractArea());
+            areaLabel.setIsPermittedAdmission(areaLabelForm.getIsPermittedAdmission());
+            areaLabel.setIsCompeteArea(areaLabelForm.getIsCompeteArea());
+            areaLabel.setIsRegularCover(areaLabelForm.getIsRegularCover());
+            areaLabel.setNetworkCoverageProperties(areaLabelForm.getNetworkCoverageProperties());
+            areaLabel.setIsStabilityLiver(areaLabelForm.getIsStabilityLiver());
+            areaLabel.setCustomFields(StringUtils.strip(areaLabelForm.getCustomFields().toString(), "[]"));
+            areaLabel.setCreateTime(FMT.format(new Date()));
+            areaLabelDao.save(areaLabel);
 
         }else {
             log.info("【小区标签编辑】无编辑权限.");

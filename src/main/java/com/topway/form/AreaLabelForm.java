@@ -3,6 +3,8 @@ package com.topway.form;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by haizhi on 2019/5/29.
@@ -59,6 +61,6 @@ public class AreaLabelForm {
     /**
      * 客户自定义标签
      */
-    private String customFields = "";
+    private List<String> customFields = new ArrayList<>();
 
 }

@@ -39,9 +39,9 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      */
     @Query(value = "select a from Area a " +
             "where a.areaId=?1 and a.paymentType=?2 and a.date=?3 " +
-            "and a.gridId in (coalesce(?4, a.gridId)) " +
-            "and a.spcode in (coalesce(?5, a.spcode)) " +
-            "and a.branch in (coalesce(?6, a.branch))")
+            "and (a.gridId in ?4 or (coalesce(?4, null) is null) )" +
+            "and (a.spcode in ?5 or (coalesce(?5, null) is null) )" +
+            "and (a.branch in ?6 or (coalesce(?6, null) is null) )")
     Area findByAreaId(String areaId,
                            String free,
                            String yesterday,
@@ -64,9 +64,9 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      */
     @Query("select a from Area a " +
             "where a.areaName like CONCAT('%',?1,'%') and a.date=?2 and a.paymentType='收费'" +
-            "and a.gridId in (coalesce(?3, a.gridId)) " +
-            "and a.spcode in (coalesce(?4, a.spcode)) " +
-            "and a.branch in (coalesce(?5, a.branch))")
+            "and (a.gridId in ?3 or (coalesce(?3, null) is null) )" +
+            "and (a.spcode in ?4 or (coalesce(?4, null) is null) )" +
+            "and (a.branch in ?5 or (coalesce(?5, null) is null) )")
     Page<Area> findByAreaNameLike(String areaName,
                                          String date,
                                          List<String> grid,

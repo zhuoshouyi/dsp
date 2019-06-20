@@ -57,7 +57,7 @@ public class User {
     /** 账户银行账号.fk53c01bbd */
     private String bankNo;
 
-    /** 运营商. fk67623064 */
+    /** 运营商. fk2ed8f61c */
     private String spcode;
 
     /** 区域分公司. fk41873d1c */

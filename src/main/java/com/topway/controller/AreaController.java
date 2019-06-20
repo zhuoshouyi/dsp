@@ -211,6 +211,32 @@ public class AreaController {
         return ResultVOUtil.success(areaLabelShowDTOList);
     }
 
+
+    /**
+     * 小区标签查询最后一条
+     *
+     * @param areaIdForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/label/lastrecord")
+    public ResultVO userLabelLastRecord(@Valid @RequestBody AreaIdForm areaIdForm,
+                                        BindingResult bindingResult){
+
+        final String AREAID = areaIdForm.getAreaId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,AREAID={}", AREAID);
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        return areaService.findAreaLabelLastRecord(AREAID);
+
+    }
+
+
     /**
      * 小区标签编辑接口
      *
@@ -236,10 +262,8 @@ public class AreaController {
         /** 3.更新标签信息 */
         // 查找出现有的标签
         AreaLabel areaLabel = new AreaLabel();
-        List<AreaLabel> areaLabelList = areaService.findAreaLabel(AREAID);
-        if (areaLabelList.size() > 0) areaLabel = areaLabelList.get(0);
 
-        return areaService.saveAreaLabel(userRoleDTO, areaLabel, areaLabelForm);
+        return areaService.saveAreaLabel(userRoleDTO, areaLabelForm);
     }
 
     /**

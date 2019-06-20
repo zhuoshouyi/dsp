@@ -64,7 +64,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的 keyword 或 searchType 有误,userListForm={}", userListForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -124,7 +124,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/detail")
-    public ResultVO detail(@RequestBody CustomerIdForm customerIdForm,
+    public ResultVO detail(@Valid @RequestBody CustomerIdForm customerIdForm,
                            BindingResult bindingResult){
 
         final String CUSTOMERID = customerIdForm.getCustomerId();
@@ -132,7 +132,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的 customerId 有误,customerIdForm={}", customerIdForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -154,7 +154,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/list")
-    public ResultVO deviceList(@RequestBody DeviceNoForm deviceNoForm,
+    public ResultVO deviceList(@Valid @RequestBody DeviceNoForm deviceNoForm,
                                BindingResult bindingResult){
 
         final String CUSTOMERID = deviceNoForm.getCustomerId();
@@ -164,7 +164,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceNoForm={}", deviceNoForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -213,7 +213,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/business")
-    public ResultVO deviceBusiness(@RequestBody DeviceBusinessForm deviceBusinessForm,
+    public ResultVO deviceBusiness(@Valid @RequestBody DeviceBusinessForm deviceBusinessForm,
                                    BindingResult bindingResult){
 
         final String CUSTOMERID = deviceBusinessForm.getCustomerId();
@@ -223,7 +223,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceBusinessForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -246,7 +246,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/order")
-    public ResultVO deviceOrder(@RequestBody DeviceOrderForm deviceOrderForm,
+    public ResultVO deviceOrder(@Valid @RequestBody DeviceOrderForm deviceOrderForm,
                                    BindingResult bindingResult){
 
         final String CUSTOMERID = deviceOrderForm.getCustomerId();
@@ -256,7 +256,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceOrderForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -278,7 +278,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/complaint")
-    public ResultVO deviceComplaint(@RequestBody DeviceComplaintForm deviceComplaintForm,
+    public ResultVO deviceComplaint(@Valid @RequestBody DeviceComplaintForm deviceComplaintForm,
                                    BindingResult bindingResult){
 
         final String CUSTOMERID = deviceComplaintForm.getCustomerId();
@@ -288,7 +288,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceComplaintForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -312,7 +312,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/complaint/detail")
-    public ResultVO deviceComplaint(@RequestBody DeviceComplaintDetailForm deviceComplaintDetailForm,
+    public ResultVO deviceComplaint(@Valid @RequestBody DeviceComplaintDetailForm deviceComplaintDetailForm,
                                     BindingResult bindingResult){
 
         final String CUSTOMERID = deviceComplaintDetailForm.getCustomerId();
@@ -323,7 +323,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceBusinessForm={}", deviceComplaintDetailForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -356,7 +356,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/businessSlide")
-    public ResultVO deviceBusinessSlide(@RequestBody DeviceSlideForm deviceSlideForm,
+    public ResultVO deviceBusinessSlide(@Valid @RequestBody DeviceSlideForm deviceSlideForm,
                                         BindingResult bindingResult){
 
         final String CUSTOMERID = deviceSlideForm.getCustomerId();
@@ -367,7 +367,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceSlideForm={}", deviceSlideForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -388,7 +388,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/orderSlide")
-    public ResultVO deviceOrderSlide(@RequestBody DeviceSlideForm deviceSlideForm,
+    public ResultVO deviceOrderSlide(@Valid @RequestBody DeviceSlideForm deviceSlideForm,
                                         BindingResult bindingResult){
 
         final String CUSTOMERID = deviceSlideForm.getCustomerId();
@@ -399,7 +399,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceSlideForm={}", deviceSlideForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -420,7 +420,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/device/complaintSlide")
-    public ResultVO deviceComplaintSlide(@RequestBody DeviceSlideForm deviceSlideForm,
+    public ResultVO deviceComplaintSlide(@Valid @RequestBody DeviceSlideForm deviceSlideForm,
                                         BindingResult bindingResult){
 
         final String CUSTOMERID = deviceSlideForm.getCustomerId();
@@ -431,7 +431,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceSlideForm={}", deviceSlideForm.toString());
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -452,7 +452,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/label/list")
-    public ResultVO userLabelList(@RequestBody CustomerIdForm customerIdForm,
+    public ResultVO userLabelList(@Valid @RequestBody CustomerIdForm customerIdForm,
                                          BindingResult bindingResult){
 
         final String CUSTOMERID = customerIdForm.getCustomerId();
@@ -460,7 +460,7 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,CUSTOMERID={}", CUSTOMERID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
@@ -473,6 +473,33 @@ public class UserController {
 
 
     /**
+     * 客户标签查询最后一条
+     *
+     * @param httpServletRequest
+     * @param customerIdForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/label/lastrecord")
+    public ResultVO userLabelLastRecord(HttpServletRequest httpServletRequest,
+                                        @Valid @RequestBody CustomerIdForm customerIdForm,
+                                        BindingResult bindingResult){
+
+        final String CUSTOMERID = customerIdForm.getCustomerId();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,CUSTOMERID={}", CUSTOMERID);
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        return userService.findUserLabelLastRecord(CUSTOMERID);
+
+    }
+
+
+    /**
      * 客户标签编辑接口
      *
      * @param userLabelForm
@@ -480,7 +507,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/label/save")
-    public ResultVO userLabelSave(@RequestBody UserLabelForm userLabelForm,
+    public ResultVO userLabelSave(HttpServletRequest httpServletRequest,
+                                  @Valid @RequestBody UserLabelForm userLabelForm,
                                   BindingResult bindingResult){
 
         final String CUSTOMERID = userLabelForm.getCustomerId();
@@ -488,15 +516,16 @@ public class UserController {
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,CUSTOMERID={}", CUSTOMERID);
-            throw new ParamException(ResultEnum.PARAM_ERROR.getCode(),
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.修改客户标签 */
-        userService.saveUserLabel(userLabelForm, FMT.format(new Date()));
-        log.info("【写入成功】客户标签添加成功.");
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
 
-        return ResultVOUtil.success();
+        /** 3.修改客户标签 */
+
+        return userService.saveUserLabel(userRoleDTO,userLabelForm,FMT.format(new Date()));
 
     }
 

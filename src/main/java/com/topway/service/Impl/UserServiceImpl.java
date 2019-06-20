@@ -1,11 +1,14 @@
 package com.topway.service.Impl;
 
 import com.topway.DAO.*;
+import com.topway.VO.ResultVO;
 import com.topway.convert.*;
 import com.topway.dto.*;
+import com.topway.enums.ResultEnum;
 import com.topway.form.UserLabelForm;
 import com.topway.pojo.*;
 import com.topway.service.UserService;
+import com.topway.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**cd
  * Created by haizhi on 2019/5/23.
@@ -66,12 +66,12 @@ public class UserServiceImpl implements UserService {
 
                 customerPage = userDao.findByDeviceNoToCustomer(deviceNo, userRoleDTO.getServiceGridId(), null, null, pageable);
 
+                log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage){
                     List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
                     CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
                     customerDTOList.add(customerDTO);
                 }
-
 
                 break;
 
@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
                 log.info("【认证】身份为 公司领导 或 业务部门");
                 customerPage = userDao.findByDeviceNoToCustomer(deviceNo, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
 
+                log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage){
                     List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
                     CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
@@ -89,8 +90,10 @@ public class UserServiceImpl implements UserService {
 
             default:
                 log.info("【认证】无用户身份,默认网格员");
+//                customerPage = userDao.findByDeviceNoToCustomer(deviceNo, userRoleDTO.getServiceGridId(), null, null, pageable);
                 customerPage = userDao.findByDeviceNoToCustomer(deviceNo, userRoleDTO.getServiceGridId(), null, null, pageable);
 
+                log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage){
                     List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
                     CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
@@ -98,7 +101,6 @@ public class UserServiceImpl implements UserService {
                 }
                 break;
         }
-
 
 
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
@@ -113,17 +115,60 @@ public class UserServiceImpl implements UserService {
     public Page<CustomerDTO> findByPhoneLike(UserRoleDTO userRoleDTO, String phone, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
+        Page<Customer> customerPage;
+        switch (userRoleDTO.getUserRole()){
+            case "基础网格员":
+            case "支撑网格员":
+            case "站长":
+                log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
 
-        Page<Customer> customerPage = customerDao.findByPhoneLike("%" + phone + "%", pageable);
-        for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                customerPage = customerDao.findByPhoneLike(phone, userRoleDTO.getServiceGridId(), null, null, pageable);
 
-            CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
-            customerDTOList.add(customerDTO);
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setPhone(e.getPhone().replace(phone, "<em>"+phone+"</em>")));
+
+                break;
+
+            case "公司领导":
+            case "业务部门":
+                log.info("【认证】身份为 公司领导 或 业务部门");
+                customerPage = customerDao.findByPhoneLike(phone, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setPhone(e.getPhone().replace(phone, "<em>"+phone+"</em>")));
+
+                break;
+
+            default:
+                log.info("【认证】无用户身份,默认网格员");
+                customerPage = customerDao.findByPhoneLike(phone, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setPhone(e.getPhone().replace(phone, "<em>"+phone+"</em>")));
+
+                break;
         }
-
-        customerDTOList.stream()
-                .forEach(e -> e.setPhone(e.getPhone().replace(phone, "<em>"+phone+"</em>")));
 
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
@@ -137,17 +182,60 @@ public class UserServiceImpl implements UserService {
     public Page<CustomerDTO> findByCustomerNameLike(UserRoleDTO userRoleDTO, String customerName, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
+        Page<Customer> customerPage;
+        switch (userRoleDTO.getUserRole()){
+            case "基础网格员":
+            case "支撑网格员":
+            case "站长":
+                log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
 
-        Page<Customer> customerPage = customerDao.findByCustomerNameLike("%" + customerName + "%", pageable);
-        for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                customerPage = customerDao.findByCustomerNameLike(customerName, userRoleDTO.getServiceGridId(), null, null, pageable);
 
-            CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
-            customerDTOList.add(customerDTO);
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setCustomerName(e.getCustomerName().replace(customerName, "<em>"+customerName+"</em>")));
+
+                break;
+
+            case "公司领导":
+            case "业务部门":
+                log.info("【认证】身份为 公司领导 或 业务部门");
+                customerPage = customerDao.findByCustomerNameLike(customerName, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setCustomerName(e.getCustomerName().replace(customerName, "<em>"+customerName+"</em>")));
+
+                break;
+
+            default:
+                log.info("【认证】无用户身份,默认网格员");
+                customerPage = customerDao.findByCustomerNameLike(customerName, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setCustomerName(e.getCustomerName().replace(customerName, "<em>"+customerName+"</em>")));
+
+                break;
         }
-
-        customerDTOList.stream()
-                .forEach(e -> e.setCustomerName(e.getCustomerName().replace(customerName, "<em>"+customerName+"</em>")));
 
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
@@ -161,17 +249,60 @@ public class UserServiceImpl implements UserService {
     public Page<CustomerDTO> findByCustomerIdLike(UserRoleDTO userRoleDTO, String customerId, Pageable pageable) {
 
         List<CustomerDTO> customerDTOList = new ArrayList<>();
+        Page<Customer> customerPage;
+        switch (userRoleDTO.getUserRole()){
+            case "基础网格员":
+            case "支撑网格员":
+            case "站长":
+                log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
 
-        Page<Customer> customerPage = customerDao.findByCustomerIdLike("%" + customerId + "%", pageable);
-        for (Customer customer : customerPage) {
-            List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                customerPage = customerDao.findByCustomerIdLike(customerId, userRoleDTO.getServiceGridId(), null, null, pageable);
 
-            CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
-            customerDTOList.add(customerDTO);
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setCustomerId(e.getCustomerId().replace(customerId, "<em>"+customerId+"</em>")));
+
+                break;
+
+            case "公司领导":
+            case "业务部门":
+                log.info("【认证】身份为 公司领导 或 业务部门");
+                customerPage = customerDao.findByCustomerIdLike(customerId, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setCustomerId(e.getCustomerId().replace(customerId, "<em>"+customerId+"</em>")));
+
+                break;
+
+            default:
+                log.info("【认证】无用户身份,默认网格员");
+                customerPage = customerDao.findByCustomerIdLike(customerId, userRoleDTO.getServiceGridId(), null, null, pageable);
+
+                log.info("【客户查询】客户检索完毕");
+                for (Customer customer : customerPage) {
+                    List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+
+                    CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1);
+                    customerDTOList.add(customerDTO);
+                }
+                customerDTOList.stream()
+                        .forEach(e -> e.setCustomerId(e.getCustomerId().replace(customerId, "<em>"+customerId+"</em>")));
+
+                break;
         }
-
-        customerDTOList.stream()
-                .forEach(e -> e.setCustomerId(e.getCustomerId().replace(customerId, "<em>"+customerId+"</em>")));
 
         return new PageImpl(customerDTOList, pageable, customerDTOList.size());
     }
@@ -420,12 +551,59 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 查找客户标签最后一条
+     *
+     * @param customerId
+     * @return
+     */
+    @Override
+    public ResultVO findUserLabelLastRecord(String customerId){
+        List<UserLabel> userLabelList = userLabelDao.findByCustomerIdOrderByCreateTimeDesc(customerId);
+        if (userLabelList.size()>0) {
+            UserLabel userLabel = userLabelList.get(0);
+            UserLabelForm userLabelForm = UserLabel2UserLabelFormConvert.convert(userLabel);
+            return ResultVOUtil.success(userLabelForm);
+        }else {
+            return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
+                    ResultEnum.RESULT_NOT_FOUND.getDesc());
+        }
+
+    }
+
+    /**
      * 插入客户标签
      */
     @Override
-    public void saveUserLabel(UserLabelForm userLabelForm, String date){
-        UserLabel userLabel = UserLabelForm2UserLabelConvert.convert(userLabelForm);
-        userLabel.setCreateTime(date);
+    public ResultVO saveUserLabel(UserRoleDTO userRoleDTO, UserLabelForm userLabelForm, String date){
+
+        log.info("【客户标签编辑】用户身份:" + userRoleDTO.getUserRole());
+        if (userRoleDTO.getUserRole().equals("公司领导")){
+
+            log.error("【客户标签编辑】此身份无用户标签编辑权限");
+            return ResultVOUtil.error(ResultEnum.USER_HAVE_NOT_PRIVILEGE.getCode(),
+                    "此身份无用户标签编辑权限");
+        }else if (userRoleDTO.getUserRole().equals("业务部门") ||
+                userRoleDTO.getUserRole().equals("站长") ||
+                userRoleDTO.getUserRole().equals("支撑网格员") ||
+                userRoleDTO.getUserRole().equals("基础网格员") ||
+                userRoleDTO.getUserRole().equals("管理员")){
+
+            UserLabel userLabel = UserLabelForm2UserLabelConvert.convert(userLabelForm);
+            userLabel.setCreateTime(date);
+
+            userLabelDao.save(userLabel);
+            log.info("【写入成功】客户标签添加成功.");
+            return ResultVOUtil.success();
+
+        }else {
+            log.info("【客户标签编辑】无用户身份,默认身份网格员");
+            UserLabel userLabel = UserLabelForm2UserLabelConvert.convert(userLabelForm);
+            userLabel.setCreateTime(date);
+
+            userLabelDao.save(userLabel);
+            log.info("【写入成功】客户标签添加成功.");
+            return ResultVOUtil.success();
+        }
 
     }
 }

@@ -42,10 +42,12 @@ public interface AreaService {
 
     List<AreaLabel> findAreaLabel(String areaId);
 
-    ResultVO saveAreaLabel(UserRoleDTO userRoleDTO, AreaLabel areaLabel, AreaLabelForm areaLabelForm);
+    ResultVO saveAreaLabel(UserRoleDTO userRoleDTO, AreaLabelForm areaLabelForm);
 
     Page<HistoryMarket> findHistoryMarket(String areaId, Pageable pageable);
 
     ResultVO saveHistoryMarket(UserRoleDTO userRoleDTO, HistoryMarketForm historyMarketForm, String date);
+
+    ResultVO findAreaLabelLastRecord(String areaId);
 
 }
