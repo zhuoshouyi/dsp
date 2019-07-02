@@ -66,5 +66,7 @@ public class User {
     /** 网格编码. fk00e197e4 */
     private String gridId;
 
+    /** 维护站名称. fk00e197e4 */
+    private String station_name;
 
 }

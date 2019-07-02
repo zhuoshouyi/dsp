@@ -1,6 +1,8 @@
 package com.topway.service;
 
 import com.topway.dto.RankListContentDTO;
+import com.topway.dto.RankListShowBranchDTO;
+import com.topway.dto.UserRoleDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +12,13 @@ import java.util.List;
  */
 @Service
 public interface RankListService {
+
+
+    // 排行榜筛选器
+    RankListShowBranchDTO rankListShow(UserRoleDTO userRoleDTO);
+
+    // 筛选器-查找所属维护站
+//    List<RankListShowStationDTO> findAllStation(UserRoleDTO userRoleDTO);
 
     // 营销生效额
     List<RankListContentDTO> findTop1(String STATION, String GRID);

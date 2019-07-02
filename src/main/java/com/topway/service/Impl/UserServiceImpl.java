@@ -17,7 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**cd
  * Created by haizhi on 2019/5/23.
@@ -78,11 +81,17 @@ public class UserServiceImpl implements UserService {
             case "公司领导":
             case "业务部门":
                 log.info("【认证】身份为 公司领导 或 业务部门");
+                log.info("spcode:" + userRoleDTO.getSpcodeId());
+                log.info("branch:" + userRoleDTO.getBusinessOfficeId());
                 customerPage = userDao.findByDeviceNoToCustomer(deviceNo, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
 
                 log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage){
                     List<User> userList1 = userDao.findByCustomerId(customer.getCustomerId());
+                    for (User user : userList1){
+                        if (user.getDeviceNo()!=null && user.getDeviceNo().contains(deviceNo))
+                            deviceNo = user.getDeviceNo();
+                    }
                     CustomerDTO customerDTO = Customer2CustomerDTOCovert.covert(customer, userList1, deviceNo);
                     customerDTOList.add(customerDTO);
                 }
@@ -139,7 +148,7 @@ public class UserServiceImpl implements UserService {
             case "公司领导":
             case "业务部门":
                 log.info("【认证】身份为 公司领导 或 业务部门");
-                customerPage = customerDao.findByPhoneLike(phone, userRoleDTO.getServiceGridId(), null, null, pageable);
+                customerPage = customerDao.findByPhoneLike(phone, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
 
                 log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage) {
@@ -206,7 +215,7 @@ public class UserServiceImpl implements UserService {
             case "公司领导":
             case "业务部门":
                 log.info("【认证】身份为 公司领导 或 业务部门");
-                customerPage = customerDao.findByCustomerNameLike(customerName, userRoleDTO.getServiceGridId(), null, null, pageable);
+                customerPage = customerDao.findByCustomerNameLike(customerName, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
 
                 log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage) {
@@ -273,7 +282,7 @@ public class UserServiceImpl implements UserService {
             case "公司领导":
             case "业务部门":
                 log.info("【认证】身份为 公司领导 或 业务部门");
-                customerPage = customerDao.findByCustomerIdLike(customerId, userRoleDTO.getServiceGridId(), null, null, pageable);
+                customerPage = customerDao.findByCustomerIdLike(customerId, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
 
                 log.info("【客户查询】客户检索完毕");
                 for (Customer customer : customerPage) {
@@ -564,8 +573,7 @@ public class UserServiceImpl implements UserService {
             UserLabelForm userLabelForm = UserLabel2UserLabelFormConvert.convert(userLabel);
             return ResultVOUtil.success(userLabelForm);
         }else {
-            return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
-                    ResultEnum.RESULT_NOT_FOUND.getDesc());
+            return ResultVOUtil.success(new UserLabelForm());
         }
 
     }

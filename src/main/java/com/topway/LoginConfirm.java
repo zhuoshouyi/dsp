@@ -5,8 +5,8 @@ import com.topway.DAO.ServiceGridOptDao;
 import com.topway.DAO.UserRoleDao;
 import com.topway.VO.LoginVO;
 import com.topway.convert.List2StringConvert;
+import com.topway.dto.LoginForm2UserRoleConvert;
 import com.topway.enums.ResultEnum;
-import com.topway.exception.UserNotFoundException;
 import com.topway.form.LoginForm;
 import com.topway.pojo.ServiceGridOpt;
 import com.topway.pojo.UserRole;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
@@ -54,22 +54,26 @@ public class LoginConfirm {
                         BindingResult bindingResult){
 
         /** 1.获取传输参数 */
+        log.info("【登陆】-------------------------------------------------------");
         log.info("【登陆】获取传输参数");
         final String OPENID = loginForm.getUserid();
         final String USERNAME = loginForm.getUsername();
         final String USERID = loginForm.getUs_id();
         final String SPCODEID = loginForm.getOperator();
-        final String BUSINESSOFFICEID = loginForm.getBranch();
+        final String BRANCH = loginForm.getBranch();
 
 
         /** 2.判断传输参数是否正确 */
         log.info("【登陆】检查参数是否正确");
+        log.info("【登陆】 OPENID : " + OPENID);
+        log.info("【登陆】 USERNAME : " + USERNAME);
+        log.info("【登陆】 USERID : " + USERID);
+        log.info("【登陆】 SPCODEID : " + SPCODEID);
+        log.info("【登陆】 BRANCH : " + BRANCH);
         if (bindingResult.hasErrors()) {
             log.error("【登陆】登陆失败,参数不正确, loginForm={}", loginForm);
             return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
-//            throw new UserNotFoundException(ResultEnum.PARAM_ERROR.getCode(),
-//                    bindingResult.getFieldError().getDefaultMessage());
         }
 
         /** 3.验证用户身份 */
@@ -83,8 +87,19 @@ public class LoginConfirm {
             log.info("【登陆】用户为网格员或站长,userId为" + USERID);
             // 关联工单表,获取用户所管辖的网格
             List<ServiceGridOpt> serviceGridOptList = serviceGridOptDao.findByOpId(USERID);
-            List<String> serviceGridIdList =
-                    serviceGridOptList.stream().map(e -> e.getServiceGridId()).collect(Collectors.toList());
+
+            // 如果是网格员但匹配不到网格,返回报错信息
+            if (serviceGridOptList == null || serviceGridOptList.size()==0){
+                return ResultVOUtil.error(ResultEnum.USER_NOT_MATCH.getCode(),
+                        ResultEnum.USER_NOT_MATCH.getDesc());
+            }
+            // 将网格员负责的网格拼接到列表中去
+            List<String> serviceGridIdList = new ArrayList<>();
+            for (ServiceGridOpt serviceGridOpt : serviceGridOptList){
+                if (serviceGridOpt.getServiceGridId()!=null && !serviceGridOpt.getServiceGridId().equals("")){
+                    serviceGridIdList.add(serviceGridOpt.getServiceGridId());
+                }
+            }
 
             try {
                 userRole = userRoleDao.findByUserId(USERID);
@@ -103,6 +118,10 @@ public class LoginConfirm {
         }else {
             // 公司领导和业务部门即使用它们的运营商和分公司进行区分
             // TODO 添加公司领导权限
+            log.info("【登陆】用户为公司领导或者业务部门,运营商为:" + SPCODEID + ", 区域分公司为:" + BRANCH);
+
+            userRole = LoginForm2UserRoleConvert.convert(loginForm);
+            userRole.setUserRole("公司领导");
 
         }
 

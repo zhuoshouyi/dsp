@@ -13,7 +13,7 @@ import java.util.List;
 public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
 
     /** 数字电视用户流失数/率 */
-    @Query(value = "select rank.branchOffice, coalesce((sum(last_month_watch_num) - sum(now_month_watch_num)), 0) as sum_num " +
+    @Query(value = "select rank.branch_office, coalesce((sum(last_month_watch_num) - sum(now_month_watch_num)), 0) as sum_num " +
             "from rank_list_loss rank " +
             "where rank.month=?1 " +
             "group by rank.branch_office " +
@@ -23,7 +23,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
 
 
     /** 20M宽带流失数/率 */
-    @Query(value = "select rank.branchOffice, coalesce(sum(last_month20m_num) - sum(now_month20m_num),0) as sum_num " +
+    @Query(value = "select rank.branch_office, coalesce(sum(last_month20m_num) - sum(now_month20m_num),0) as sum_num " +
             "from rank_list_loss rank " +
             "where rank.month=?1 " +
             "group by rank.branch_office " +
@@ -32,7 +32,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
     List<Object[]> find20MLoss(@Param("date") String date);
 
     /** 100M宽带流失数/率 */
-    @Query(value = "select rank.branchOffice, coalesce((sum(last_month100m_num) - sum(now_month100m_num)), 0) as sum_num " +
+    @Query(value = "select rank.branch_office, coalesce((sum(last_month100m_num) - sum(now_month100m_num)), 0) as sum_num " +
             "from rank_list_loss rank " +
             "where rank.month=?1 " +
             "group by rank.branch_office " +

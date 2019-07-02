@@ -27,11 +27,24 @@ public class UserDaoTest {
 
         PageRequest pageRequest = new PageRequest(0,5);
 
-        List<String> list = new ArrayList<>();
-        list.add("1621");
-        list.add("888");
+        List<String> list1 = new ArrayList<>();
+        list1.add("天威");
 
-        Page<Customer> customerPage = dao.findByDeviceNoToCustomer("1342", list, null, null, pageRequest);
+        List<String> list2 = new ArrayList<>();
+        list2.add("福田分公司");
+        list2.add("罗湖分公司");
+
+        Page<Customer> customerPage = dao.findByDeviceNoToCustomer("1342", null, list1, list2, pageRequest);
         System.out.println("");
+    }
+
+    @Test
+    public void findByGridId(){
+
+        List<String> list = new ArrayList<>();
+        list.add("128");
+        list.add("1270");
+        List<String> stringList = dao.findByGridId(list);
+        System.out.println(stringList.get(0));
     }
 }

@@ -73,7 +73,7 @@ public class AreaDaoTest{
         List<String> businessList = new ArrayList();
         businessList.add("罗湖分公司");
 
-        Area daoByAreaId = dao.findByAreaId("3164", "免费", "2019-05-27 00:00:00", gridList, null, null);
+        Area daoByAreaId = dao.findByAreaIdLike("3164", "免费", "2019-05-27 00:00:00", gridList, null, null);
 //        Area daoByAreaId = dao.findByAreaId("3164", "免费", "2019-05-27 00:00:00", "'911','128'", "天威", "罗湖分公司");
         System.out.println("");
 

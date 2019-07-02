@@ -42,7 +42,7 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
             "and (a.gridId in ?4 or (coalesce(?4, null) is null) )" +
             "and (a.spcode in ?5 or (coalesce(?5, null) is null) )" +
             "and (a.branch in ?6 or (coalesce(?6, null) is null) )")
-    Area findByAreaId(String areaId,
+    Area findByAreaIdLike(String areaId,
                            String free,
                            String yesterday,
                            List<String> grid,

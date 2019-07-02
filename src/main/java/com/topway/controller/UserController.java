@@ -49,6 +49,8 @@ public class UserController {
                          @Valid @RequestBody UserListForm userListForm,
                          BindingResult bindingResult){
 
+        log.info("【用户列表】-------------------------------------------------------");
+
         // 参数1,搜索的关键字
         final String KEYWORD = userListForm.getKeyword();
         // 参数2,搜索的类型
@@ -127,6 +129,8 @@ public class UserController {
     public ResultVO detail(@Valid @RequestBody CustomerIdForm customerIdForm,
                            BindingResult bindingResult){
 
+        log.info("【用户详情】-------------------------------------------------------");
+
         final String CUSTOMERID = customerIdForm.getCustomerId();
 
         /** 1.校验form表单是否正确 */
@@ -156,6 +160,8 @@ public class UserController {
     @PostMapping("/device/list")
     public ResultVO deviceList(@Valid @RequestBody DeviceNoForm deviceNoForm,
                                BindingResult bindingResult){
+
+        log.info("【用户终端信息】-------------------------------------------------------");
 
         final String CUSTOMERID = deviceNoForm.getCustomerId();
         final String DEVICENO = deviceNoForm.getDeviceNo();
@@ -216,6 +222,8 @@ public class UserController {
     public ResultVO deviceBusiness(@Valid @RequestBody DeviceBusinessForm deviceBusinessForm,
                                    BindingResult bindingResult){
 
+        log.info("【用户产品详情】-------------------------------------------------------");
+
         final String CUSTOMERID = deviceBusinessForm.getCustomerId();
         final String DEVICENO = deviceBusinessForm.getDeviceNo();
         final String ID = deviceBusinessForm.getId();
@@ -249,6 +257,8 @@ public class UserController {
     public ResultVO deviceOrder(@Valid @RequestBody DeviceOrderForm deviceOrderForm,
                                    BindingResult bindingResult){
 
+        log.info("【用户工单详情】-------------------------------------------------------");
+
         final String CUSTOMERID = deviceOrderForm.getCustomerId();
         final String DEVICENO = deviceOrderForm.getDeviceNo();
         final String ID = deviceOrderForm.getId();
@@ -280,6 +290,8 @@ public class UserController {
     @PostMapping("/device/complaint")
     public ResultVO deviceComplaint(@Valid @RequestBody DeviceComplaintForm deviceComplaintForm,
                                    BindingResult bindingResult){
+
+        log.info("【用户投诉详情】-------------------------------------------------------");
 
         final String CUSTOMERID = deviceComplaintForm.getCustomerId();
         final String DEVICENO = deviceComplaintForm.getDeviceNo();
@@ -314,6 +326,8 @@ public class UserController {
     @PostMapping("/device/complaint/detail")
     public ResultVO deviceComplaint(@Valid @RequestBody DeviceComplaintDetailForm deviceComplaintDetailForm,
                                     BindingResult bindingResult){
+
+        log.info("【用户投诉处理详情】-------------------------------------------------------");
 
         final String CUSTOMERID = deviceComplaintDetailForm.getCustomerId();
         final String DEVICENO = deviceComplaintDetailForm.getDeviceNo();
@@ -455,6 +469,8 @@ public class UserController {
     public ResultVO userLabelList(@Valid @RequestBody CustomerIdForm customerIdForm,
                                          BindingResult bindingResult){
 
+        log.info("【用户标签查看】-------------------------------------------------------");
+
         final String CUSTOMERID = customerIdForm.getCustomerId();
 
         /** 1.校验form表单是否正确 */
@@ -485,6 +501,8 @@ public class UserController {
                                         @Valid @RequestBody CustomerIdForm customerIdForm,
                                         BindingResult bindingResult){
 
+        log.info("【用户标签查询最后一条】-------------------------------------------------------");
+
         final String CUSTOMERID = customerIdForm.getCustomerId();
 
         /** 1.校验form表单是否正确 */
@@ -510,6 +528,8 @@ public class UserController {
     public ResultVO userLabelSave(HttpServletRequest httpServletRequest,
                                   @Valid @RequestBody UserLabelForm userLabelForm,
                                   BindingResult bindingResult){
+
+        log.info("【用户标签编辑】-------------------------------------------------------");
 
         final String CUSTOMERID = userLabelForm.getCustomerId();
 

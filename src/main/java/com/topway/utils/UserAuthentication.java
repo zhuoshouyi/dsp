@@ -18,6 +18,7 @@ public class UserAuthentication {
 
         log.info("【认证】识别用户身份,判断权限");
         Map<String, Claim> claimMap = JwtUtil.getToken(httpServletRequest);
+
         UserRoleDTO userRoleDTO = new UserRoleDTO();
         userRoleDTO.setOpenId((claimMap.get("openId") == null? null : claimMap.get("openId").asString()));
         log.info("【认证】openId:" + (claimMap.get("openId") == null? null : claimMap.get("openId").asString()));
@@ -34,11 +35,11 @@ public class UserAuthentication {
         userRoleDTO.setServiceGridId(claimMap.get("serviceGridId") == null? null : String2ListConvert.convert(claimMap.get("serviceGridId").asString()));
         log.info("【认证】serviceGridId:" + (claimMap.get("serviceGridId") == null? null : String2ListConvert.convert(claimMap.get("serviceGridId").asString())));
 
-        userRoleDTO.setSpcodeId(claimMap.get("spcodeId") == null? null : String2ListConvert.convert(claimMap.get("spcodeId").asString()));
-        log.info("【认证】spcodeId:" + (claimMap.get("spcodeId") == null? null : String2ListConvert.convert(claimMap.get("spcodeId").asString())));
+        userRoleDTO.setSpcodeId(claimMap.get("spcodeId") == null? null : String2ListConvert.convertTo(claimMap.get("spcodeId").asString()));
+        log.info("【认证】spcodeId:" + (claimMap.get("spcodeId") == null? null : String2ListConvert.convertTo(claimMap.get("spcodeId").asString())));
 
-        userRoleDTO.setBusinessOfficeId((claimMap.get("businessOfficeId") == null? null : String2ListConvert.convert(claimMap.get("businessOfficeId").asString())));
-        log.info("【认证】businessOfficeId:" + (claimMap.get("businessOfficeId") == null? null : String2ListConvert.convert(claimMap.get("businessOfficeId").asString())));
+        userRoleDTO.setBusinessOfficeId((claimMap.get("businessOfficeId") == null? null : String2ListConvert.convertTo(claimMap.get("businessOfficeId").asString())));
+        log.info("【认证】businessOfficeId:" + (claimMap.get("businessOfficeId") == null? null : String2ListConvert.convertTo(claimMap.get("businessOfficeId").asString())));
 
         return userRoleDTO;
     }

@@ -17,7 +17,7 @@ public class UserLabel2UserLabelShowDTOConvert {
         UserLabelShowDTO userLabelShowDTO = new UserLabelShowDTO();
         userLabelShowDTO.setDate(userLabel.getCreateTime().substring(0,10));
         List<String> labelList = new ArrayList<>();
-        // TODO 转换成boolean类型
+
         if (userLabel.getIsSmartTV()!=null && !userLabel.getIsSmartTV().equals(-1))
             labelList.add(userLabel.getIsSmartTV()==1 ? "有智能电视" : "无智能电视");
         if (userLabel.getIsRenting()!=null && !userLabel.getIsRenting().equals(-1))

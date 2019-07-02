@@ -1,4 +1,4 @@
-package com.topway.dto;
+package com.topway.VO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.Data;
  * Created by haizhi on 2019/6/5.
  */
 @Data
-public class RankListShowDTO<T> {
+public class RankListShowVO<T> {
 
     @JsonProperty("营销生效额")
     private T f1;

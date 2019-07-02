@@ -28,6 +28,8 @@ public interface AreaService {
 
     Area findByAreaId(String areaId, UserRoleDTO userRoleDTO);
 
+    Area findByAreaId(String areaId);
+
     Page<Area> findByAreaNameLike(String areaName, UserRoleDTO userRoleDTO, Pageable pageable);
 
     Property findProperty(String areaId);

@@ -2,10 +2,13 @@ package com.topway.controller;
 
 import com.topway.VO.ResultVO;
 import com.topway.dto.RankListContentDTO;
-import com.topway.dto.RankListShowDTO;
+import com.topway.VO.RankListShowVO;
+import com.topway.dto.RankListShowBranchDTO;
+import com.topway.dto.UserRoleDTO;
 import com.topway.form.RankListForm;
 import com.topway.service.Impl.RankListServiceImpl;
 import com.topway.utils.ResultVOUtil;
+import com.topway.utils.UserAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -29,15 +33,24 @@ public class RankListController {
 
 
     @PostMapping("/filter")
-    public ResultVO rankFilter(){
+    public ResultVO rankFilter(HttpServletRequest httpServletRequest){
 
-        return ResultVOUtil.success();
+        log.info("【排行榜筛选】-------------------------------------------------------");
+
+        /** 1.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        RankListShowBranchDTO rankListShowBranchDTO = rankListService.rankListShow(userRoleDTO);
+
+        return ResultVOUtil.success(rankListShowBranchDTO);
     }
 
 
 
     @PostMapping("/list")
     public ResultVO rankList(@RequestBody RankListForm rankListForm){
+
+        log.info("【排行榜展示】-------------------------------------------------------");
 
         /** 1.获取传入参数,默认为all */
         // 参数1,分部
@@ -46,7 +59,7 @@ public class RankListController {
         final String GRID = rankListForm.getGrid();
 
         /** 2.计算各个排行 */
-        RankListShowDTO rankListShowDTO = new RankListShowDTO();
+        RankListShowVO rankListShowDTO = new RankListShowVO();
 
         // 营销生效额
         log.info("【排行榜】营销生效额排行");

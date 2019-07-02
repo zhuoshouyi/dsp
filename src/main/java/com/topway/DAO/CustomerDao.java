@@ -30,7 +30,8 @@ public interface CustomerDao extends JpaRepository<Customer, String> {
             "   where (u.gridId in ?2 or (coalesce(?2, null) is null) )" +
             "   and (u.spcode in ?3 or (coalesce(?3, null) is null) )" +
             "   and (u.branch in ?4 or (coalesce(?4, null) is null) )" +
-            ") ")
+            ") " +
+            "order by length(c.customerName)")
     Page<Customer> findByCustomerNameLike(String customerName,
                                           List<String> gridId,
                                           List<String> spcode,

@@ -80,24 +80,30 @@ public class AreaServiceImpl implements AreaService{
             case "支撑网格员":
             case "站长":
                 log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
-                area = dao.findByAreaId(
+                area = dao.findByAreaIdLike(
                         areaId, "收费", "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null);
                 break;
 
             case "公司领导":
             case "业务部门":
                 log.info("【认证】身份为 公司领导 或 业务部门");
-                area = dao.findByAreaId(
+                area = dao.findByAreaIdLike(
                         areaId, "收费", "2019-05-27 00:00:00", null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
                 break;
 
             default:
                 log.info("【认证】无用户身份,默认网格员");
-                area = dao.findByAreaId(
+                area = dao.findByAreaIdLike(
                         areaId, "收费", "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null);
                 break;
         }
         return area;
+    }
+
+    /** 根据小区id查找小区信息(无权限) */
+    @Override
+    public Area findByAreaId(String areaId) {
+        return dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", "2019-05-27 00:00:00");
     }
 
 
@@ -387,8 +393,7 @@ public class AreaServiceImpl implements AreaService{
             AreaLabelForm areaLabelForm = AreaLabel2AreaLabelFormConvert.convert(areaLabel);
             return ResultVOUtil.success(areaLabelForm);
         }else {
-            return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
-                    ResultEnum.RESULT_NOT_FOUND.getDesc());
+            return ResultVOUtil.success(new AreaLabelForm());
         }
     }
 

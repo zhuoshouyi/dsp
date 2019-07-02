@@ -18,7 +18,7 @@ public interface UserDao extends JpaRepository<User, Integer> {
     List<User> findByUserId(String userId);
 
     /** 通过资源号模糊查询 */
-    List<User> findByDeviceNo(String deviceNo);
+    List<User> findByDeviceNoLike(String deviceNo);
 
     /** 通过客户编码和资源号查询 */
     User findByCustomerIdAndDeviceNo(String customerId, String deviceNo);
@@ -38,12 +38,30 @@ public interface UserDao extends JpaRepository<User, Integer> {
                 "and (u.gridId in ?2 or (coalesce(?2, null) is null) )" +
                 "and (u.spcode in ?3 or (coalesce(?3, null) is null) )" +
                 "and (u.branch in ?4 or (coalesce(?4, null) is null) )" +
-            ") ")
+            ") " )
     Page<Customer> findByDeviceNoToCustomer(String deviceNo,
                                             List<String> gridId,
                                             List<String> spcodeId,
                                             List<String> businessOfficeId,
                                             Pageable pageable);
 
+    /** 通过网格查询维护站 */
+    @Query(value = "select distinct u.station_name from user u " +
+            "where grid_id in (?1)", nativeQuery = true)
+    List<String> findByGridId(List<String> gridId);
+
+
+    /** 公司领导通过运营商和区域分公司查询维护站 */
+    @Query(value = "select distinct u.station_name from user u " +
+            "where (u.spcode in ?1 or (coalesce(?1, null) is null) )" +
+            "and (u.branch in ?2 or (coalesce(?2, null) is null) )", nativeQuery = true)
+    List<String> findStationBySpcodeAndBranch(List<String> spcode,
+                                              List<String> branch);
+
+
+    /** 通过维护站查询网格 */
+    @Query(value = "select distinct u.grid from user u " +
+            "where station_name=?1", nativeQuery = true)
+    List<String> findByStation(String station);
 
 }

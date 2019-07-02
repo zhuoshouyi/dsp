@@ -55,6 +55,8 @@ public class AreaController {
                          @Valid @RequestBody AreaListForm areaListForm,
                          BindingResult bindingResult){
 
+        log.info("【小区列表】-------------------------------------------------------");
+
         // 参数1,搜索的关键字
         final String KEYWORD = areaListForm.getKeyword();
         // 参数2,查看的页数
@@ -132,6 +134,8 @@ public class AreaController {
                            @Valid @RequestBody AreaIdForm areaIdForm,
                            BindingResult bindingResult){
 
+        log.info("【小区详情】-------------------------------------------------------");
+
         final String AREAID = areaIdForm.getAreaId();
         AreaDetailDTO areaDetailDTO = new AreaDetailDTO();
 
@@ -142,13 +146,14 @@ public class AreaController {
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.识别用户身份,判断权限 */
-        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
-
-        /** 3.根据areaId查询出基本信息 */
+        /** 2.根据areaId查询出基本信息 */
         AreaBasicInfoDTO areaBasicInfoDTO = new AreaBasicInfoDTO();
         // TODO 计算天威客户数,覆盖住户数
-        Area area = areaService.findByAreaId(AREAID, userRoleDTO);
+        Area area = areaService.findByAreaId(AREAID);
+        if (area == null){
+            return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
+                    "数据库未匹配到此小区");
+        }
         areaBasicInfoDTO = Area2AreaBasicInfoDTOConvert.convert(area, 0, 0);
 
 
@@ -197,6 +202,8 @@ public class AreaController {
     public ResultVO labelList(@Valid @RequestBody AreaIdForm areaIdForm,
                               BindingResult bindingResult){
 
+        log.info("【小区标签】-------------------------------------------------------");
+
         final String AREAID = areaIdForm.getAreaId();
 
         /** 1.校验form表单是否正确 */
@@ -223,6 +230,8 @@ public class AreaController {
     public ResultVO userLabelLastRecord(@Valid @RequestBody AreaIdForm areaIdForm,
                                         BindingResult bindingResult){
 
+        log.info("【小区标签查询】-------------------------------------------------------");
+
         final String AREAID = areaIdForm.getAreaId();
 
         /** 1.校验form表单是否正确 */
@@ -246,6 +255,8 @@ public class AreaController {
     public ResultVO labelSave(HttpServletRequest httpServletRequest,
                               @Valid @RequestBody AreaLabelForm areaLabelForm,
                               BindingResult bindingResult){
+
+        log.info("【小区标签编辑】-------------------------------------------------------");
 
         final String AREAID = areaLabelForm.getAreaId();
 
@@ -275,6 +286,8 @@ public class AreaController {
     public ResultVO propertySave(HttpServletRequest httpServletRequest,
                                  @Valid @RequestBody PropertyForm propertyForm,
                                  BindingResult bindingResult){
+
+        log.info("【小区物业编辑】-------------------------------------------------------");
 
         final String AREAID = propertyForm.getAreaId();
 
@@ -316,6 +329,8 @@ public class AreaController {
                                @Valid @RequestBody AreaIdForm areaIdForm,
                                BindingResult bindingResult){
 
+        log.info("【小区营销记录查询】-------------------------------------------------------");
+
         final String AREAID = areaIdForm.getAreaId();
         final int PAGENO = areaIdForm.getPageNo();
         final int PAGESIZE = areaIdForm.getPageSize();
@@ -346,6 +361,8 @@ public class AreaController {
     public ResultVO marketSave(HttpServletRequest httpServletRequest,
                                @Valid @RequestBody HistoryMarketForm historyMarketForm,
                                BindingResult bindingResult){
+
+        log.info("【小区营销记录编辑】-------------------------------------------------------");
 
         final String AREAID = historyMarketForm.getAreaId();
 

@@ -50,9 +50,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isProtectedUrl(HttpServletRequest request) {
         boolean flag;
         String skipUrl1 = "/account/login";
-        String skipUrl2 = "/warning/list";
+        String skipUrl2 = "/user/detail";
+        String skipUrl3 = "/area/detail";
+        String skipUrl4 = "/user/device/list";
+//        String skipUrl5 = "/warning/list";
 
-        if (request.getServletPath().matches(skipUrl1) || request.getServletPath().matches(skipUrl2)){
+//        String authUrl1 = "/area/list";
+//        String authUrl2 = "/user/list";
+//        String authUrl3 = "/user/label/list";
+
+        log.info("【认证】认证url:" + request.getServletPath());
+        if (request.getServletPath().matches(skipUrl1) ||
+                request.getServletPath().matches(skipUrl2) ||
+                request.getServletPath().matches(skipUrl3) ){
             flag = false;
         } else {
             flag = true;

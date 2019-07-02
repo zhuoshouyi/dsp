@@ -22,8 +22,24 @@ public class Customer2CustomerDTOCovert {
         customerDTO.setBusinessType(customer.getCustomerType());
         List<String> deviceNoList = new ArrayList<>();
         deviceNoList.add("<em>"+deviceNo+"</em>");
-        if (userList1.size()>1)
-            deviceNoList.add(userList1.get(1).getDeviceNo());
+        switch (userList1.size()){
+            case 1: break;
+            case 2:
+                if (userList1.get(0).getDeviceNo()!=null && !userList1.get(0).getDeviceNo().equals(deviceNo))
+                    deviceNoList.add(userList1.get(0).getDeviceNo());
+                else if (userList1.get(1).getDeviceNo()!=null && !userList1.get(1).getDeviceNo().equals(deviceNo))
+                    deviceNoList.add(userList1.get(1).getDeviceNo());
+                break;
+            case 3:
+            default:
+                if (userList1.get(0).getDeviceNo()!=null && !userList1.get(0).getDeviceNo().equals(deviceNo))
+                    deviceNoList.add(userList1.get(0).getDeviceNo());
+                else if (userList1.get(1).getDeviceNo()!=null && !userList1.get(1).getDeviceNo().equals(deviceNo))
+                    deviceNoList.add(userList1.get(1).getDeviceNo());
+                else if (userList1.get(2).getDeviceNo()!=null && !userList1.get(2).getDeviceNo().equals(deviceNo))
+                    deviceNoList.add(userList1.get(2).getDeviceNo());
+                break;
+        }
         customerDTO.setDeviceNoList(deviceNoList);
 
         return customerDTO;
