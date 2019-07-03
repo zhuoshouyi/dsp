@@ -8,9 +8,9 @@ import java.util.List;
  * Created by haizhi on 2019/6/28.
  */
 @Data
-public class RankListShowStationDTO<T> {
+public class RankListShowStationDTO {
 
-    public List<T> childs;
+    public List<RankListShowGridDTO> childs;
 
     public String code;
 

@@ -31,6 +31,9 @@ public interface UserService {
     /** 通过客户编码查询. */
     CustomerDTO findByCustomerId(String customerId);
 
+    /** 终端搜索查询 */
+    List<List<String>> findDeviceSearchByCustomerId(String customerId, String keyword);
+
     // 终端信息相关方法
     /** 通过设备号查询 DeviceDTO */
     DeviceBasicInfoDTO findDeviceBasicInfoDTO(String customerId, String deviceNo);

@@ -24,45 +24,65 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
     @Query(value = "select rank.follow_back_peo_name, sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.back_time=?1 " +
+            "and rank.follow_back_depa_name in (?2) " +
+            "and rank.master_grid in (?3)" +
             "group by rank.follow_back_peo_name " +
             "order by sum_num desc " +
             "limit 10", nativeQuery = true)
-    List<Object[]> find24(@Param("date") String date);
+    List<Object[]> find24(String date,
+                          List<String> station,
+                          List<String> grid);
 
     /** 48安装及时处理率(数字) */
     @Query(value = "select rank.follow_back_peo_name, sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.back_time=?1 " +
+            "and rank.follow_back_depa_name in (?2) " +
+            "and rank.master_grid in (?3)" +
             "group by rank.follow_back_peo_name " +
             "order by sum_num desc " +
             "limit 10", nativeQuery = true)
-    List<Object[]> find48(@Param("date") String date);
+    List<Object[]> find48(String date,
+                          List<String> station,
+                          List<String> grid);
 
     /** 故障及时处理成功率(数字) */
     @Query(value = "select rank.follow_back_peo_name, sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.back_time=?1 " +
+            "and rank.follow_back_depa_name in (?2) " +
+            "and rank.master_grid in (?3)" +
             "group by rank.follow_back_peo_name " +
             "order by sum_num desc " +
             "limit 10", nativeQuery = true)
-    List<Object[]> findInTimeWatch(@Param("date") String date);
+    List<Object[]> findInTimeWatch(String date,
+                                   List<String> station,
+                                   List<String> grid);
 
     /** 故障及时处理成功率(宽带) */
     @Query(value = "select rank.follow_back_peo_name, sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.back_time=?1 " +
+            "and rank.follow_back_depa_name in (?2) " +
+            "and rank.master_grid in (?3)" +
             "group by rank.follow_back_peo_name " +
             "order by sum_num desc " +
             "limit 10", nativeQuery = true)
-    List<Object[]> findInTimeBroad(@Param("date") String date);
+    List<Object[]> findInTimeBroad(String date,
+                                   List<String> station,
+                                   List<String> grid);
 
     /** 重复故障率 */
     @Query(value = "select rank.follow_back_peo_name, sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.back_time=?1 " +
+            "and rank.follow_back_depa_name in (?2) " +
+            "and rank.master_grid in (?3)" +
             "group by rank.follow_back_peo_name " +
             "order by sum_num desc " +
             "limit 10", nativeQuery = true)
-    List<Object[]> findRepeat(@Param("date") String date);
+    List<Object[]> findRepeat(String date,
+                              List<String> station,
+                              List<String> grid);
 
 }

@@ -370,8 +370,10 @@ public class UserServiceImpl implements UserService {
         userList.stream().forEach(x -> {
             List<String> list = new ArrayList<>();
             if (x.getMixNo()==null || x.getMixNo().isEmpty()){
-                list.add(x.getDeviceNo());
-                deviceList.add(list);
+                if (x.getDeviceNo()!=null && !x.getDeviceNo().equals("")){
+                    list.add(x.getDeviceNo());
+                    deviceList.add(list);
+                }
             }
         });
 
@@ -379,6 +381,68 @@ public class UserServiceImpl implements UserService {
 
         return customerDTO;
     }
+
+
+    /**
+     * 终端搜索查询
+     *
+     */
+    @Override
+    public List<List<String>> findDeviceSearchByCustomerId(String customerId, String keyword){
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        Customer customer = customerDao.findByCustomerId(customerId);
+
+        // 查找此 customerId 所有的 user, 如果 user 不为null或空,则取第一个 address
+        List<User> userList = userDao.findByCustomerId(customerId);
+
+        // 创建一个不可重复的 Set 集合,存放此 customer 的所有的融合编码
+        Set<String> mixSet = new HashSet<>();
+        for (User user : userList){
+            if (user.getMixNo() != null && !user.getMixNo().isEmpty())
+                mixSet.add(user.getMixNo());
+        }
+
+        // 创建一个二维数组存放deviceNo
+        List<List<String>> deviceList = new ArrayList<>(new ArrayList<>());
+
+        // 遍历融合编码的数组,遍历每一个融合编码的用户,找到两个融合编码相同的 deviceNo,将其拼装成 list,添加到 deviceList 中。
+        mixSet.stream().forEach(x -> {
+            List<String> list = new ArrayList<>();
+            for (User user : userList){
+                if (user.getMixNo()!=null && !user.getMixNo().isEmpty())
+                    if (user.getMixNo().equals(x)) list.add(user.getDeviceNo());
+            }
+            deviceList.add(list);
+        });
+
+        // 遍历完所有有融合编码的 user 后,遍历所有没有融合编码的 user,将他们的 deviceNo 单独建立 list 存入 deviceList 中。
+        userList.stream().forEach(x -> {
+            List<String> list = new ArrayList<>();
+            if (x.getMixNo()==null || x.getMixNo().isEmpty()){
+                if (x.getDeviceNo()!=null && !x.getDeviceNo().equals("")){
+                    list.add(x.getDeviceNo());
+                    deviceList.add(list);
+                }
+            }
+        });
+
+        List<List<String>> returnDeviceList = new ArrayList<>();
+        for (List<String> stringList : deviceList){
+            if (stringList.size()>1){
+                if (stringList.get(0).contains(keyword) || stringList.get(1).contains(keyword)){
+                    returnDeviceList.add(stringList);
+                }
+            }else if (stringList.size()==1){
+                if (stringList.get(0).contains(keyword)){
+                    returnDeviceList.add(stringList);
+                }
+            }
+        }
+
+        return returnDeviceList;
+    }
+
 
 
     /**

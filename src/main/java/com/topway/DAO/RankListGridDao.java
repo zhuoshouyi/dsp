@@ -17,8 +17,12 @@ public interface RankListGridDao extends JpaRepository<RankListGrid, Integer> {
     @Query(value = "select rank.grid, sum(fault_num) as sum_num " +
             "from rank_list_grid rank " +
             "where rank.month=?1 " +
+            "and (rank.station in (?2) ) " +
+            "and (rank.grid in (?3) ) " +
             "group by rank.grid " +
             "order by sum_num desc " +
             "limit 10", nativeQuery = true)
-    List<Object[]> findGrid(@Param("month") String month);
+    List<Object[]> findGrid(String month,
+                            List<String> station,
+                            List<String> grid);
 }

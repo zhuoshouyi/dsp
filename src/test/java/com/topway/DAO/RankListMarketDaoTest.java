@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,7 +33,10 @@ public class RankListMarketDaoTest {
     @Test
     public void findTop10() throws Exception {
 
-        List<RankListContentDTO> contentDTOList = dao.findTop10("2019-06-04 00:00:00");
+        List<String> stationList = Arrays.asList("莲花分部");
+        List<String> gridList = Arrays.asList("景田南");
+
+        List<RankListContentDTO> contentDTOList = dao.findTop10("2019-06-04 00:00:00", stationList, gridList);
         System.out.println("");
     }
 

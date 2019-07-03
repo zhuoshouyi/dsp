@@ -212,6 +212,38 @@ public class UserController {
 
 
     /**
+     * 终端查询
+     *
+     * @param deviceNoSearchForm
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping("/device/search")
+    public ResultVO deviceSearch(@Valid @RequestBody DeviceNoSearchForm deviceNoSearchForm,
+                               BindingResult bindingResult){
+
+        log.info("【用户终端搜索】-------------------------------------------------------");
+
+        final String CUSTOMERID = deviceNoSearchForm.getCustomerId();
+        final String KEYWORD = deviceNoSearchForm.getKeyword();
+
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceNoForm={}", deviceNoSearchForm.toString());
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        List<List<String>> deviceNoList = userService.findDeviceSearchByCustomerId(CUSTOMERID, KEYWORD);
+
+        return ResultVOUtil.success(deviceNoList);
+
+    }
+
+
+
+    /**
      * 终端业务详情查看
      *
      * @param deviceBusinessForm

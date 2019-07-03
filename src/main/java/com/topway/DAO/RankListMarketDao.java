@@ -33,7 +33,11 @@ public interface RankListMarketDao extends JpaRepository<RankListMarket, Integer
     @Query(value = "select new com.topway.dto.RankListContentDTO(rank.developPeople, sum(rank.value)) " +
             "from RankListMarket rank " +
             "where rank.date=?1 " +
+            "and (rank.station in (?2) ) " +
+            "and (rank.gridName in (?3) ) " +
             "group by rank.developPeople " +
             "order by sum(rank.value) desc ")
-    List<RankListContentDTO> findTop10(@Param("date") String date);
+    List<RankListContentDTO> findTop10(String date,
+                                       List<String> station,
+                                       List<String> grid);
 }

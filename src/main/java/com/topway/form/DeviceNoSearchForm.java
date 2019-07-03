@@ -5,10 +5,10 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 /**
- * Created by haizhi on 2019/5/23.
+ * Created by haizhi on 2019/7/3.
  */
 @Data
-public class DeviceNoForm {
+public class DeviceNoSearchForm {
 
     /**
      * 前端传递的customerId,用于展示客户详情
@@ -17,9 +17,9 @@ public class DeviceNoForm {
     private String customerId;
 
     /**
-     * 前端传递的deviceNo,用于展示客户详情
+     * 前端传递的keyword,用于展示客户详情
      */
-    @NotEmpty(message = "deviceNo,必填")
-    private String deviceNo;
+    @NotEmpty(message = "keyword,必填")
+    private String keyword;
 
 }

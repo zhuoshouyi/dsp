@@ -3,6 +3,7 @@ package com.topway.controller;
 import com.topway.VO.ResultVO;
 import com.topway.dto.RankListContentDTO;
 import com.topway.VO.RankListShowVO;
+import com.topway.dto.RankListContentPerDTO;
 import com.topway.dto.RankListShowBranchDTO;
 import com.topway.dto.UserRoleDTO;
 import com.topway.form.RankListForm;
@@ -31,6 +32,8 @@ public class RankListController {
     @Autowired
     RankListServiceImpl rankListService;
 
+    RankListShowBranchDTO rankListShowBranchDTO = new RankListShowBranchDTO();
+
 
     @PostMapping("/filter")
     public ResultVO rankFilter(HttpServletRequest httpServletRequest){
@@ -40,7 +43,7 @@ public class RankListController {
         /** 1.识别用户身份,判断权限 */
         UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
 
-        RankListShowBranchDTO rankListShowBranchDTO = rankListService.rankListShow(userRoleDTO);
+        rankListShowBranchDTO = rankListService.rankListShow(userRoleDTO);
 
         return ResultVOUtil.success(rankListShowBranchDTO);
     }
@@ -63,47 +66,47 @@ public class RankListController {
 
         // 营销生效额
         log.info("【排行榜】营销生效额排行");
-        List<RankListContentDTO> rank1List = rankListService.findTop1(STATION, GRID);
+        List<RankListContentDTO> rank1List = rankListService.findTop1(STATION, GRID, rankListShowBranchDTO);
 
         // 24安装处理成功率(数字+宽带)
         log.info("【排行榜】24安装处理成功率(数字+宽带)");
-        List<RankListContentDTO> rank2List = rankListService.findTop2(STATION, GRID);
+        List<RankListContentDTO> rank2List = rankListService.findTop2(STATION, GRID, rankListShowBranchDTO);
 
         // 48安装处理成功率(数字+宽带)
         log.info("【排行榜】48安装处理成功率(数字+宽带)");
-        List<RankListContentDTO> rank3List = rankListService.findTop3(STATION, GRID);
+        List<RankListContentDTO> rank3List = rankListService.findTop3(STATION, GRID, rankListShowBranchDTO);
 
         // 故障及时处理成功率(数字)
         log.info("【排行榜】故障及时处理成功率(数字)");
-        List<RankListContentDTO> rank4List = rankListService.findTop4(STATION, GRID);
+        List<RankListContentDTO> rank4List = rankListService.findTop4(STATION, GRID, rankListShowBranchDTO);
 
         // 故障及时处理成功率(宽带)
         log.info("【排行榜】故障及时处理成功率(宽带)");
-        List<RankListContentDTO> rank5List = rankListService.findTop5(STATION, GRID);
+        List<RankListContentDTO> rank5List = rankListService.findTop5(STATION, GRID, rankListShowBranchDTO);
 
         // 故障单预约规范率
         log.info("【排行榜】故障单预约规范率");
-        List<RankListContentDTO> rank6List = rankListService.findTop6(STATION, GRID);
+        List<RankListContentDTO> rank6List = rankListService.findTop6(STATION, GRID, rankListShowBranchDTO);
 
         // 数字电视用户流失数/率
         log.info("【排行榜】数字电视用户流失数/率");
-        List<RankListContentDTO> rank7List = rankListService.findTop7(STATION, GRID);
+        List<RankListContentPerDTO> rank7List = rankListService.findTop7(STATION, GRID, rankListShowBranchDTO);
 
         // 20M宽带流失数/率
         log.info("【排行榜】20M宽带流失数/率");
-        List<RankListContentDTO> rank8List = rankListService.findTop8(STATION, GRID);
+        List<RankListContentPerDTO> rank8List = rankListService.findTop8(STATION, GRID, rankListShowBranchDTO);
 
         // 100M宽带流失数/率
         log.info("【排行榜】100M宽带流失数/率");
-        List<RankListContentDTO> rank9List = rankListService.findTop9(STATION, GRID);
+        List<RankListContentPerDTO> rank9List = rankListService.findTop9(STATION, GRID, rankListShowBranchDTO);
 
         // 网格保障率(网格内上月top5小区)
         log.info("【排行榜】网格保障率(网格内上月top5小区)");
-        List<RankListContentDTO> rank10List = rankListService.findTop10(STATION, GRID);
+        List<RankListContentDTO> rank10List = rankListService.findTop10(STATION, GRID, rankListShowBranchDTO);
 
         // 重复故障率
         log.info("【排行榜】重复故障率");
-        List<RankListContentDTO> rank11List = rankListService.findTop11(STATION, GRID);
+        List<RankListContentDTO> rank11List = rankListService.findTop11(STATION, GRID, rankListShowBranchDTO);
 
         /** 3.拼接json */
         rankListShowDTO.setF1(rank1List);
