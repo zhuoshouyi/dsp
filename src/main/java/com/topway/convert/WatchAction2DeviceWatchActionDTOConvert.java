@@ -3,6 +3,7 @@ package com.topway.convert;
 import com.topway.dto.*;
 import com.topway.pojo.WatchAction;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,8 +18,12 @@ public class WatchAction2DeviceWatchActionDTOConvert {
     // 全局统一时间格式化格式
     static SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM");
 
-    //获取系统时间
+    // 获取系统时间
     static Date date =new Date();
+
+    // 保留两位小数
+    DecimalFormat df0 = new DecimalFormat("#");
+    DecimalFormat df2 = new DecimalFormat("#.00");
 
     static final int NOWYEAR = date.getYear();
     static final int LASTYEAR = date.getYear()-1;
@@ -45,6 +50,7 @@ public class WatchAction2DeviceWatchActionDTOConvert {
         watchActionList.stream()
                 .forEach(e -> {
                     switch (e.getStatisticalType()){
+
                         case "年开机天数":
                             //
                             if (e.getStatisticalCycle().equals(NOWYEAR)){

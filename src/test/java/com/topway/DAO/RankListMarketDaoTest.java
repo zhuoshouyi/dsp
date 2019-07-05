@@ -1,5 +1,6 @@
 package com.topway.DAO;
 
+import com.topway.convert.Objects2RankListContentDTOConvert;
 import com.topway.dto.RankListContentDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,10 +34,11 @@ public class RankListMarketDaoTest {
     @Test
     public void findTop10() throws Exception {
 
-        List<String> stationList = Arrays.asList("莲花分部");
-        List<String> gridList = Arrays.asList("景田南");
+        List<String> stationList = Arrays.asList("前海分部");
+        List<String> gridList = Arrays.asList("后海A");
 
-        List<RankListContentDTO> contentDTOList = dao.findTop10("2019-06-04 00:00:00", stationList, gridList);
+        List<Object[]> objects = dao.findTop10("2019-06-04 00:00:00", stationList, gridList);
+        List<RankListContentDTO> dtoList = Objects2RankListContentDTOConvert.convert(objects);
         System.out.println("");
     }
 

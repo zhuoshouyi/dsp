@@ -13,31 +13,16 @@ import java.util.List;
  */
 public interface RankListMarketDao extends JpaRepository<RankListMarket, Integer> {
 
-    @Query(value = "select develop_people, sum(value) " +
-            "from rank_list_market " +
-            "where station=?1 and grid=?2 and date=?3 " +
-            "group by develop_people " +
-            "order by sum(value) desc ", nativeQuery = true)
-    List<RankListContentDTO> findByStationAndGrid(@Param("station") String station,
-                                                  @Param("grid") String grid,
-                                                  @Param("date") String date);
 
-    @Query(value = "select develop_people, sum(value) " +
-            "from rank_list_market " +
-            "where grid=?2 and date=?3 " +
-            "group by develop_people " +
-            "order by sum(value) desc ", nativeQuery = true)
-    List<RankListContentDTO> findByGrid(@Param("grid") String grid,
-                                                  @Param("date") String date);
-
-    @Query(value = "select new com.topway.dto.RankListContentDTO(rank.developPeople, sum(rank.value)) " +
-            "from RankListMarket rank " +
+    @Query(value = "select rank.develop_people, sum(rank.value) as sum_value " +
+            "from rank_list_market rank " +
             "where rank.date=?1 " +
             "and (rank.station in (?2) ) " +
-            "and (rank.gridName in (?3) ) " +
-            "group by rank.developPeople " +
-            "order by sum(rank.value) desc ")
-    List<RankListContentDTO> findTop10(String date,
-                                       List<String> station,
-                                       List<String> grid);
+            "and (rank.grid_name in (?3) ) " +
+            "group by rank.develop_people " +
+            "order by sum(rank.value) desc " +
+            "limit 10 ", nativeQuery = true)
+    List<Object[]> findTop10(String date,
+                             List<String> station,
+                             List<String> grid);
 }

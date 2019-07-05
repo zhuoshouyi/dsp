@@ -431,10 +431,13 @@ public class UserServiceImpl implements UserService {
         for (List<String> stringList : deviceList){
             if (stringList.size()>1){
                 if (stringList.get(0).contains(keyword) || stringList.get(1).contains(keyword)){
+                    stringList.get(0).replace(keyword, "<em>" + keyword + "</em>");
+                    stringList.get(1).replace(keyword, "<em>" + keyword + "</em>");
                     returnDeviceList.add(stringList);
                 }
             }else if (stringList.size()==1){
                 if (stringList.get(0).contains(keyword)){
+                    stringList.get(0).replace(keyword, "<em>" + keyword + "</em>");
                     returnDeviceList.add(stringList);
                 }
             }

@@ -13,7 +13,7 @@ public class Objects2RankListContentDTOConvert {
     public static RankListContentDTO convert(Object[] object){
         RankListContentDTO rankListContentDTO = new RankListContentDTO();
         rankListContentDTO.setName(String.valueOf(object[0]));
-        rankListContentDTO.setValue(Double.parseDouble(object[1].toString()==null?"0":object[1].toString()));
+        rankListContentDTO.setValue(Double.parseDouble(object[1]==null?"0":object[1].toString()));
         return rankListContentDTO;
     }
 

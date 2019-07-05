@@ -10,8 +10,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-#  jackson:
-#    default-property-inclusion: non_null
+  jackson:
+    default-property-inclusion: non_null
 
 server:
   servlet:

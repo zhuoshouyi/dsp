@@ -120,10 +120,12 @@ public class RankListServiceImpl implements RankListService{
 
             if (GRID.equals("all")){
                 log.info("【排行榜top1】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                return rankListMarketDao.findTop10(date, stationList, gridList).subList(0,10);
+                List<Object[]> objects = rankListMarketDao.findTop10(date, stationList, gridList);
+                return Objects2RankListContentDTOConvert.convert(objects);
             }else {
                 log.info("【排行榜top1】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                return rankListMarketDao.findTop10(date, stationList, Arrays.asList(GRID)).subList(0,10);
+                List<Object[]> objects = rankListMarketDao.findTop10(date, stationList, Arrays.asList(GRID));
+                return Objects2RankListContentDTOConvert.convert(objects);
             }
         }else {
             // 获取此用户的此维护站信息的网格信息
@@ -137,10 +139,12 @@ public class RankListServiceImpl implements RankListService{
 
             if (GRID.equals("all")){
                 log.info("【排行榜top1】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                return rankListMarketDao.findTop10(date, Arrays.asList(STATION), gridList).subList(0,10);
+                List<Object[]> objects = rankListMarketDao.findTop10(date, Arrays.asList(STATION), gridList);
+                return Objects2RankListContentDTOConvert.convert(objects);
             }else {
                 log.info("【排行榜top1】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                return rankListMarketDao.findTop10(date, Arrays.asList(STATION), Arrays.asList(GRID)).subList(0,10);
+                List<Object[]> objects = rankListMarketDao.findTop10(date, Arrays.asList(STATION), Arrays.asList(GRID));
+                return Objects2RankListContentDTOConvert.convert(objects);
             }
         }
     }
