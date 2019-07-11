@@ -6,10 +6,7 @@ import com.topway.convert.Area2AreaListDTOConvert;
 import com.topway.dto.*;
 import com.topway.enums.ResultEnum;
 import com.topway.form.*;
-import com.topway.pojo.Area;
-import com.topway.pojo.AreaLabel;
-import com.topway.pojo.HistoryMarket;
-import com.topway.pojo.Property;
+import com.topway.pojo.*;
 import com.topway.service.Impl.AreaServiceImpl;
 import com.topway.utils.ResultVOUtil;
 import com.topway.utils.UserAuthentication;
@@ -124,6 +121,38 @@ public class AreaController {
 
     }
 
+
+
+
+    /**
+     * 小区浏览记录展示接口
+     *
+     * @return
+     */
+    @PostMapping("/browseRecord")
+    public ResultVO browseRecord(HttpServletRequest httpServletRequest){
+
+        log.info("【小区浏览记录】-------------------------------------------------------");
+
+        /** 1.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        /** 2.查询浏览记录 */
+        List<BrowseRecord> browseRecordList = areaService.findBrowseRecord(userRoleDTO.getUserId());
+
+        List<BrowseRecordDTO> browseRecordDTOList = new ArrayList<>();
+        browseRecordList.stream().forEach(e -> {
+            BrowseRecordDTO browseRecordDTO = new BrowseRecordDTO();
+            browseRecordDTO.setId(e.getValueId());
+            browseRecordDTO.setName(e.getValueName());
+            browseRecordDTOList.add(browseRecordDTO);
+        });
+
+        return ResultVOUtil.success(browseRecordDTOList);
+    }
+
+
+
     /**
      * 小区详情接口
      *
@@ -156,6 +185,8 @@ public class AreaController {
         }
         areaBasicInfoDTO = Area2AreaBasicInfoDTOConvert.convert(area, 0, 0);
 
+        /** 3.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
 
         /** 4.根据areaId查询出label */
         log.info("【小区详情】查询小区标签");
@@ -188,6 +219,9 @@ public class AreaController {
         areaDetailDTO.setBusiness(areaBusinessDTO);
         areaDetailDTO.setMonthlyDevelopment(areaMonthlyDevelopmentDTO);
         areaDetailDTO.setPropertyInfo(property);
+
+        /** 9.保存浏览记录 */
+        areaService.saveBrowseRecord(userRoleDTO.getUserId(), AREAID, areaBasicInfoDTO.getAreaName());
 
         return ResultVOUtil.success(areaDetailDTO);
     }

@@ -8,10 +8,7 @@ import com.topway.dto.UserRoleDTO;
 import com.topway.form.AreaLabelForm;
 import com.topway.form.HistoryMarketForm;
 import com.topway.form.PropertyForm;
-import com.topway.pojo.Area;
-import com.topway.pojo.AreaLabel;
-import com.topway.pojo.HistoryMarket;
-import com.topway.pojo.Property;
+import com.topway.pojo.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,5 +48,12 @@ public interface AreaService {
     ResultVO saveHistoryMarket(UserRoleDTO userRoleDTO, HistoryMarketForm historyMarketForm, String date);
 
     ResultVO findAreaLabelLastRecord(String areaId);
+
+
+    /** 浏览记录查询 */
+    List<BrowseRecord> findBrowseRecord(String userId);
+
+    /** 浏览记录修改 */
+    void saveBrowseRecord(String userId, String valueId, String valueName);
 
 }

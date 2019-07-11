@@ -1,9 +1,14 @@
 package com.topway.service.Impl;
 
-import com.topway.DAO.WarningLossDao;
-import com.topway.DAO.WarningMarketDao;
-import com.topway.DAO.WarningServiceDao;
+import com.topway.DAO.*;
+import com.topway.VO.LoginVO;
+import com.topway.convert.List2StringConvert;
+import com.topway.convert.UserRole2UserRoleDTOConvert;
+import com.topway.dto.LoginForm2UserRoleConvert;
 import com.topway.dto.UserRoleDTO;
+import com.topway.form.LoginForm;
+import com.topway.pojo.ServiceGridOpt;
+import com.topway.pojo.UserRole;
 import com.topway.service.WarningService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,12 @@ public class WarningServiceImpl implements WarningService {
 
     @Autowired
     WarningServiceDao warningServiceDao;
+
+    @Autowired
+    ServiceGridOptDao serviceGridOptDao;
+
+    @Autowired
+    UserRoleDao userRoleDao;
 
     @Override
     public List<Double> WatchLossNumAndWbLossNum(UserRoleDTO userRoleDTO) {
@@ -84,6 +95,67 @@ public class WarningServiceImpl implements WarningService {
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
     }
 
+
+
+    @Override
+    public UserRoleDTO authentication(LoginForm loginForm){
+
+        /** 1.获取参数 */
+        final String OPENID = loginForm.getUserid();
+        final String USERNAME = loginForm.getUsername();
+        final String USERID = loginForm.getUs_id();
+        final String SPCODE = loginForm.getOperator();
+        final String BRANCH = loginForm.getBranch();
+
+        /** 2.验证用户身份 */
+        log.info("【登陆】验证用户身份");
+        LoginVO loginVO = new LoginVO();
+        UserRole userRole = new UserRole();
+
+        // 如果 userId 不为"",说明是基础网格员、支撑网格员、站长。
+        // 否则就是公司领导或者业务部门
+        if (USERID!="" ){
+            log.info("【登陆】用户为网格员或站长,userId为" + USERID);
+            // 关联工单表,获取用户所管辖的网格
+            List<ServiceGridOpt> serviceGridOptList = serviceGridOptDao.findByOpId(USERID);
+
+            // 如果是网格员但匹配不到网格,返回报错信息
+            if (serviceGridOptList == null || serviceGridOptList.size()==0){
+                return null;
+            }
+            // 将网格员负责的网格拼接到列表中去
+            List<String> serviceGridIdList = new ArrayList<>();
+            for (ServiceGridOpt serviceGridOpt : serviceGridOptList){
+                if (serviceGridOpt.getServiceGridId()!=null && !serviceGridOpt.getServiceGridId().equals("")){
+                    serviceGridIdList.add(serviceGridOpt.getServiceGridId());
+                }
+            }
+            try {
+                userRole = userRoleDao.findByUserId(USERID);
+
+                // TODO 细化区分五种权限类型
+//            userRole.setUserRole("支撑网格员");
+                userRole.setServiceGridId(List2StringConvert.convert(serviceGridIdList));
+
+            }catch (Exception e){
+                // 根据userid查询不到用户,无此用户
+                return null;
+            }
+
+
+        }else {
+            // 公司领导和业务部门即使用它们的运营商和分公司进行区分
+            // TODO 添加公司领导权限
+            log.info("【登陆】用户为公司领导或者业务部门,运营商为:" + SPCODE + ", 区域分公司为:" + BRANCH);
+
+            userRole = LoginForm2UserRoleConvert.convert(loginForm);
+            userRole.setUserRole("公司领导");
+
+        }
+
+        return UserRole2UserRoleDTOConvert.convert(userRole);
+
+    }
 
 
 }

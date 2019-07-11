@@ -3,6 +3,7 @@ package com.topway.service;
 import com.topway.VO.ResultVO;
 import com.topway.dto.*;
 import com.topway.form.UserLabelForm;
+import com.topway.pojo.BrowseRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,13 @@ public interface UserService {
 
     /** 终端搜索查询 */
     List<List<String>> findDeviceSearchByCustomerId(String customerId, String keyword);
+
+    /** 浏览记录查询 */
+    List<BrowseRecord> findBrowseRecord(String userId);
+
+    /** 浏览记录修改 */
+    void saveBrowseRecord(String userId, String valueId, String valueName);
+
 
     // 终端信息相关方法
     /** 通过设备号查询 DeviceDTO */

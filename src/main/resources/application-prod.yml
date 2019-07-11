@@ -7,9 +7,9 @@ spring:
 #    username: root
 #    password: 123456
 #    url: jdbc:mysql://127.0.0.1:3306/dsp?characterEncoding=utf-8&useSSL=false
-  jpa:
-    hibernate:
-      ddl-auto: update
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
   jackson:
     default-property-inclusion: non_null
 

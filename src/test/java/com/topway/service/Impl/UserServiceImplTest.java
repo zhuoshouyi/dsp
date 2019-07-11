@@ -19,6 +19,7 @@ public class UserServiceImplTest {
     @Autowired
     UserServiceImpl userService;
 
+
     @Test
     public void findDeviceWorkOrderDetailDTO() throws Exception {
         List<DeviceWorkOrderDTO> deviceWorkOrderDTOList = userService.findDeviceWorkOrderDTO("1010577290", "6100000237362");
@@ -34,6 +35,8 @@ public class UserServiceImplTest {
     @Test
     public void save() throws Exception {
 
+
+        userService.saveBrowseRecord("1234", "4321");
 
     }
 

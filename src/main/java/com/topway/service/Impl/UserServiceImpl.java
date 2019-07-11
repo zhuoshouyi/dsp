@@ -17,10 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 
 /**cd
  * Created by haizhi on 2019/5/23.
@@ -49,6 +49,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserLabelDao userLabelDao;
+
+    @Autowired
+    BrowseRecordDao browseRecordDao;
+
+    // 全局统一时间格式化格式
+    SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
     /**
@@ -681,4 +687,35 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+
+    /**
+     * 查询浏览记录
+     */
+    @Override
+    public List<BrowseRecord> findBrowseRecord(String userId){
+
+        return browseRecordDao.findByUserIdAndTypeOrderByCreateTimeDesc(userId, "user");
+    }
+
+    /**
+     * 保存浏览记录
+     */
+    @Override
+    public void saveBrowseRecord(String userId, String valueId, String valueName){
+        BrowseRecord browseRecord = browseRecordDao.findByUserIdAndTypeAndValueId(userId, "user", valueId);
+        if (browseRecord==null) {
+            browseRecord = new BrowseRecord();
+            browseRecord.setUserId(userId);
+            browseRecord.setType("user");
+            browseRecord.setValueId(valueId);
+            browseRecord.setValueName(valueName);
+            browseRecord.setCreateTime(FMT.format(new Date()));
+        }else {
+            browseRecord.setCreateTime(FMT.format(new Date()));
+        }
+
+        browseRecordDao.save(browseRecord);
+    }
+
 }

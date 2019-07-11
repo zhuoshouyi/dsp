@@ -38,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         }catch (Exception e){
             log.error("【认证】认证失败,token不符合规范");
-            response.sendError(ResultEnum.USER_NOT_FOUND.getCode(), ResultEnum.USER_NOT_FOUND.getDesc());
+            response.sendError(ResultEnum.PARAM_NOT_AUTHENTICATION.getCode(),
+                    ResultEnum.PARAM_NOT_AUTHENTICATION.getDesc());
             return;
         }
 
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean isProtectedUrl(HttpServletRequest request) {
         boolean flag;
         String skipUrl1 = "/account/login";
-        String skipUrl2 = "/user/detail";
+        String skipUrl2 = "/warning/list";
         String skipUrl3 = "/area/detail";
         String skipUrl4 = "/user/device/list";
 //        String skipUrl5 = "/warning/list";
@@ -61,8 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("【认证】认证url:" + request.getServletPath());
         if (request.getServletPath().matches(skipUrl1) ||
-                request.getServletPath().matches(skipUrl2) ||
-                request.getServletPath().matches(skipUrl3) ){
+                request.getServletPath().matches(skipUrl2) ){
             flag = false;
         } else {
             flag = true;

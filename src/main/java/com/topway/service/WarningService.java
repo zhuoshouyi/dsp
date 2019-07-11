@@ -1,6 +1,7 @@
 package com.topway.service;
 
 import com.topway.dto.UserRoleDTO;
+import com.topway.form.LoginForm;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface WarningService {
     Double RegionAverageNum(UserRoleDTO userRoleDTO);
 
     Double RegionFaultSuccess(UserRoleDTO userRoleDTO);
+
+    UserRoleDTO authentication(LoginForm loginForm);
 }

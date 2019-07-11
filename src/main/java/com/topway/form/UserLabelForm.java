@@ -21,12 +21,12 @@ public class UserLabelForm {
     /**
      * 是否智能电视
      */
-    private Integer isSmartTV = -1;
+    private String isSmartTV = "";
 
     /**
      * 是否自住
      */
-    private Integer isRenting = -1;
+    private String isRenting = "";
 
     /**
      * 用户类型
@@ -36,17 +36,17 @@ public class UserLabelForm {
     /**
      * 有无小孩
      */
-    private Integer isHaveChildren = -1;
+    private String isHaveChildren = "";
 
     /**
      * 有无老人
      */
-    private Integer isHaveElderly = -1;
+    private String isHaveElderly = "";
 
     /**
      * 是否用其他运营商产品
      */
-    private Integer isUseOtherProduct = -1;
+    private String isUseOtherProduct = "";
 
     /**
      * 收视兴趣(可多选)

@@ -1,9 +1,6 @@
 package com.topway.service.Impl;
 
-import com.topway.DAO.AreaDao;
-import com.topway.DAO.AreaLabelDao;
-import com.topway.DAO.HistoryMarketDao;
-import com.topway.DAO.PropertyDao;
+import com.topway.DAO.*;
 import com.topway.VO.ResultVO;
 import com.topway.convert.AreaLabel2AreaLabelFormConvert;
 import com.topway.convert.AreaLabel2AreaLabelShowDTOConvert;
@@ -16,10 +13,7 @@ import com.topway.enums.ResultEnum;
 import com.topway.form.AreaLabelForm;
 import com.topway.form.HistoryMarketForm;
 import com.topway.form.PropertyForm;
-import com.topway.pojo.Area;
-import com.topway.pojo.AreaLabel;
-import com.topway.pojo.HistoryMarket;
-import com.topway.pojo.Property;
+import com.topway.pojo.*;
 import com.topway.service.AreaService;
 import com.topway.utils.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 
 /**
  * Created by haizhi on 2019/5/22.
@@ -61,6 +57,9 @@ public class AreaServiceImpl implements AreaService{
 
     @Autowired
     PropertyDao propertyDao;
+
+    @Autowired
+    BrowseRecordDao browseRecordDao;
 
 
 
@@ -104,6 +103,35 @@ public class AreaServiceImpl implements AreaService{
     @Override
     public Area findByAreaId(String areaId) {
         return dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", "2019-05-27 00:00:00");
+    }
+
+    /**
+     * 查询浏览记录
+     */
+    @Override
+    public List<BrowseRecord> findBrowseRecord(String userId){
+
+        return browseRecordDao.findByUserIdAndTypeOrderByCreateTimeDesc(userId, "area");
+    }
+
+    /**
+     * 保存浏览记录
+     */
+    @Override
+    public void saveBrowseRecord(String userId, String valueId, String valueName){
+        BrowseRecord browseRecord = browseRecordDao.findByUserIdAndTypeAndValueId(userId, "area", valueId);
+        if (browseRecord==null) {
+            browseRecord = new BrowseRecord();
+            browseRecord.setUserId(userId);
+            browseRecord.setType("area");
+            browseRecord.setValueId(valueId);
+            browseRecord.setValueName(valueName);
+            browseRecord.setCreateTime(FMT.format(new Date()));
+        }else {
+            browseRecord.setCreateTime(FMT.format(new Date()));
+        }
+
+        browseRecordDao.save(browseRecord);
     }
 
 

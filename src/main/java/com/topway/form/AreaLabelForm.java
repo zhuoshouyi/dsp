@@ -31,22 +31,22 @@ public class AreaLabelForm {
     /**
      * 是否合同小区
      */
-    private Integer isContractArea = -1;
+    private String isContractArea = "";
 
     /**
      * 是否可以进场
      */
-    private Integer isPermittedAdmission = -1;
+    private String isPermittedAdmission = "";
 
     /**
      * 是否竞争小区
      */
-    private Integer isCompeteArea = -1;
+    private String isCompeteArea = "";
 
     /**
      * 是否正轨覆盖
      */
-    private Integer isRegularCover = -1;
+    private String isRegularCover = "";
 
     /**
      * 网络覆盖属性
@@ -56,7 +56,7 @@ public class AreaLabelForm {
     /**
      * 小区住户稳定性
      */
-    private Integer isStabilityLiver = -1;
+    private String isStabilityLiver = "";
 
     /**
      * 客户自定义标签

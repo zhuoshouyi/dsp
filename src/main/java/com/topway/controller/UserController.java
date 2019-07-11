@@ -5,6 +5,7 @@ import com.topway.dto.*;
 import com.topway.enums.ResultEnum;
 import com.topway.exception.ParamException;
 import com.topway.form.*;
+import com.topway.pojo.BrowseRecord;
 import com.topway.service.Impl.UserServiceImpl;
 import com.topway.utils.ResultVOUtil;
 import com.topway.utils.UserAuthentication;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -117,16 +119,45 @@ public class UserController {
 
 
 
+    /**
+     * 客户浏览记录展示接口
+     *
+     * @return
+     */
+    @PostMapping("/browseRecord")
+    public ResultVO browseRecord(HttpServletRequest httpServletRequest){
+
+        log.info("【用户浏览记录】-------------------------------------------------------");
+
+        /** 1.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        /** 2.查询浏览记录 */
+        List<BrowseRecord> browseRecordList = userService.findBrowseRecord(userRoleDTO.getUserId());
+
+        List<BrowseRecordDTO> browseRecordDTOList = new ArrayList<>();
+        browseRecordList.stream().forEach(e -> {
+            BrowseRecordDTO browseRecordDTO = new BrowseRecordDTO();
+            browseRecordDTO.setId(e.getValueId());
+            browseRecordDTO.setName(e.getValueName());
+            browseRecordDTOList.add(browseRecordDTO);
+        });
+
+        return ResultVOUtil.success(browseRecordDTOList);
+    }
+
+
 
     /**
-     * 客户详情查看接口
+     * 客户浏览记录查看接口
      *
      * @param customerIdForm
      * @param bindingResult
      * @return
      */
     @PostMapping("/detail")
-    public ResultVO detail(@Valid @RequestBody CustomerIdForm customerIdForm,
+    public ResultVO detail(HttpServletRequest httpServletRequest,
+                           @Valid @RequestBody CustomerIdForm customerIdForm,
                            BindingResult bindingResult){
 
         log.info("【用户详情】-------------------------------------------------------");
@@ -140,8 +171,14 @@ public class UserController {
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
-        /** 2.通过客户编码查找客户信息 */
+        /** 2.识别用户身份,判断权限 */
+        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+
+        /** 3.通过客户编码查找客户信息 */
         CustomerDTO customerDTO = userService.findByCustomerId(CUSTOMERID);
+
+        /** 4.将浏览记录存入数据库中 */
+        userService.saveBrowseRecord(userRoleDTO.getUserId(), CUSTOMERID, customerDTO.getCustomerName());
 
         return ResultVOUtil.success(customerDTO);
 

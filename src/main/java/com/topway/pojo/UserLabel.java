@@ -25,22 +25,22 @@ public class UserLabel {
     private String createTime;
 
     /** 是否智能电视. */
-    private Integer isSmartTV;
+    private String isSmartTV;
 
     /** 是否自住. */
-    private Integer isRenting;
+    private String isRenting;
 
     /** 用户类型. */
     private String customType;
 
     /** 有无小孩. */
-    private Integer isHaveChildren;
+    private String isHaveChildren;
 
     /** 有无老人. */
-    private Integer isHaveElderly;
+    private String isHaveElderly;
 
     /** 是否用其他运营商产品. */
-    private Integer isUseOtherProduct;
+    private String isUseOtherProduct;
 
     /** 收视兴趣(可多选). */
     private String watchInterest;

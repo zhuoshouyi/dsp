@@ -3,16 +3,19 @@ package com.topway.controller;
 import com.topway.VO.ResultVO;
 import com.topway.VO.WarningVO;
 import com.topway.dto.UserRoleDTO;
+import com.topway.enums.ResultEnum;
+import com.topway.form.LoginForm;
 import com.topway.service.Impl.WarningServiceImpl;
 import com.topway.utils.ResultVOUtil;
-import com.topway.utils.UserAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,12 +31,33 @@ public class WarningController {
 
 
     @PostMapping("/list")
-    public ResultVO warningList(HttpServletRequest httpServletRequest) {
+    public ResultVO warningList(@Valid @RequestBody LoginForm loginForm,
+                                BindingResult bindingResult) {
 
-        /** 1.识别用户身份,判断权限 */
-        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+        log.info("【预警数据接口】-------------------------------------------------------");
 
-        /** 2.拼接WarningVO */
+        final String USERID = loginForm.getUserid();
+        final String USERNAME = loginForm.getUsername();
+        final String US_ID = loginForm.getUs_id();
+        final String SPCODE = loginForm.getOperator();
+        final String BRANCH = loginForm.getBranch();
+
+        /** 1.校验form表单是否正确 */
+        if (bindingResult.hasErrors()){
+            log.error("【参数错误】传入的参数有误,deviceNoForm={}", loginForm.toString());
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
+        }
+
+        /** 2.识别用户身份,判断权限 */
+//        UserAloneAuthentication userAloneAuthentication = new UserAloneAuthentication();
+        UserRoleDTO userRoleDTO = service.authentication(loginForm);
+        if (userRoleDTO==null){
+            return ResultVOUtil.error(ResultEnum.USER_NOT_FOUND.getCode(),
+                    ResultEnum.USER_NOT_FOUND.getDesc());
+        }
+
+        /** 3.拼接WarningVO */
         WarningVO warningVO = new WarningVO();
 
         List<Double> WatchLossNumAndWbLossNumList = service.WatchLossNumAndWbLossNum(userRoleDTO);
