@@ -42,7 +42,27 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public List<Double> WatchLossNumAndWbLossNum(UserRoleDTO userRoleDTO) {
 
-        Object[] objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), "2019-05");
+        Object[] objects;
+
+        if (userRoleDTO.getUserRole().equals("基础网格员") ||
+                userRoleDTO.getUserRole().equals("支撑网格员") ||
+                userRoleDTO.getUserRole().equals("站长")){
+            // 用户身份为网格员
+            log.info("【预警数据】用户身份为基础网格员、支撑网格员或站长");
+            log.info("【预警数据】用户网格:" + userRoleDTO.getServiceGridId());
+            objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), "2019-05");
+        }else if(userRoleDTO.getUserRole().equals("公司领导") ||
+                userRoleDTO.getUserRole().equals("业务部门")){
+            // 用户身份为公司领导或业务部门
+            log.info("【预警数据】用户为公司领导或业务部门");
+            log.info("【预警数据】用户所管运营商:" + userRoleDTO.getSpcodeId() + ". 分公司:" + userRoleDTO.getBusinessOfficeId());
+            objects = warningLossDao.findBySpcodeAndBranchAndDate(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), "2019-05");
+        }else{
+            // 用户无身份,默认网格员
+            log.info("【预警数据】用户无身份,默认网格员");
+            log.info("【预警数据】用户网格:" + userRoleDTO.getServiceGridId());
+            objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), "2019-05");
+        }
         Object[] object0 = (Object[])objects[0];
         List<Double> doubleList = new ArrayList<>();
         System.out.println(object0.length);
@@ -114,7 +134,7 @@ public class WarningServiceImpl implements WarningService {
 
         // 如果 userId 不为"",说明是基础网格员、支撑网格员、站长。
         // 否则就是公司领导或者业务部门
-        if (USERID!="" ){
+        if (!USERID.equals("") && USERID!=null ){
             log.info("【登陆】用户为网格员或站长,userId为" + USERID);
             // 关联工单表,获取用户所管辖的网格
             List<ServiceGridOpt> serviceGridOptList = serviceGridOptDao.findByOpId(USERID);

@@ -22,6 +22,8 @@ public class UserProduct2DeviceBusinessInfoDTOConvert {
         deviceBusinessInfoDTO.setProductName(userProduct.getProductName());
         // fk918097a6 授权开始时间
         deviceBusinessInfoDTO.setOpenTime(userProduct.getAuthorizationStartTime());
+        // fk918097a6 授权结束时间
+        deviceBusinessInfoDTO.setAuthorizationEndTime(userProduct.getAuthorizationEndTime());
         // fkb8be2a22 订购状态
         deviceBusinessInfoDTO.setStatus(userProduct.getOrderStatus());
         return deviceBusinessInfoDTO;

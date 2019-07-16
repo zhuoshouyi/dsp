@@ -36,7 +36,7 @@ public class UserServiceImplTest {
     public void save() throws Exception {
 
 
-        userService.saveBrowseRecord("1234", "4321");
+
 
     }
 

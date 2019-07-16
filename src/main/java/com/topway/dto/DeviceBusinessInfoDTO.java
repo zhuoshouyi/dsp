@@ -17,6 +17,9 @@ public class DeviceBusinessInfoDTO {
     /** 开通日期. */
     private String openTime = "";
 
+    /** 到期日期. */
+    private String authorizationEndTime = "";
+
     /** 当前状态. */
     private String status = "";
 }

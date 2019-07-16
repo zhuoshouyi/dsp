@@ -13,7 +13,9 @@ public class RankListShowGridDTO<T> {
 
     public List<T> childs = new ArrayList<T>();
 
-    public String code;
+    public Double value;
+
+    public Double per;
 
     public String id;
 

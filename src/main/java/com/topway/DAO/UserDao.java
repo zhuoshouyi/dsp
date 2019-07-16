@@ -51,6 +51,10 @@ public interface UserDao extends JpaRepository<User, Integer> {
             "and u.station_name is not null", nativeQuery = true)
     List<String> findByGridId(List<String> gridId);
 
+//    /** 通过分公司查询维护站 */
+//    @Query(value = "", nativeQuery = true)
+//    List<String> findByBranch(List<String> branch);
+
 
     /** 公司领导通过运营商和区域分公司查询维护站 */
     @Query(value = "select distinct u.station_name from user u " +

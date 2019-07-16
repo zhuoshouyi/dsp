@@ -1,16 +1,15 @@
 package com.topway.service.Impl;
 
 import com.topway.DAO.*;
-import com.topway.convert.Objects2RankListContentDTOConvert;
-import com.topway.convert.Objects2RankListContentPerDTOConvert;
-import com.topway.dto.*;
+import com.topway.dto.RankListShowGridDTO;
+import com.topway.dto.RankListShowStationDTO;
+import com.topway.dto.UserRoleDTO;
 import com.topway.service.RankListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,7 +39,7 @@ public class RankListServiceImpl implements RankListService{
 
 
 
-    /** 排行榜 filter */
+    /** 排行榜 filter
     @Override
     public RankListShowBranchDTO rankListShow(UserRoleDTO userRoleDTO){
         RankListShowBranchDTO rankListShowBranchDTO = new RankListShowBranchDTO();
@@ -53,12 +52,15 @@ public class RankListServiceImpl implements RankListService{
             stationList = userDao.findStationBySpcodeAndBranch(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
 
         }else if (userRoleDTO.getUserRole().equals("支撑网格员") ||
-                userRoleDTO.getUserRole().equals("基础网格员") ||
-                userRoleDTO.getUserRole().equals("站长")){
-            log.info("【排行榜】用户身份为非公司领导");
+                userRoleDTO.getUserRole().equals("基础网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
             stationList = userDao.findByGridId(userRoleDTO.getServiceGridId());
 
-        }else {
+        }else if (userRoleDTO.getUserRole().equals("站长")) {
+            log.info("【排行榜】用户身份为站长");
+            stationList = userDao.findStationBySpcodeAndBranch(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
+
+        } else {
             log.info("【排行榜】用户无身份,默认基础网格员");
             stationList = userDao.findByGridId(userRoleDTO.getServiceGridId());
 
@@ -69,7 +71,7 @@ public class RankListServiceImpl implements RankListService{
         for (int i=0; i<stationList.size(); i++){
             RankListShowStationDTO rankListShowStationDTO = new RankListShowStationDTO();
             rankListShowStationDTO.setId(String.valueOf(i));
-            rankListShowStationDTO.setCode("");
+            rankListShowStationDTO.setValue(0.0);
             rankListShowStationDTO.setParentId(String.valueOf(1));
             rankListShowStationDTO.setName(stationList.get(i));
 
@@ -78,7 +80,7 @@ public class RankListServiceImpl implements RankListService{
             for (int j=0; j<gridList.size(); j++){
                 RankListShowGridDTO rankListShowGridDTO = new RankListShowGridDTO();
                 rankListShowGridDTO.setId(String.valueOf(j));
-                rankListShowGridDTO.setCode("");
+                rankListShowGridDTO.setValue(0.0);
                 rankListShowGridDTO.setParentId(String.valueOf(i));
                 rankListShowGridDTO.setName(gridList.get(j));
 
@@ -94,474 +96,451 @@ public class RankListServiceImpl implements RankListService{
 
         rankListShowBranchDTO.setId("1");
         rankListShowBranchDTO.setChilds(rankListShowStationDTOList);
-        rankListShowBranchDTO.setCode("");
+        rankListShowBranchDTO.setValue("");
         rankListShowBranchDTO.setName("全公司");
 
 
         return rankListShowBranchDTO;
     }
+    */
 
 
-
-    @Override
-    public List<RankListContentDTO> findTop1(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
-
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
+    /**
+     * 工具类
+     */
+    public List<RankListShowStationDTO> convert(List<Object[]> objects, String topNum){
+        List<RankListShowStationDTO> rankListShowStationDTOList = new ArrayList<>();
+        if (objects.size()>0){
+            for (int i=0; i<objects.size(); i++){
+                RankListShowStationDTO rankListShowStationDTO = new RankListShowStationDTO();
+                rankListShowStationDTO.setId(String.valueOf(i));
+                rankListShowStationDTO.setName(String.valueOf(objects.get(i)[0]));
+                rankListShowStationDTO.setValue(Double.parseDouble(objects.get(i)[1]==null?"0":objects.get(i)[1].toString()));
+                if (topNum.equals("top7") || topNum.equals("top8") || topNum.equals("top9")){
+                    rankListShowStationDTO.setPer(Double.parseDouble(objects.get(i)[2]==null?"0":objects.get(i)[2].toString()));
                 }
-            }
+                // 获取每一个 station 的 grid 排行
+                List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top1】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListMarketDao.findTop10(date, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top1】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListMarketDao.findTop10(date, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
-        }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
+                List<Object[]> gridObjects = new ArrayList<>();
+                switch (topNum){
+                    case "top1":
+                        gridObjects = rankListMarketDao.findGridByStation(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    case "top2":
+                        gridObjects = rankListFaultDao.find24Grid(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    case "top3":
+                        gridObjects = rankListFaultDao.find48Grid(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    case "top4":
+                        gridObjects = rankListFaultDao.findInTimeWatchGrid(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    case "top5":
+                        gridObjects = rankListFaultDao.findInTimeBroadGrid(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    case "top6":
+                        gridObjects = rankListFaultDao.find24Grid(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    case "top7":
+                        gridObjects = rankListLossDao.findWatchLossGrid(String.valueOf(objects.get(i)[0]), "2019-05");
+                        break;
+                    case "top8":
+                        gridObjects = rankListLossDao.find20MLossGrid(String.valueOf(objects.get(i)[0]), "2019-05");
+                        break;
+                    case "top9":
+                        gridObjects = rankListLossDao.find100MLossGrid(String.valueOf(objects.get(i)[0]), "2019-05");
+                        break;
+                    case "top10":
+                        gridObjects = rankListGridDao.findGridGrid(String.valueOf(objects.get(i)[0]), "2019-05");
+                        break;
+                    case "top11":
+                        gridObjects = rankListFaultDao.findRepeatGrid(String.valueOf(objects.get(i)[0]), "2019-06-04 00:00:00");
+                        break;
+                    default:
+                        break;
+                }
+                if (gridObjects.size()>0){
+                    for (int j=0; j<gridObjects.size(); j++){
+                        RankListShowGridDTO rankListShowGridDTO = new RankListShowGridDTO();
+                        rankListShowGridDTO.setId(String.valueOf(j));
+                        rankListShowGridDTO.setName(String.valueOf(gridObjects.get(j)[0]));
+                        rankListShowGridDTO.setValue(Double.parseDouble(gridObjects.get(j)[1]==null?"0":gridObjects.get(j)[1].toString()));
+                        if (topNum.equals("top7") || topNum.equals("top8") || topNum.equals("top9")){
+                            rankListShowGridDTO.setPer(Double.parseDouble(gridObjects.get(j)[2]==null?"0":gridObjects.get(j)[2].toString()));
+                        }
+                        rankListShowGridDTO.setParentId(String.valueOf(i));
+                        rankListShowGridDTOList.add(rankListShowGridDTO);
                     }
                 }
-            }
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top1】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListMarketDao.findTop10(date, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top1】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListMarketDao.findTop10(date, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
+                // 将 gridList 放进每一个 station 的 childs 下面
+                rankListShowStationDTO.setChilds(rankListShowGridDTOList);
+
+
+                // 将 station 排行放进第一层
+                rankListShowStationDTOList.add(rankListShowStationDTO);
             }
         }
+        return rankListShowStationDTOList;
     }
 
 
     @Override
-    public List<RankListContentDTO> findTop2(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
+    public List<RankListShowStationDTO> findTop1(UserRoleDTO userRoleDTO){
 
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
+        List<RankListShowStationDTO> rankListShowStationDTOList;
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top2】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.find24(date, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top2】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.find24(date, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top1】");
+            List<Object[]> objects = rankListMarketDao.findStationsBySpcodeAndBranchAndGrid(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top1");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top1】");
+            List<Object[]> objects = rankListMarketDao.findStationsBySpcodeAndBranchAndGrid(null, userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top1");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top1】");
+            List<Object[]> objects = rankListMarketDao.findStationsBySpcodeAndBranchAndGrid(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top1");
+
         }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top2】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.find24(date, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top2】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.find24(date, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top1】");
+            List<Object[]> objects = rankListMarketDao.findStationsBySpcodeAndBranchAndGrid(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top1");
         }
+
+        return rankListShowStationDTOList;
+    }
+
+
+    @Override
+    public List<RankListShowStationDTO> findTop2(UserRoleDTO userRoleDTO) {
+
+        List<RankListShowStationDTO> rankListShowStationDTOList;
+
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top2】");
+            List<Object[]> objects = rankListFaultDao.find24Station(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top2");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top2】");
+            List<Object[]> objects = rankListFaultDao.find24Station(null, userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top2");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top2】");
+            List<Object[]> objects = rankListFaultDao.find24Station(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top2");
+
+        }else {
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top2】");
+            List<Object[]> objects = rankListFaultDao.find24Station(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top2");
+        }
+
+        return rankListShowStationDTOList;
+
+    }
+
+
+    @Override
+    public List<RankListShowStationDTO> findTop3(UserRoleDTO userRoleDTO) {
+
+        List<RankListShowStationDTO> rankListShowStationDTOList;
+
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top3】");
+            List<Object[]> objects = rankListFaultDao.find48Station(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top3");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top3】");
+            List<Object[]> objects = rankListFaultDao.find48Station(null, userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top3");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top3】");
+            List<Object[]> objects = rankListFaultDao.find48Station(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top3");
+
+        }else {
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top3】");
+            List<Object[]> objects = rankListFaultDao.find48Station(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top3");
+        }
+
+        return rankListShowStationDTOList;
 
     }
 
     @Override
-    public List<RankListContentDTO> findTop3(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
+    public List<RankListShowStationDTO> findTop4(UserRoleDTO userRoleDTO) {
 
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
+        List<RankListShowStationDTO> rankListShowStationDTOList;
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top3】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.find48(date, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top3】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.find48(date, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top4】");
+            List<Object[]> objects = rankListFaultDao.findInTimeWatchStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top4");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top4】");
+            List<Object[]> objects = rankListFaultDao.findInTimeWatchStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top4");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top4】");
+            List<Object[]> objects = rankListFaultDao.findInTimeWatchStation(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top4");
+
         }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top3】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.find48(date, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top3】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.find48(date, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top4】");
+            List<Object[]> objects = rankListFaultDao.findInTimeWatchStation(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top4");
         }
-    }
 
-    @Override
-    public List<RankListContentDTO> findTop4(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
-
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top4】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.findInTimeWatch(date, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top4】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.findInTimeWatch(date, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
-        }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top4】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.findInTimeWatch(date, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top4】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.findInTimeWatch(date, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
-        }
+        return rankListShowStationDTOList;
 
     }
 
     @Override
-    public List<RankListContentDTO> findTop5(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
+    public List<RankListShowStationDTO> findTop5(UserRoleDTO userRoleDTO) {
 
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
+        List<RankListShowStationDTO> rankListShowStationDTOList;
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top5】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.findInTimeBroad(date, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top5】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.findInTimeBroad(date, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top5】");
+            List<Object[]> objects = rankListFaultDao.findInTimeBroadStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top5");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top5】");
+            List<Object[]> objects = rankListFaultDao.findInTimeBroadStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top5");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top5】");
+            List<Object[]> objects = rankListFaultDao.findInTimeBroadStation(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top5");
+
         }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top5】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.findInTimeBroad(date, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top5】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.findInTimeBroad(date, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top5】");
+            List<Object[]> objects = rankListFaultDao.findInTimeBroadStation(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top5");
         }
+
+        return rankListShowStationDTOList;
     }
 
     @Override
-    public List<RankListContentDTO> findTop6(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
+    public List<RankListShowStationDTO> findTop6(UserRoleDTO userRoleDTO) {
         return null;
     }
 
     @Override
-    public List<RankListContentPerDTO> findTop7(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
+    public List<RankListShowStationDTO> findTop7(UserRoleDTO userRoleDTO) {
 
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
+        List<RankListShowStationDTO> rankListShowStationDTOList;
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top7】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListLossDao.findWatchLoss(month, stationList, gridList);
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top7】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListLossDao.findWatchLoss(month, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top7】");
+            List<Object[]> objects = rankListLossDao.findWatchLossStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top7");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top7】");
+            List<Object[]> objects = rankListLossDao.findWatchLossStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top7");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top7】");
+            List<Object[]> objects = rankListLossDao.findWatchLossStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top7");
+
         }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top7】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListLossDao.findWatchLoss(month, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top7】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListLossDao.findWatchLoss(month, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top7】");
+            List<Object[]> objects = rankListLossDao.findWatchLossStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top7");
         }
+
+        return rankListShowStationDTOList;
+
+    }
+
+
+    @Override
+    public List<RankListShowStationDTO> findTop8(UserRoleDTO userRoleDTO) {
+
+        List<RankListShowStationDTO> rankListShowStationDTOList;
+
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top8】");
+            List<Object[]> objects = rankListLossDao.find20MLossStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top8");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top8】");
+            List<Object[]> objects = rankListLossDao.find20MLossStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top8");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top8】");
+            List<Object[]> objects = rankListLossDao.find20MLossStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top8");
+
+        }else {
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top8】");
+            List<Object[]> objects = rankListLossDao.find20MLossStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top8");
+        }
+
+        return rankListShowStationDTOList;
 
     }
 
     @Override
-    public List<RankListContentPerDTO> findTop8(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
+    public List<RankListShowStationDTO> findTop9(UserRoleDTO userRoleDTO) {
 
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
+        List<RankListShowStationDTO> rankListShowStationDTOList;
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top8】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListLossDao.find20MLoss(month, stationList, gridList);
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top8】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListLossDao.find20MLoss(month, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top9】");
+            List<Object[]> objects = rankListLossDao.find100MLossStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top9");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top9】");
+            List<Object[]> objects = rankListLossDao.find100MLossStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top9");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top9】");
+            List<Object[]> objects = rankListLossDao.find100MLossStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top9");
+
         }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top8】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListLossDao.find20MLoss(month, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top8】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListLossDao.find20MLoss(month, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top9】");
+            List<Object[]> objects = rankListLossDao.find100MLossStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top9");
         }
-    }
 
-    @Override
-    public List<RankListContentPerDTO> findTop9(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
-
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top9】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListLossDao.find100MLoss(month, stationList, gridList);
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top9】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListLossDao.find100MLoss(month, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }
-        }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top9】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListLossDao.find100MLoss(month, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top9】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListLossDao.find100MLoss(month, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentPerDTOConvert.convert(objects);
-            }
-        }
-    }
-
-    @Override
-    public List<RankListContentDTO> findTop10(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
-
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top10】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListGridDao.findGrid(month, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top10】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListGridDao.findGrid(month, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
-        }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top10】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListGridDao.findGrid(month, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top10】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListGridDao.findGrid(month, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
-        }
+        return rankListShowStationDTOList;
 
     }
 
     @Override
-    public List<RankListContentDTO> findTop11(String STATION, String GRID, RankListShowBranchDTO rankListShowBranchDTO) {
-        List<String> stationList = new ArrayList<>();
-        List<String> gridList = new ArrayList<>();
+    public List<RankListShowStationDTO> findTop10(UserRoleDTO userRoleDTO) {
 
-        if (STATION.equals("all")){
-            // 获取此用户的所有维护站信息和网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                stationList.add(rankListShowBranchDTO.getChilds().get(i).getName());
-                for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                    gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                }
-            }
+        List<RankListShowStationDTO> rankListShowStationDTOList;
 
-            if (GRID.equals("all")){
-                log.info("【排行榜top11】stationList=" + stationList.toString() + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.findRepeat(date, stationList, gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top11】stationList=" + stationList.toString() + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.findRepeat(date, stationList, Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top10】");
+            List<Object[]> objects = rankListGridDao.findGridStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top10");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top10】");
+            List<Object[]> objects = rankListGridDao.findGridStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-05");
+            rankListShowStationDTOList = convert(objects, "top10");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top10】");
+            List<Object[]> objects = rankListGridDao.findGridStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top10");
+
         }else {
-            // 获取此用户的此维护站信息的网格信息
-            for (int i=0; i<rankListShowBranchDTO.getChilds().size(); i++){
-                if (rankListShowBranchDTO.getChilds().get(i).getName().equals(STATION)){
-                    for (int j=0; j<rankListShowBranchDTO.getChilds().get(i).getChilds().size(); j++){
-                        gridList.add(rankListShowBranchDTO.getChilds().get(i).getChilds().get(j).getName());
-                    }
-                }
-            }
-
-            if (GRID.equals("all")){
-                log.info("【排行榜top11】stationList=" + Arrays.asList(STATION) + "\ngridList=" + gridList.toString());
-                List<Object[]> objects = rankListFaultDao.findRepeat(date, Arrays.asList(STATION), gridList);
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }else {
-                log.info("【排行榜top11】stationList=" + Arrays.asList(STATION) + "\ngridList=" + Arrays.asList(GRID));
-                List<Object[]> objects = rankListFaultDao.findRepeat(date, Arrays.asList(STATION), Arrays.asList(GRID));
-                return Objects2RankListContentDTOConvert.convert(objects);
-            }
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top10】");
+            List<Object[]> objects = rankListGridDao.findGridStation(null, null, userRoleDTO.getServiceGridId(), "2019-05");
+            rankListShowStationDTOList = convert(objects, "top10");
         }
+
+        return rankListShowStationDTOList;
+
+
+    }
+
+    @Override
+    public List<RankListShowStationDTO> findTop11(UserRoleDTO userRoleDTO) {
+
+        List<RankListShowStationDTO> rankListShowStationDTOList;
+
+        // 判断用户权限
+        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门")){
+            log.info("【排行榜】用户身份为公司领导或业务部门");
+            log.info("【排行榜top11】");
+            List<Object[]> objects = rankListFaultDao.findRepeatStation(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top11");
+
+        }else if (userRoleDTO.getUserRole().equals("站长")){
+            log.info("【排行榜】用户身份为站长");
+            log.info("【排行榜top11】");
+            List<Object[]> objects = rankListFaultDao.findRepeatStation(null, userRoleDTO.getBusinessOfficeId(), null, "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top11");
+
+        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
+            log.info("【排行榜】用户身份为支撑网格员或基础网格员");
+            log.info("【排行榜top11】");
+            List<Object[]> objects = rankListFaultDao.findRepeatStation(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top11");
+
+        }else {
+            log.info("【排行榜】用户无身份,默认基础网格员");
+            log.info("【排行榜top11】");
+            List<Object[]> objects = rankListFaultDao.findRepeatStation(null, null, userRoleDTO.getServiceGridId(), "2019-06-04 00:00:00");
+            rankListShowStationDTOList = convert(objects, "top11");
+        }
+
+        return rankListShowStationDTOList;
+
     }
 
 }

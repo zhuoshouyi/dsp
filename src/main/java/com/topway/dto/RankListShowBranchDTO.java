@@ -12,7 +12,7 @@ public class RankListShowBranchDTO {
 
     public List<RankListShowStationDTO> childs;
 
-    public String code;
+    public String value;
 
     public String id;
 

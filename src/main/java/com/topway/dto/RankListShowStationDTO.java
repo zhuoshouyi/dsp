@@ -12,7 +12,9 @@ public class RankListShowStationDTO {
 
     public List<RankListShowGridDTO> childs;
 
-    public String code;
+    public Double value;
+
+    public Double per;
 
     public String id;
 

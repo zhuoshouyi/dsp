@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class BrowseRecordDTO {
 
-    public String Id;
+    public String id;
 
     public String name;
 }
