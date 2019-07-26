@@ -79,7 +79,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double InstallSuccess24h(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningServiceDao.findBy24(userRoleDTO.getServiceGridId());
+        Object[] objects = warningServiceDao.findBy24(userRoleDTO.getServiceGridId(), "2019-05-21 00:00:00", "2019-06-20 00:00:00");
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -90,7 +90,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double MarketEffectNum(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningMarketDao.findByGridId("2019-06-23 00:00:00", userRoleDTO.getServiceGridId());
+        Object[] objects = warningMarketDao.findByGridId(userRoleDTO.getServiceGridId(), "2019-05-21 00:00:00", "2019-06-20 00:00:00");
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -100,7 +100,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double RegionAverageNum(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningServiceDao.findByRegionAverage("2019-06-23 00:00:00", userRoleDTO.getServiceGridId());
+        Object[] objects = warningServiceDao.findByRegionAverage(userRoleDTO.getServiceGridId(), "2019-05-21 00:00:00", "2019-06-20 00:00:00");
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -109,7 +109,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double RegionFaultSuccess(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningServiceDao.findByFaultSuccess("2019-06-23 00:00:00", userRoleDTO.getServiceGridId());
+        Object[] objects = warningServiceDao.findByFaultSuccess(userRoleDTO.getServiceGridId(),"2019-05-21 00:00:00", "2019-06-20 00:00:00");
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());

@@ -47,7 +47,7 @@ public class RankListMarketDaoTest {
         List<String> branch = Arrays.asList("南山分公司", "福田分公司");
         List<String> grid = Arrays.asList("3687","3682","3679","3677","3686","3680","3678");
 
-        List<Object[]> objects = dao.findStationsBySpcodeAndBranchAndGrid(spcode, branch, null, "2019-06-04 00:00:00");
+        List<Object[]> objects = dao.findPersonByBranchAndStation("南山分公司", null, "刘亚勤", "2019-06-04 00:00:00");
         System.out.println("");
     }
 

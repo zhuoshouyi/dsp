@@ -48,8 +48,14 @@ public interface UserDao extends JpaRepository<User, Integer> {
     /** 通过网格查询维护站 */
     @Query(value = "select distinct u.station_name from user u " +
             "where grid_id in (?1) " +
-            "and u.station_name is not null", nativeQuery = true)
+            "and u.station_name is not null ", nativeQuery = true)
     List<String> findByGridId(List<String> gridId);
+
+    /** 通过网格查询区域分公司 */
+    @Query(value = "select distinct u.branch from user u " +
+            "where grid_id in (?1) " +
+            "and u.branch is not null ", nativeQuery = true)
+    List<String> findBranchByGridId(List<String> gridId);
 
 //    /** 通过分公司查询维护站 */
 //    @Query(value = "", nativeQuery = true)

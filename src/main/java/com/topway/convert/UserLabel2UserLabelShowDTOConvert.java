@@ -18,28 +18,28 @@ public class UserLabel2UserLabelShowDTOConvert {
         userLabelShowDTO.setDate(userLabel.getCreateTime().substring(0,10));
         List<String> labelList = new ArrayList<>();
 
-        if (userLabel.getIsSmartTV()!=null && !userLabel.getIsSmartTV().equals(-1))
+        if (userLabel.getIsSmartTV()!=null && !userLabel.getIsSmartTV().equals(""))
             labelList.add(userLabel.getIsSmartTV()=="1" ? "有智能电视" : "无智能电视");
-        if (userLabel.getIsRenting()!=null && !userLabel.getIsRenting().equals(-1))
+        if (userLabel.getIsRenting()!=null && !userLabel.getIsRenting().equals(""))
             labelList.add(userLabel.getIsRenting()=="1" ? "自住" : "非自住");
-        if (userLabel.getCustomType()!=null && !userLabel.getCustomType().equals(""))
-            labelList.add(userLabel.getCustomType());
-        if (userLabel.getIsHaveChildren()!=null && !userLabel.getIsHaveChildren().equals(-1))
+        if (userLabel.getCustomerType()!=null && !userLabel.getCustomerType().equals(""))
+            labelList.add(userLabel.getCustomerType());
+        if (userLabel.getIsHaveChildren()!=null && !userLabel.getIsHaveChildren().equals(""))
             labelList.add(userLabel.getIsHaveChildren()=="1" ? "有小孩" : "无小孩");
-        if (userLabel.getIsHaveElderly()!=null && !userLabel.getIsHaveElderly().equals(-1))
+        if (userLabel.getIsHaveElderly()!=null && !userLabel.getIsHaveElderly().equals(""))
             labelList.add(userLabel.getIsHaveElderly()=="1" ? "有老人" : "无老人");
-        if (userLabel.getIsUseOtherProduct()!=null && !userLabel.getIsUseOtherProduct().equals(-1))
+        if (userLabel.getIsUseOtherProduct()!=null && !userLabel.getIsUseOtherProduct().equals(""))
             labelList.add(userLabel.getIsUseOtherProduct()=="1" ? "有其他运营商产品" : "无其他运营商产品");
         if (userLabel.getWatchInterest()!=null && !userLabel.getWatchInterest().equals("")) {
             Arrays.stream(userLabel.getWatchInterest().split(",")).forEach(e -> labelList.add(e));
         }
-        if (userLabel.getCustomCharacteristic()!=null && !userLabel.getCustomCharacteristic().equals("")) {
-            Arrays.stream(userLabel.getCustomCharacteristic().split(",")).forEach(e -> labelList.add(e));
+        if (userLabel.getCustomerCharacteristic()!=null && !userLabel.getCustomerCharacteristic().equals("")) {
+            Arrays.stream(userLabel.getCustomerCharacteristic().split(",")).forEach(e -> labelList.add(e));
         }
         if (userLabel.getCommunicationType()!=null && !userLabel.getCommunicationType().equals(""))
             labelList.add(userLabel.getCommunicationType());
-        if (userLabel.getCustomFileds()!=null && !userLabel.getCustomFileds().equals("")) {
-            Arrays.stream(userLabel.getCustomFileds().split(",")).forEach(e -> labelList.add(e));
+        if (userLabel.getCustomerFileds()!=null && !userLabel.getCustomerFileds().equals("")) {
+            Arrays.stream(userLabel.getCustomerFileds().split(",")).forEach(e -> labelList.add(e));
         }
 
         userLabelShowDTO.setLabelList(labelList);

@@ -19,36 +19,36 @@ public interface RankListService {
 //    List<RankListShowStationDTO> findAllStation(UserRoleDTO userRoleDTO);
 
     // 营销生效额
-    List<RankListShowStationDTO> findTop1(UserRoleDTO userRoleDTO);
+    List<RankListShowPersonDTO> findTop1(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 24安装处理成功率(数字+宽带)
-    List<RankListShowStationDTO> findTop2(UserRoleDTO userRoleDTO);
+    List findTop2(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 48安装处理成功率(数字+宽带)
-    List<RankListShowStationDTO> findTop3(UserRoleDTO userRoleDTO);
+    List findTop3(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 故障及时处理成功率(数字)
-    List<RankListShowStationDTO> findTop4(UserRoleDTO userRoleDTO);
+    List findTop4(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 故障及时处理成功率(宽带)
-    List<RankListShowStationDTO> findTop5(UserRoleDTO userRoleDTO);
+    List findTop5(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 故障单预约规范率
-    List<RankListShowStationDTO> findTop6(UserRoleDTO userRoleDTO);
+    List findTop6(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 数字电视用户流失数/率
-    List<RankListShowStationDTO> findTop7(UserRoleDTO userRoleDTO);
+    List<RankListShowGridDTO> findTop7(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 20M宽带流失数/率
-    List<RankListShowStationDTO> findTop8(UserRoleDTO userRoleDTO);
+    List<RankListShowGridDTO> findTop8(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 100M宽带流失数/率
-    List<RankListShowStationDTO> findTop9(UserRoleDTO userRoleDTO);
+    List<RankListShowGridDTO> findTop9(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 网格保障率(网格内上月top5小区)
-    List<RankListShowStationDTO> findTop10(UserRoleDTO userRoleDTO);
+    List<RankListShowGridDTO> findTop10(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
     // 重复故障率
-    List<RankListShowStationDTO> findTop11(UserRoleDTO userRoleDTO);
+    List<RankListShowGridDTO> findTop11(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson);
 
 }

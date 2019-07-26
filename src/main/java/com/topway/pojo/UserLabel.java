@@ -31,7 +31,7 @@ public class UserLabel {
     private String isRenting;
 
     /** 用户类型. */
-    private String customType;
+    private String customerType;
 
     /** 有无小孩. */
     private String isHaveChildren;
@@ -46,11 +46,11 @@ public class UserLabel {
     private String watchInterest;
 
     /** 用户类型(可多选). */
-    private String customCharacteristic;
+    private String customerCharacteristic;
 
     /** 沟通类型. */
     private String communicationType;
 
     /** 客户自定义标签. */
-    private String customFileds;
+    private String customerFileds;
 }

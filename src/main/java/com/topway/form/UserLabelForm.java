@@ -31,7 +31,7 @@ public class UserLabelForm {
     /**
      * 用户类型
      */
-    private String customType = "";
+    private String customerType = "";
 
     /**
      * 有无小孩
@@ -56,7 +56,7 @@ public class UserLabelForm {
     /**
      * 用户类型(可多选)
      */
-    private List<String> customCharacteristic = new ArrayList<>();
+    private List<String> customerCharacteristic = new ArrayList<>();
 
     /**
      * 沟通类型
@@ -66,5 +66,5 @@ public class UserLabelForm {
     /**
      * 客户自定义标签
      */
-    private List<String> customFileds = new ArrayList<>();
+    private List<String> customerFileds = new ArrayList<>();
 }

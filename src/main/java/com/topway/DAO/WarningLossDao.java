@@ -17,7 +17,7 @@ public interface WarningLossDao extends JpaRepository<WarningLoss, Integer> {
             "where wl.grid_id in (?1) " +
             "and wl.date=?2 ", nativeQuery = true)
     Object[] findByGridIdAndDate(List<String> grid_id,
-                                 String date);
+                                 String month);
 
 
     @Query(value = "select (sum(wl.last_month_end_watch_num)-sum(wl.now_month_end_watch_num)) as watch_loss_num, " +
@@ -28,7 +28,7 @@ public interface WarningLossDao extends JpaRepository<WarningLoss, Integer> {
             "and wl.date=?3 ", nativeQuery = true)
     Object[] findBySpcodeAndBranchAndDate(List<String> spcode,
                                           List<String> branch,
-                                          String date);
+                                          String month);
 
 
 }

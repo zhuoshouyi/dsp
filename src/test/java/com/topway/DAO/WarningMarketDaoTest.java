@@ -26,7 +26,7 @@ public class WarningMarketDaoTest {
         stringList.add("128");
 
 
-        Object[] daoByGridId = dao.findByGridId("2019-06-23 00:00:00", stringList);
+        Object[] daoByGridId = dao.findByGridId(stringList, "2019-05-21 00:00:00", "2019-06-20 00:00:00");
         System.out.println("");
     }
 

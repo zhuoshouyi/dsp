@@ -22,6 +22,7 @@ public class RankListFaultDaoTest {
 
     @Test
     public void test1(){
+        List<Object[]> stationPerson = dao.find24Person("南山分公司", null, "王奇龙", date);
         System.out.println("");
     }
 

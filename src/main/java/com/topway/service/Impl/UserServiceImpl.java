@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 
 /**cd
  * Created by haizhi on 2019/5/23.

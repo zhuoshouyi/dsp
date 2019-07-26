@@ -18,6 +18,9 @@ public class WatchAction2DeviceWatchActionDTOConvert {
     // 全局统一时间格式化格式
     static SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM");
 
+    // 全局统一保留两位小数格式化
+    static DecimalFormat DF = new java.text.DecimalFormat("###.00");
+
     // 获取系统时间
     static Date date =new Date();
 
@@ -76,12 +79,12 @@ public class WatchAction2DeviceWatchActionDTOConvert {
                             break;
                         case "时移业务":
                             if (e.getStatisticalCycle().equals("最近7天")){
-                                watchLengthOfOnline.setSevenDayTime(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setSevenDayTime(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setSevenDayTime(String.valueOf(e.getNumbers())+"次");
                                 watchLengthOfOnlineSevenTotal[0] += e.getTimeLength()/3600;
                                 watchTimesOfEnterSevenTotal[0] += e.getNumbers();
                             }else if(e.getStatisticalCycle().equals("最近30天")){
-                                watchLengthOfOnline.setThirtyDayTime(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setThirtyDayTime(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setThirtyDayTime(String.valueOf(e.getNumbers())+"次");
                                 watchLengthOfOnlineThirtyTotal[0] += e.getTimeLength()/3600;
                                 watchLengthOfOnlineThirtyTotal[0] += e.getNumbers();
@@ -89,12 +92,12 @@ public class WatchAction2DeviceWatchActionDTOConvert {
                             break;
                         case "天天影院":
                             if (e.getStatisticalCycle().equals("最近7天")){
-                                watchLengthOfOnline.setSevenDayCinema(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setSevenDayCinema(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setSevenDayCinema(String.valueOf(e.getNumbers())+"次");
                                 watchLengthOfOnlineSevenTotal[0] += e.getTimeLength()/3600;
                                 watchTimesOfEnterSevenTotal[0] += e.getNumbers();
                             }else if(e.getStatisticalCycle().equals("最近30天")){
-                                watchLengthOfOnline.setThirtyDayCinema(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setThirtyDayCinema(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setThirtyDayCinema(String.valueOf(e.getNumbers())+"次");
                                 watchLengthOfOnlineSevenTotal[0] += e.getTimeLength()/3600;
                                 watchTimesOfEnterSevenTotal[0] += e.getNumbers();
@@ -102,27 +105,27 @@ public class WatchAction2DeviceWatchActionDTOConvert {
                             break;
                         case "单片点播":
                             if (e.getStatisticalCycle().equals("最近7天")){
-                                watchLengthOfOnline.setSevenDayDrop(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setSevenDayDrop(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setSevenDayDrop(String.valueOf(e.getNumbers())+"次");
                             }else if(e.getStatisticalCycle().equals("最近30天")){
-                                watchLengthOfOnline.setThirtyDayDrop(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setThirtyDayDrop(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setThirtyDayDrop(String.valueOf(e.getNumbers())+"次");
                             }
                             break;
                         case "直播":
                             if (e.getStatisticalCycle().equals("最近7天")){
-                                watchLengthOfOnline.setSevenDayShow(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setSevenDayShow(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setSevenDayShow(String.valueOf(e.getNumbers())+"次");
                             }else if(e.getStatisticalCycle().equals("最近30天")){
-                                watchLengthOfOnline.setThirtyDayShow(String.valueOf(e.getTimeLength()/3600)+"h");
+                                watchLengthOfOnline.setThirtyDayShow(String.valueOf(DF.format(e.getTimeLength()/3600))+"h");
                                 watchTimesOfEnter.setThirtyDayShow(String.valueOf(e.getNumbers())+"次");
                             }
                             break;
                     }
                 });
 
-        watchLengthOfOnline.setSevenTotal(watchLengthOfOnlineSevenTotal[0]+"h");
-        watchLengthOfOnline.setThirtyTotal(watchLengthOfOnlineThirtyTotal[0]+"h");
+        watchLengthOfOnline.setSevenTotal(DF.format(watchLengthOfOnlineSevenTotal[0])+"h");
+        watchLengthOfOnline.setThirtyTotal(DF.format(watchLengthOfOnlineThirtyTotal[0])+"h");
 
         watchTimesOfEnter.setSevenTotal(watchTimesOfEnterSevenTotal[0]+"次");
         watchTimesOfEnter.setThirtyTotal(watchTimesOfEnterThirtyTotal[0]+"次");

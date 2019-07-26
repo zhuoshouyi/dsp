@@ -13,9 +13,11 @@ public interface WarningMarketDao extends JpaRepository<WarningMarket, Integer> 
 
     @Query(value = "select sum(market_effect_num) as market_effect_num " +
             "from warning_market " +
-            "where date=?1 " +
-            "and grid_id in (?2)", nativeQuery = true)
-    Object[] findByGridId(String date,
-                          List<String> gridId);
+            "where grid_id in (?1) " +
+            "and date>=?2 " +
+            "and date<=?3 ", nativeQuery = true)
+    Object[] findByGridId(List<String> gridId,
+                          String timeStart,
+                          String timeEnd);
 
 }

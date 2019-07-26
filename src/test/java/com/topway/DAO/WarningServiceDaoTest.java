@@ -25,7 +25,7 @@ public class WarningServiceDaoTest {
         List<String> stringList = new ArrayList<>();
         stringList.add("621");
 
-        Object[] daoBy24 = dao.findBy24(stringList);
+//        Object[] daoBy24 = dao.findBy24(stringList);
         System.out.println("");
     }
 
@@ -35,7 +35,7 @@ public class WarningServiceDaoTest {
         List<String> stringList = new ArrayList<>();
         stringList.add("1270");
 
-        Object[] daoBy24 = dao.findByRegionAverage("2019-06-23 00:00:00", stringList);
+//        Object[] daoBy24 = dao.findByRegionAverage("2019-06-23 00:00:00", stringList);
         System.out.println("");
     }
 

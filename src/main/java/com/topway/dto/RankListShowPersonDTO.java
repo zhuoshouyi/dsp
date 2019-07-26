@@ -6,9 +6,7 @@ import lombok.Data;
  * Created by haizhi on 2019/6/28.
  */
 @Data
-public class RankListShowGridDTO {
-
-//    public List<T> childs = new ArrayList<T>();
+public class RankListShowPersonDTO {
 
     public Double value;
 
@@ -18,5 +16,6 @@ public class RankListShowGridDTO {
 
     public String name;
 
-//    public String parentId;
+    public Boolean isOneself = false;
+
 }

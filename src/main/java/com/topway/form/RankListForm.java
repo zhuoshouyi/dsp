@@ -2,6 +2,8 @@ package com.topway.form;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * Created by haizhi on 2019/6/5.
  */
@@ -9,14 +11,16 @@ import lombok.Data;
 public class RankListForm {
 
     /**
-     * station
+     * 排行范围: 本分公司  本分部
      */
-    private String station = "all";
+    @NotEmpty(message = "请选择排行范围")
+    private String branchOrStation;
 
 
     /**
-     * grid
+     * 排行维度: 个人维度  网格维度
      */
-    private String grid = "all";
+    @NotEmpty(message = "请选择排行维度")
+    private String gridOrPerson;
 
 }

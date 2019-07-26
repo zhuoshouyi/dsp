@@ -17,17 +17,17 @@ public class UserLabel2UserLabelFormConvert {
         userLabelForm.setCustomerId(userLabel.getCustomerId());
         userLabelForm.setIsSmartTV(userLabel.getIsSmartTV());
         userLabelForm.setIsRenting(userLabel.getIsRenting());
-        userLabelForm.setCustomType(userLabel.getCustomType());
+        userLabelForm.setCustomerType(userLabel.getCustomerType());
         userLabelForm.setIsHaveChildren(userLabel.getIsHaveChildren());
         userLabelForm.setIsHaveElderly(userLabel.getIsHaveElderly());
         userLabelForm.setIsUseOtherProduct(userLabel.getIsUseOtherProduct());
         userLabelForm.setWatchInterest(
                 Arrays.stream(userLabel.getWatchInterest().split(",")).collect(Collectors.toList()));
-        userLabelForm.setCustomCharacteristic(
-                Arrays.stream(userLabel.getCustomCharacteristic().split(",")).collect(Collectors.toList()));
+        userLabelForm.setCustomerCharacteristic(
+                Arrays.stream(userLabel.getCustomerCharacteristic().split(",")).collect(Collectors.toList()));
         userLabelForm.setCommunicationType(userLabel.getCommunicationType());
-        userLabelForm.setCustomFileds(
-                Arrays.stream(userLabel.getCustomFileds().split(",")).collect(Collectors.toList()));
+        userLabelForm.setCustomerFileds(
+                Arrays.stream(userLabel.getCustomerFileds().split(",")).collect(Collectors.toList()));
 
         return userLabelForm;
 

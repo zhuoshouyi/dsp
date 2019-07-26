@@ -85,133 +85,317 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
 //                              List<String> grid);
 
 
-    /** 24安装及时处理率(数字)  维护站对比 */
-    @Query(value = "select rank.follow_back_depa_name, sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
-            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
-            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
-            "and rank.back_time=?4 " +
-            "group by rank.follow_back_peo_name " +
-            "order by sum_num desc " +
-            "limit 30 ", nativeQuery = true)
-    List<Object[]> find24Station(List<String> spcode,
-                                 List<String> branch,
-                                 List<String> grid,
-                                 String date);
+//    /** 24安装及时处理率(数字)  维护站对比 */
+//    @Query(value = "select rank.follow_back_depa_name, sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
+//            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
+//            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
+//            "and rank.back_time=?4 " +
+//            "group by rank.follow_back_peo_name " +
+//            "order by sum_num desc " +
+//            "limit 30 ", nativeQuery = true)
+//    List<Object[]> find24Station(List<String> spcode,
+//                                 List<String> branch,
+//                                 List<String> grid,
+//                                 String date);
+//
+//    /** 24安装及时处理率(数字)  网格对比 */
+//    @Query(value = "select rank.master_grid, sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where rank.follow_back_depa_name=?1 " +
+//            "and rank.back_time=?2 " +
+//            "group by rank.master_grid " +
+//            "order by sum_num desc ", nativeQuery = true)
+//    List<Object[]> find24Grid(String station, String date);
 
-    /** 24安装及时处理率(数字)  网格对比 */
-    @Query(value = "select rank.master_grid, sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+
+
+//    /** 48安装及时处理率(数字)  维护站对比 */
+//    @Query(value = "select rank.follow_back_depa_name, sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
+//            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
+//            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
+//            "and rank.back_time=?4 " +
+//            "group by rank.follow_back_depa_name " +
+//            "order by sum_num desc " +
+//            "limit 30 ", nativeQuery = true)
+//    List<Object[]> find48Station(List<String> spcode,
+//                                 List<String> branch,
+//                                 List<String> grid,
+//                                 String date);
+//
+//    /** 48安装及时处理率(数字)  网格对比 */
+//    @Query(value = "select rank.master_grid, sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where rank.follow_back_depa_name=?1 " +
+//            "and rank.back_time=?2 " +
+//            "group by rank.master_grid " +
+//            "order by sum_num desc ", nativeQuery = true)
+//    List<Object[]> find48Grid(String station, String date);
+
+
+
+
+//    /** 故障及时处理成功率(数字) 维护站对比 */
+//    @Query(value = "select rank.follow_back_depa_name, sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
+//            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
+//            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
+//            "and rank.back_time=?4 " +
+//            "group by rank.follow_back_depa_name " +
+//            "order by sum_num desc " +
+//            "limit 30 ", nativeQuery = true)
+//    List<Object[]> findInTimeWatchStation(List<String> spcode,
+//                                          List<String> branch,
+//                                          List<String> grid,
+//                                          String date);
+//
+//    /** 故障及时处理成功率(数字)  网格对比 */
+//    @Query(value = "select rank.master_grid, sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where rank.follow_back_depa_name=?1 " +
+//            "and rank.back_time=?2 " +
+//            "group by rank.master_grid " +
+//            "order by sum_num desc ", nativeQuery = true)
+//    List<Object[]> findInTimeWatchGrid(String station, String date);
+
+
+
+
+//    /** 故障及时处理成功率(宽带)  维护站对比 */
+//    @Query(value = "select rank.follow_back_depa_name, sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
+//            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
+//            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
+//            "and rank.back_time=?4 " +
+//            "group by rank.follow_back_depa_name " +
+//            "order by sum_num desc " +
+//            "limit 30 ", nativeQuery = true)
+//    List<Object[]> findInTimeBroadStation(List<String> spcode,
+//                                          List<String> branch,
+//                                          List<String> grid,
+//                                          String date);
+//
+//    /** 故障及时处理成功率(宽带)  网格对比 */
+//    @Query(value = "select rank.master_grid, sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where rank.follow_back_depa_name=?1 " +
+//            "and rank.back_time=?2 " +
+//            "group by rank.master_grid " +
+//            "order by sum_num desc ", nativeQuery = true)
+//    List<Object[]> findInTimeBroadGrid(String station, String date);
+
+
+
+//    /** 重复故障率  维护站对比 */
+//    @Query(value = "select rank.follow_back_depa_name, sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
+//            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
+//            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
+//            "and rank.back_time=?4 " +
+//            "group by rank.follow_back_depa_name " +
+//            "order by sum_num desc " +
+//            "limit 30 ", nativeQuery = true)
+//    List<Object[]> findRepeatStation(List<String> spcode,
+//                                     List<String> branch,
+//                                     List<String> grid,
+//                                     String date);
+//
+//    /** 重复故障率  网格对比 */
+//    @Query(value = "select rank.master_grid, sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
+//            "from rank_list_fault rank " +
+//            "where rank.follow_back_depa_name=?1 " +
+//            "and rank.back_time=?2 " +
+//            "group by rank.master_grid " +
+//            "order by sum_num desc ", nativeQuery = true)
+//    List<Object[]> findRepeatGrid(String station, String date);
+
+
+
+
+
+//  2019-07-23更新版本
+    /** 24安装及时处理率(数字)  个人维度 */
+    @Query(value = "select * " +
+        "from " +
+        "(select @curRank\\:=@curRank +1 as id ,a.* from " +
+        "   (select " +
+        "       rank.follow_back_peo_name, " +
+        "       sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+        "       from rank_list_fault rank " +
+        "       where rank.master_region=coalesce(?1, rank.master_region) " +
+        "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+        "       and rank.follow_back_peo_name is not null " +
+        "       and rank.follow_back_peo_name<>'' " +
+        "       and rank.back_time=?4" +
+        "       group by rank.follow_back_peo_name " +
+        "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
+        "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
+    List<Object[]> find24Person(String branch,
+                                       String station,
+                                       String userName,
+                                       String date);
+
+
+    /** 24安装及时处理率(数字)  网格维度 */
+    @Query(value = "select " +
+        "   rank.master_grid, " +
+        "   sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+        "from rank_list_fault rank " +
+        "where rank.master_region=coalesce(?1, rank.master_region) " +
+        "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+        "and rank.master_grid is not null " +
+        "and rank.master_grid<>'' " +
+        "and rank.back_time=?3 " +
+        "group by rank.master_grid " +
+        "order by sum_num desc " +
+        " ", nativeQuery = true)
+    List<Object[]> find24Grid(String branch,
+                              String station,
+                              String date);
+
+    /** 48安装及时处理率(数字)  个人维度 */
+    @Query(value = "select * " +
+            "from " +
+            "(select @curRank\\:=@curRank +1 as id ,a.* from " +
+            "   (select " +
+            "       rank.follow_back_peo_name, " +
+            "       sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
+            "       from rank_list_fault rank " +
+            "       where rank.master_region=coalesce(?1, rank.master_region) " +
+            "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "       and rank.follow_back_peo_name is not null " +
+            "       and rank.follow_back_peo_name<>'' " +
+            "       and rank.back_time=?4" +
+            "       group by rank.follow_back_peo_name " +
+            "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
+            "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
+    List<Object[]> find48Person(String branch,
+                                       String station,
+                                       String userName,
+                                       String date);
+
+
+    /** 48安装及时处理率(数字)  网格维度 */
+    @Query(value = "select " +
+            "   rank.master_grid, " +
+            "   sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
             "from rank_list_fault rank " +
-            "where rank.follow_back_depa_name=?1 " +
-            "and rank.back_time=?2 " +
+            "where rank.master_region=coalesce(?1, rank.master_region) " +
+            "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "and rank.master_grid is not null " +
+            "and rank.master_grid<>'' " +
+            "and rank.back_time=?3 " +
             "group by rank.master_grid " +
-            "order by sum_num desc ", nativeQuery = true)
-    List<Object[]> find24Grid(String station, String date);
-
-
-
-    /** 48安装及时处理率(数字)  维护站对比 */
-    @Query(value = "select rank.follow_back_depa_name, sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
-            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
-            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
-            "and rank.back_time=?4 " +
-            "group by rank.follow_back_depa_name " +
             "order by sum_num desc " +
-            "limit 30 ", nativeQuery = true)
-    List<Object[]> find48Station(List<String> spcode,
-                                 List<String> branch,
-                                 List<String> grid,
-                                 String date);
-
-    /** 48安装及时处理率(数字)  网格对比 */
-    @Query(value = "select rank.master_grid, sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where rank.follow_back_depa_name=?1 " +
-            "and rank.back_time=?2 " +
-            "group by rank.master_grid " +
-            "order by sum_num desc ", nativeQuery = true)
-    List<Object[]> find48Grid(String station, String date);
-
-
-
-
-    /** 故障及时处理成功率(数字) 维护站对比 */
-    @Query(value = "select rank.follow_back_depa_name, sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
-            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
-            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
-            "and rank.back_time=?4 " +
-            "group by rank.follow_back_depa_name " +
-            "order by sum_num desc " +
-            "limit 30 ", nativeQuery = true)
-    List<Object[]> findInTimeWatchStation(List<String> spcode,
-                                          List<String> branch,
-                                          List<String> grid,
-                                          String date);
-
-    /** 故障及时处理成功率(数字)  网格对比 */
-    @Query(value = "select rank.master_grid, sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where rank.follow_back_depa_name=?1 " +
-            "and rank.back_time=?2 " +
-            "group by rank.master_grid " +
-            "order by sum_num desc ", nativeQuery = true)
-    List<Object[]> findInTimeWatchGrid(String station, String date);
-
-
-
-
-    /** 故障及时处理成功率(宽带)  维护站对比 */
-    @Query(value = "select rank.follow_back_depa_name, sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
-            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
-            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
-            "and rank.back_time=?4 " +
-            "group by rank.follow_back_depa_name " +
-            "order by sum_num desc " +
-            "limit 30 ", nativeQuery = true)
-    List<Object[]> findInTimeBroadStation(List<String> spcode,
-                                          List<String> branch,
-                                          List<String> grid,
-                                          String date);
-
-    /** 故障及时处理成功率(宽带)  网格对比 */
-    @Query(value = "select rank.master_grid, sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where rank.follow_back_depa_name=?1 " +
-            "and rank.back_time=?2 " +
-            "group by rank.master_grid " +
-            "order by sum_num desc ", nativeQuery = true)
-    List<Object[]> findInTimeBroadGrid(String station, String date);
-
-
-
-    /** 重复故障率  维护站对比 */
-    @Query(value = "select rank.follow_back_depa_name, sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where (rank.master_spcode in (?1)  or (coalesce(?1, null) is null )) " +
-            "and (rank.master_region in (?2)  or (coalesce(?2, null) is null )) " +
-            "and (rank.master_grid_id in (?3) or (coalesce(?3, null) is null )) " +
-            "and rank.back_time=?4 " +
-            "group by rank.follow_back_depa_name " +
-            "order by sum_num desc " +
-            "limit 30 ", nativeQuery = true)
-    List<Object[]> findRepeatStation(List<String> spcode,
-                                     List<String> branch,
-                                     List<String> grid,
+            " ", nativeQuery = true)
+    List<Object[]> find48Grid(String branch,
+                                     String station,
                                      String date);
 
-    /** 重复故障率  网格对比 */
-    @Query(value = "select rank.master_grid, sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
+
+
+
+    /** 故障及时处理成功率(数字) 个人维度 */
+    @Query(value = "select * " +
+            "from " +
+            "(select @curRank\\:=@curRank +1 as id ,a.* from " +
+            "   (select " +
+            "       rank.follow_back_peo_name, " +
+            "       sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
+            "       from rank_list_fault rank " +
+            "       where rank.master_region=coalesce(?1, rank.master_region) " +
+            "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "       and rank.follow_back_peo_name is not null " +
+            "       and rank.follow_back_peo_name<>'' " +
+            "       and rank.back_time=?4" +
+            "       group by rank.follow_back_peo_name " +
+            "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
+            "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
+    List<Object[]> findInTimeWatchPerson(String branch,
+                                         String station,
+                                         String userName,
+                                         String date);
+
+    /** 故障及时处理成功率(数字)  网格维度 */
+    @Query(value = "select " +
+            "   rank.master_grid, " +
+            "   sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
             "from rank_list_fault rank " +
-            "where rank.follow_back_depa_name=?1 " +
-            "and rank.back_time=?2 " +
+            "where rank.master_region=coalesce(?1, rank.master_region) " +
+            "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "and rank.master_grid is not null " +
+            "and rank.master_grid<>'' " +
+            "and rank.back_time=?3 " +
             "group by rank.master_grid " +
-            "order by sum_num desc ", nativeQuery = true)
-    List<Object[]> findRepeatGrid(String station, String date);
+            "order by sum_num desc " +
+            " ", nativeQuery = true)
+    List<Object[]> findInTimeWatchGrid(String branch,
+                                       String station,
+                                       String date);
+
+
+
+
+    /** 故障及时处理成功率(宽带)  个人维度 */
+    @Query(value = "select * " +
+            "from " +
+            "(select @curRank\\:=@curRank +1 as id ,a.* from " +
+            "   (select " +
+            "       rank.follow_back_peo_name, " +
+            "       sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
+            "       from rank_list_fault rank " +
+            "       where rank.master_region=coalesce(?1, rank.master_region) " +
+            "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "       and rank.follow_back_peo_name is not null " +
+            "       and rank.follow_back_peo_name<>'' " +
+            "       and rank.back_time=?4" +
+            "       group by rank.follow_back_peo_name " +
+            "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
+            "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
+    List<Object[]> findInTimeBroadPerson(String branch,
+                                         String station,
+                                         String userName,
+                                         String date);
+
+    /** 故障及时处理成功率(宽带)  网格维度 */
+    @Query(value = "select " +
+            "   rank.master_grid, " +
+            "   sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
+            "from rank_list_fault rank " +
+            "where rank.master_region=coalesce(?1, rank.master_region) " +
+            "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "and rank.master_grid is not null " +
+            "and rank.master_grid<>'' " +
+            "and rank.back_time=?3 " +
+            "group by rank.master_grid " +
+            "order by sum_num desc " +
+            " ", nativeQuery = true)
+    List<Object[]> findInTimeBroadGrid(String branch,
+                                       String station,
+                                       String date);
+
+    /** 重复故障率  网格维度 */
+    @Query(value = "select " +
+            "   rank.master_grid, " +
+            "   sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
+            "from rank_list_fault rank " +
+            "where rank.master_region=coalesce(?1, rank.master_region) " +
+            "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
+            "and rank.master_grid is not null " +
+            "and rank.master_grid<>'' " +
+            "and rank.back_time=?3 " +
+            "group by rank.master_grid " +
+            "order by sum_num desc " +
+            " ", nativeQuery = true)
+    List<Object[]> findRepeatGrid(String branch,
+                                  String station,
+                                  String date);
+
+
 }

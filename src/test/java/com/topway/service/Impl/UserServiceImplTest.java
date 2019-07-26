@@ -1,5 +1,6 @@
 package com.topway.service.Impl;
 
+import com.topway.dto.DeviceWatchActionDTO;
 import com.topway.dto.DeviceWorkOrderDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +36,15 @@ public class UserServiceImplTest {
     @Test
     public void save() throws Exception {
 
+    }
 
+    @Test
+    public void findDeviceWatchActionDTO() {
 
+        DeviceWatchActionDTO userServiceDeviceWatchActionDTO = userService.findDeviceWatchActionDTO("3001431951", "8075588017430627");
+        System.out.println("");
 
     }
+
 
 }

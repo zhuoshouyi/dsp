@@ -1,6 +1,5 @@
 package com.topway.service.Impl;
 
-import com.topway.dto.RankListShowStationDTO;
 import com.topway.dto.UserRoleDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by haizhi on 2019/7/2.
@@ -34,7 +32,7 @@ public class RankListServiceImplTest {
 //        userRoleDTO.setServiceGridId(Arrays.asList("3687","3682","3679","3677","3686","3680","3678"));
         userRoleDTO.setServiceGridId(Arrays.asList());
 
-        List<RankListShowStationDTO> stationDTOList = service.findTop1(userRoleDTO);
+//        List<RankListShowStationDTO> stationDTOList = service.findTop1(userRoleDTO);
         System.out.println("");
     }
 
