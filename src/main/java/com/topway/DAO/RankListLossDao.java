@@ -147,6 +147,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
     /** 数字电视用户流失数/率  网格对比 */
     @Query(value = "select " +
             "   rank.grid, " +
+            "   rank.grid_id, " +
             "   coalesce((sum(now_month_watch_num) - sum(last_month_watch_num)), 0) as sum_num," +
             "   coalesce((sum(now_month_watch_num) - sum(last_month_watch_num)) / now_month_watch_num, 0) as per_num " +
             "from rank_list_loss rank " +
@@ -166,6 +167,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
     /** 20M宽带流失数/率  网格对比 */
     @Query(value = "select " +
             "   rank.grid, " +
+            "   rank.grid_id, " +
             "   coalesce(sum(now_month20m_num) - sum(last_month20m_num),0) as sum_num, " +
             "   coalesce((sum(now_month20m_num) - sum(last_month20m_num)) / now_month20m_num , 0) as per_num " +
             "from rank_list_loss rank " +
@@ -185,6 +187,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
     /** 100M宽带流失数/率  网格对比 */
     @Query(value = "select " +
             "   rank.grid, " +
+            "   rank.grid_id, " +
             "   coalesce((sum(now_month100m_num) - sum(last_month100m_num)), 0) as sum_num, " +
             "   coalesce((sum(now_month100m_num) - sum(last_month100m_num)) / now_month100m_num, 0) as per_num " +
             "from rank_list_loss rank " +

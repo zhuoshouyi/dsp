@@ -3,20 +3,14 @@ package com.topway.dto;
 import lombok.Data;
 
 /**
- * Created by haizhi on 2019/5/24.
+ * Created by haizhi on 2019/7/30.
  */
 @Data
-public class DeviceDTO<T> {
+public class DeviceDTO {
 
-    private T basicInfo;
+    /** 资源号 */
+    public String deviceNo;
 
-    private T businessInfo;
-
-    private T workOrder;
-
-    private T complaint;
-
-    private T watchAction;
-
-    private T networkQuality;
+    /** 终端类型 单电视,单宽 */
+    public String device_type;
 }

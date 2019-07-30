@@ -20,7 +20,7 @@ public class AreaLabel2AreaLabelShowDTOConvert {
         if (areaLabel.getBuildAttrbute()!=null && !areaLabel.getBuildAttrbute().equals(""))
             labelList.add(areaLabel.getBuildAttrbute());
         if (areaLabel.getAreaLiveProportion()!=null && !areaLabel.getAreaLiveProportion().equals(""))
-            labelList.add(areaLabel.getAreaLiveProportion());
+            labelList.add("小区自住比例:" + areaLabel.getAreaLiveProportion());
         if (areaLabel.getIsContractArea()!=null && !areaLabel.getIsContractArea().equals(""))
             labelList.add(areaLabel.getIsContractArea()=="1" ? "合同小区" : "非合同小区");
         if (areaLabel.getIsPermittedAdmission()!=null && !areaLabel.getIsPermittedAdmission().equals(""))
@@ -32,7 +32,7 @@ public class AreaLabel2AreaLabelShowDTOConvert {
         if (areaLabel.getNetworkCoverageProperties()!=null && !areaLabel.getNetworkCoverageProperties().equals(""))
             labelList.add(areaLabel.getNetworkCoverageProperties());
         if (areaLabel.getIsStabilityLiver()!=null && !areaLabel.getIsStabilityLiver().equals(""))
-            labelList.add(areaLabel.getIsStabilityLiver()=="1" ? "稳定" : "不稳定");
+            labelList.add(areaLabel.getIsStabilityLiver()=="1" ? "小区住户稳定" : "小区住户不稳定");
         if (areaLabel.getCustomFields()!=null && !areaLabel.getCustomFields().equals("")) {
             Arrays.stream(areaLabel.getCustomFields().split(",")).forEach(e -> labelList.add(e));
         }

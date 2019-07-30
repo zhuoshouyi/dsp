@@ -222,6 +222,15 @@ public class RankListServiceImpl implements RankListService{
 //    }
 
 
+    /**
+     * objects[0]: no
+     * objects[1]: person
+     * objects[2]: value
+     *
+     * @param objects
+     * @param username
+     * @return
+     */
     // 将 objects 转换成个人维度显示
     public List<RankListShowPersonDTO> convertPerson(List<Object[]> objects, String username) {
         List<RankListShowPersonDTO> rankListShowPersonDTOList = new ArrayList<>();
@@ -240,17 +249,36 @@ public class RankListServiceImpl implements RankListService{
         return rankListShowPersonDTOList;
     }
 
+    /**
+     *
+     * objects[0]: grid
+     * objects[1]: grid_id
+     * objects[2]: value
+     * objects[3]: value_per (null)
+     *
+     * @param objects
+     * @param topNum
+     * @param grids
+     * @return
+     */
     // 将 objects 转换成网格维度显示
-    public List<RankListShowGridDTO> convertGrid(List<Object[]> objects, String topNum) {
+    public List<RankListShowGridDTO> convertGrid(List<Object[]> objects, String topNum, List<String> grids) {
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
         if (objects != null && objects.size() > 0) {
             for (int i = 0; i < objects.size(); i++) {
                 RankListShowGridDTO rankListShowGridDTO = new RankListShowGridDTO();
                 rankListShowGridDTO.setId(String.valueOf(i+1));
                 rankListShowGridDTO.setName(String.valueOf(objects.get(i)[0]));
-                rankListShowGridDTO.setValue(Double.parseDouble(objects.get(i)[1] == null ? "0" : objects.get(i)[1].toString()));
+                rankListShowGridDTO.setValue(Double.parseDouble(objects.get(i)[2] == null ? "0" : objects.get(i)[2].toString()));
                 if (topNum.equals("top7") || topNum.equals("top8") || topNum.equals("top9")) {
-                    rankListShowGridDTO.setPer(Double.parseDouble(objects.get(i)[2] == null ? "0" : objects.get(i)[2].toString()));
+                    rankListShowGridDTO.setPer(Double.parseDouble(objects.get(i)[3] == null ? "0" : objects.get(i)[3].toString()));
+                }
+                // 将匹配上的网格都打上标记
+                for (String grid : grids){
+                    if (grid.equals(String.valueOf(objects.get(i)[1]))){
+                        rankListShowGridDTO.setIsOneself(true);
+                        break;
+                    }
                 }
                 rankListShowGridDTOList.add(rankListShowGridDTO);
             }
@@ -314,13 +342,13 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司")){
 
             log.info("【Top1】排行范围: 分公司  排行维度: 个人维度");
-            objects = rankListMarketDao.findPersonByBranchAndStation(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListMarketDao.findPersonByBranchAndStation(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
 
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top1】排行范围: 分部  排行维度: 个人维度");
-            objects = rankListMarketDao.findPersonByBranchAndStation(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListMarketDao.findPersonByBranchAndStation(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
 
         }else {
@@ -342,29 +370,29 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top2】排行范围: 分公司  排行维度: 个人维度");
-            objects = rankListFaultDao.find24Person(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.find24Person(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分公司") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top2】排行范围: 分公司  排行维度: 网格维度");
-            objects = rankListFaultDao.find24Grid(rankListFilterDTO.getBranch(), null, "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top2");
+            objects = rankListFaultDao.find24Grid(rankListFilterDTO.getBranch(), null, "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top2", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top2】排行范围: 分部  排行维度: 个人维度");
-            objects = rankListFaultDao.find24Person(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.find24Person(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top2】排行范围: 分部  排行维度: 网格维度");
-            objects = rankListFaultDao.find24Grid(null, rankListFilterDTO.getStation(), "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top2");
+            objects = rankListFaultDao.find24Grid(null, rankListFilterDTO.getStation(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top2", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -383,29 +411,29 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top3】排行范围: 分公司  排行维度: 个人维度");
-            objects = rankListFaultDao.find48Person(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.find48Person(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分公司") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top3】排行范围: 分公司  排行维度: 网格维度");
-            objects = rankListFaultDao.find48Grid(rankListFilterDTO.getBranch(), null, "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top3");
+            objects = rankListFaultDao.find48Grid(rankListFilterDTO.getBranch(), null, "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top3", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top3】排行范围: 分部  排行维度: 个人维度");
-            objects = rankListFaultDao.find48Person(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.find48Person(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top3】排行范围: 分部  排行维度: 网格维度");
-            objects = rankListFaultDao.find48Grid(null, rankListFilterDTO.getStation(), "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top3");
+            objects = rankListFaultDao.find48Grid(null, rankListFilterDTO.getStation(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top3", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -424,29 +452,29 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top4】排行范围: 分公司  排行维度: 个人维度");
-            objects = rankListFaultDao.findInTimeWatchPerson(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.findInTimeWatchPerson(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分公司") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top4】排行范围: 分公司  排行维度: 网格维度");
-            objects = rankListFaultDao.findInTimeWatchGrid(rankListFilterDTO.getBranch(), null, "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top4");
+            objects = rankListFaultDao.findInTimeWatchGrid(rankListFilterDTO.getBranch(), null, "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top4", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top4】排行范围: 分部  排行维度: 个人维度");
-            objects = rankListFaultDao.findInTimeWatchPerson(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.findInTimeWatchPerson(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top4】排行范围: 分部  排行维度: 网格维度");
-            objects = rankListFaultDao.findInTimeWatchGrid(null, rankListFilterDTO.getStation(), "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top4");
+            objects = rankListFaultDao.findInTimeWatchGrid(null, rankListFilterDTO.getStation(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top4", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -465,29 +493,29 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top5】排行范围: 分公司  排行维度: 个人维度");
-            objects = rankListFaultDao.findInTimeBroadPerson(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.findInTimeBroadPerson(rankListFilterDTO.getBranch(), null, userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分公司") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top5】排行范围: 分公司  排行维度: 网格维度");
-            objects = rankListFaultDao.findInTimeBroadGrid(rankListFilterDTO.getBranch(), null, "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top5");
+            objects = rankListFaultDao.findInTimeBroadGrid(rankListFilterDTO.getBranch(), null, "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top5", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("个人维度")){
 
             log.info("【Top5】排行范围: 分部  排行维度: 个人维度");
-            objects = rankListFaultDao.findInTimeBroadPerson(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-06-04 00:00:00");
+            objects = rankListFaultDao.findInTimeBroadPerson(null, rankListFilterDTO.getStation(), userRoleDTO.getUserName(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
             rankListShowPersonDTOList = convertPerson(objects, userRoleDTO.getUserName());
             return rankListShowPersonDTOList;
 
         }else if (branchOrStation.equals("分部") && gridOrPerson.equals("网格维度")){
 
             log.info("【Top5】排行范围: 分部  排行维度: 网格维度");
-            objects = rankListFaultDao.findInTimeBroadGrid(null, rankListFilterDTO.getStation(), "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top5");
+            objects = rankListFaultDao.findInTimeBroadGrid(null, rankListFilterDTO.getStation(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top5", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -511,14 +539,14 @@ public class RankListServiceImpl implements RankListService{
 
             log.info("【Top7】排行范围: 分公司  排行维度: 网格维度");
             objects = rankListLossDao.findWatchLossGrid(rankListFilterDTO.getBranch(), null, "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top7");
+            rankListShowGridDTOList = convertGrid(objects, "top7", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top7】排行范围: 分部  排行维度: 网格维度");
             objects = rankListLossDao.findWatchLossGrid(null, rankListFilterDTO.getStation(), "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top7");
+            rankListShowGridDTOList = convertGrid(objects, "top7", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -537,14 +565,14 @@ public class RankListServiceImpl implements RankListService{
 
             log.info("【Top8】排行范围: 分公司  排行维度: 网格维度");
             objects = rankListLossDao.find20MLossGrid(rankListFilterDTO.getBranch(), null, "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top8");
+            rankListShowGridDTOList = convertGrid(objects, "top8", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top8】排行范围: 分部  排行维度: 网格维度");
             objects = rankListLossDao.find20MLossGrid(null, rankListFilterDTO.getStation(), "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top8");
+            rankListShowGridDTOList = convertGrid(objects, "top8", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -563,14 +591,14 @@ public class RankListServiceImpl implements RankListService{
 
             log.info("【Top9】排行范围: 分公司  排行维度: 网格维度");
             objects = rankListLossDao.find100MLossGrid(rankListFilterDTO.getBranch(), null, "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top9");
+            rankListShowGridDTOList = convertGrid(objects, "top9", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top9】排行范围: 分部  排行维度: 网格维度");
             objects = rankListLossDao.find100MLossGrid(null, rankListFilterDTO.getStation(), "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top9");
+            rankListShowGridDTOList = convertGrid(objects, "top9", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -589,14 +617,14 @@ public class RankListServiceImpl implements RankListService{
 
             log.info("【Top10】排行范围: 分公司  排行维度: 网格维度");
             objects = rankListGridDao.findGridGrid(rankListFilterDTO.getBranch(), null, "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top10");
+            rankListShowGridDTOList = convertGrid(objects, "top10", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top10】排行范围: 分部  排行维度: 网格维度");
             objects = rankListGridDao.findGridGrid(null, rankListFilterDTO.getStation(), "2019-05");
-            rankListShowGridDTOList = convertGrid(objects, "top10");
+            rankListShowGridDTOList = convertGrid(objects, "top10", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {
@@ -614,15 +642,15 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司")){
 
             log.info("【Top11】排行范围: 分公司  排行维度: 网格维度");
-            objects = rankListFaultDao.findRepeatGrid(rankListFilterDTO.getBranch(), null, "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top11");
+            objects = rankListFaultDao.findRepeatGrid(rankListFilterDTO.getBranch(), null, "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top11", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top11】排行范围: 分部  排行维度: 网格维度");
-            objects = rankListFaultDao.findRepeatGrid(null, rankListFilterDTO.getStation(), "2019-06-04 00:00:00");
-            rankListShowGridDTOList = convertGrid(objects, "top11");
+            objects = rankListFaultDao.findRepeatGrid(null, rankListFilterDTO.getStation(), "2019-05-04 00:00:00", "2019-06-04 00:00:00");
+            rankListShowGridDTOList = convertGrid(objects, "top11", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
 
         }else {

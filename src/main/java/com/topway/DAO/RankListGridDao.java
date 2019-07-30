@@ -42,6 +42,7 @@ public interface RankListGridDao extends JpaRepository<RankListGrid, Integer> {
     /** 网格报障数  网格对比 */
     @Query(value = "select " +
             "   rank.grid, " +
+            "   rank.grid_id, " +
             "   sum(fault_num) as sum_num " +
             "from rank_list_grid rank " +
             "where rank.branch_office=coalesce(?1, rank.branch_office) " +

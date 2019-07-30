@@ -36,7 +36,7 @@ public class CustomerDTO {
     private List<String> deviceNoList = new ArrayList<>();
 
 
-    private List<List<String>> arrDeviceNoList = new ArrayList<>();
+    private List<List<DeviceDTO>> arrDeviceNoList = new ArrayList<>();
 
 
 

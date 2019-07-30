@@ -232,32 +232,35 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
         "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
         "       and rank.follow_back_peo_name is not null " +
         "       and rank.follow_back_peo_name<>'' " +
-        "       and rank.back_time=?4" +
+        "       and rank.back_time between ?4 and ?5 " +
         "       group by rank.follow_back_peo_name " +
         "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
         "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
     List<Object[]> find24Person(String branch,
-                                       String station,
-                                       String userName,
-                                       String date);
+                                String station,
+                                String userName,
+                                String StartDate,
+                                String EndDate);
 
 
     /** 24安装及时处理率(数字)  网格维度 */
     @Query(value = "select " +
         "   rank.master_grid, " +
+        "   rank.master_grid_id, " +
         "   sum(rank.install_success24hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
         "from rank_list_fault rank " +
         "where rank.master_region=coalesce(?1, rank.master_region) " +
         "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
         "and rank.master_grid is not null " +
         "and rank.master_grid<>'' " +
-        "and rank.back_time=?3 " +
+        "and rank.back_time between ?3 and ?4 " +
         "group by rank.master_grid " +
         "order by sum_num desc " +
         " ", nativeQuery = true)
     List<Object[]> find24Grid(String branch,
                               String station,
-                              String date);
+                              String StartDate,
+                              String EndDate);
 
     /** 48安装及时处理率(数字)  个人维度 */
     @Query(value = "select * " +
@@ -271,32 +274,35 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
             "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "       and rank.follow_back_peo_name is not null " +
             "       and rank.follow_back_peo_name<>'' " +
-            "       and rank.back_time=?4" +
+            "       and rank.back_time between ?4 and ?5 " +
             "       group by rank.follow_back_peo_name " +
             "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
             "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
     List<Object[]> find48Person(String branch,
-                                       String station,
-                                       String userName,
-                                       String date);
+                                String station,
+                                String userName,
+                                String StartDate,
+                                String EndDate);
 
 
     /** 48安装及时处理率(数字)  网格维度 */
     @Query(value = "select " +
             "   rank.master_grid, " +
+            "   rank.master_grid_id, " +
             "   sum(rank.install_success48hour)/coalesce(sum(rank.install_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.master_region=coalesce(?1, rank.master_region) " +
             "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "and rank.master_grid is not null " +
             "and rank.master_grid<>'' " +
-            "and rank.back_time=?3 " +
+            "and rank.back_time between ?3 and ?4 " +
             "group by rank.master_grid " +
             "order by sum_num desc " +
             " ", nativeQuery = true)
     List<Object[]> find48Grid(String branch,
-                                     String station,
-                                     String date);
+                              String station,
+                              String StartDate,
+                              String EndDate);
 
 
 
@@ -313,31 +319,34 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
             "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "       and rank.follow_back_peo_name is not null " +
             "       and rank.follow_back_peo_name<>'' " +
-            "       and rank.back_time=?4" +
+            "       and rank.back_time between ?4 and ?5 " +
             "       group by rank.follow_back_peo_name " +
             "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
             "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
     List<Object[]> findInTimeWatchPerson(String branch,
                                          String station,
                                          String userName,
-                                         String date);
+                                         String StartDate,
+                                         String EndDate);
 
     /** 故障及时处理成功率(数字)  网格维度 */
     @Query(value = "select " +
             "   rank.master_grid, " +
+            "   rank.master_grid_id, " +
             "   sum(rank.watch_fault_success_num)/coalesce(sum(rank.watch_fault_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.master_region=coalesce(?1, rank.master_region) " +
             "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "and rank.master_grid is not null " +
             "and rank.master_grid<>'' " +
-            "and rank.back_time=?3 " +
+            "and rank.back_time between ?3 and ?4 " +
             "group by rank.master_grid " +
             "order by sum_num desc " +
             " ", nativeQuery = true)
     List<Object[]> findInTimeWatchGrid(String branch,
                                        String station,
-                                       String date);
+                                       String StartDate,
+                                       String EndDate);
 
 
 
@@ -354,48 +363,53 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
             "       and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "       and rank.follow_back_peo_name is not null " +
             "       and rank.follow_back_peo_name<>'' " +
-            "       and rank.back_time=?4" +
+            "       and rank.back_time between ?4 and ?5 " +
             "       group by rank.follow_back_peo_name " +
             "       order by sum_num desc) a , (select @curRank\\:=0) q) b " +
             "where b.id < 11 or b.follow_back_peo_name=?3 ", nativeQuery = true)
     List<Object[]> findInTimeBroadPerson(String branch,
                                          String station,
                                          String userName,
-                                         String date);
+                                         String StartDate,
+                                         String EndDate);
 
     /** 故障及时处理成功率(宽带)  网格维度 */
     @Query(value = "select " +
             "   rank.master_grid, " +
+            "   rank.master_grid_id, " +
             "   sum(rank.network_fault_success_num)/coalesce(sum(rank.network_fault_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.master_region=coalesce(?1, rank.master_region) " +
             "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "and rank.master_grid is not null " +
             "and rank.master_grid<>'' " +
-            "and rank.back_time=?3 " +
+            "and rank.back_time between ?3 and ?4 " +
             "group by rank.master_grid " +
             "order by sum_num desc " +
             " ", nativeQuery = true)
     List<Object[]> findInTimeBroadGrid(String branch,
                                        String station,
-                                       String date);
+                                       String StartDate,
+                                       String EndDate);
 
     /** 重复故障率  网格维度 */
     @Query(value = "select " +
             "   rank.master_grid, " +
+            "   rank.master_grid_id, " +
             "   sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
             "from rank_list_fault rank " +
             "where rank.master_region=coalesce(?1, rank.master_region) " +
             "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
             "and rank.master_grid is not null " +
             "and rank.master_grid<>'' " +
-            "and rank.back_time=?3 " +
+            "and rank.back_time between ?3 and ?4 " +
             "group by rank.master_grid " +
             "order by sum_num desc " +
             " ", nativeQuery = true)
     List<Object[]> findRepeatGrid(String branch,
                                   String station,
-                                  String date);
+                                  String StartDate,
+                                  String EndDate);
 
 
 }

@@ -326,6 +326,16 @@ public class UserServiceImpl implements UserService {
 
 
 
+    public static void DeviceSort(List<DeviceDTO> deviceDTOList) {
+        Collections.sort(deviceDTOList,new Comparator<DeviceDTO>() {
+            @Override
+            public int compare(DeviceDTO d1,DeviceDTO d2) {
+                if(d1.getDevice_type().equals("数字电视")) return 1;
+                else if (d2.getDevice_type().equals("宽带")) return -1;
+                else return 0;
+            }
+        });
+    }
 
 
     /**
@@ -359,24 +369,35 @@ public class UserServiceImpl implements UserService {
         }
 
         // 创建一个二维数组存放deviceNo
-        List<List<String>> deviceList = new ArrayList<>(new ArrayList<>());
+        List<List<DeviceDTO>> deviceList = new ArrayList<>(new ArrayList<>());
 
         // 遍历融合编码的数组,遍历每一个融合编码的用户,找到两个融合编码相同的 deviceNo,将其拼装成 list,添加到 deviceList 中。
         mixSet.stream().forEach(x -> {
-            List<String> list = new ArrayList<>();
+            List<DeviceDTO> list = new ArrayList<>();
             for (User user : userList){
                 if (user.getMixNo()!=null && !user.getMixNo().isEmpty())
-                    if (user.getMixNo().equals(x)) list.add(user.getDeviceNo());
+                    if (user.getMixNo().equals(x)) {
+                        DeviceDTO deviceDTO = new DeviceDTO();
+                        deviceDTO.setDeviceNo(user.getDeviceNo());
+                        deviceDTO.setDevice_type(user.getBusinessType());
+                        list.add(deviceDTO);
+                    }
             }
+            // 使用匿名内部类,完成自定义排序
+            DeviceSort(list);
             deviceList.add(list);
         });
 
         // 遍历完所有有融合编码的 user 后,遍历所有没有融合编码的 user,将他们的 deviceNo 单独建立 list 存入 deviceList 中。
         userList.stream().forEach(x -> {
-            List<String> list = new ArrayList<>();
+            List<DeviceDTO> list = new ArrayList<>();
             if (x.getMixNo()==null || x.getMixNo().isEmpty()){
                 if (x.getDeviceNo()!=null && !x.getDeviceNo().equals("")){
-                    list.add(x.getDeviceNo());
+                    DeviceDTO deviceDTO = new DeviceDTO();
+                    deviceDTO.setDevice_type(x.getBusinessType());
+                    deviceDTO.setDeviceNo(x.getDeviceNo());
+                    list.add(deviceDTO);
+                    DeviceSort(list);
                     deviceList.add(list);
                 }
             }

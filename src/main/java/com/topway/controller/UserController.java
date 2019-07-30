@@ -149,7 +149,7 @@ public class UserController {
 
 
     /**
-     * 客户浏览记录查看接口
+     * 客户详情查看接口
      *
      * @param customerIdForm
      * @param bindingResult
@@ -212,7 +212,7 @@ public class UserController {
         }
 
         /** 2.通过资源号查找终端信息 */
-        DeviceDTO deviceDTO = new DeviceDTO();
+        DeviceListDTO deviceListDTO = new DeviceListDTO();
 
         // 终端信息
         DeviceBasicInfoDTO deviceBasicInfoDTO = userService.findDeviceBasicInfoDTO(CUSTOMERID, DEVICENO);
@@ -234,14 +234,14 @@ public class UserController {
         DeviceNetworkQualityDTO deviceNetworkQualityDTO = new DeviceNetworkQualityDTO();
         log.info("【终端信息】开始拼装");
         /** 3.拼装deviceDTO */
-        deviceDTO.setBasicInfo(deviceBasicInfoDTO);
-        deviceDTO.setBusinessInfo(deviceBusinessInfoDTO);
-        deviceDTO.setWorkOrder(deviceWorkOrderDTO);
-        deviceDTO.setComplaint(deviceComplaintDTO);
-        deviceDTO.setWatchAction(deviceWatchActionDTO);
-        deviceDTO.setNetworkQuality(deviceNetworkQualityDTO);
+        deviceListDTO.setBasicInfo(deviceBasicInfoDTO);
+        deviceListDTO.setBusinessInfo(deviceBusinessInfoDTO);
+        deviceListDTO.setWorkOrder(deviceWorkOrderDTO);
+        deviceListDTO.setComplaint(deviceComplaintDTO);
+        deviceListDTO.setWatchAction(deviceWatchActionDTO);
+        deviceListDTO.setNetworkQuality(deviceNetworkQualityDTO);
 
-        return ResultVOUtil.success(deviceDTO);
+        return ResultVOUtil.success(deviceListDTO);
     }
 
 

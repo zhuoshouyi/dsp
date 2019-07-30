@@ -31,4 +31,5 @@ public class UserRoleDTO {
 
     /** 网格Id. */
     private List<String> serviceGridId = new ArrayList<>();
+
 }

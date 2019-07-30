@@ -38,4 +38,5 @@ public class UserRole {
 
     /** 网格Id. */
     private String serviceGridId = "";
+
 }

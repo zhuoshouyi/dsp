@@ -18,5 +18,7 @@ public class RankListShowGridDTO {
 
     public String name;
 
+    public Boolean isOneself = false;
+
 //    public String parentId;
 }
