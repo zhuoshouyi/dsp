@@ -71,7 +71,7 @@ public class LoginConfirm {
         log.info("【登陆】 SPCODEID : " + SPCODEID);
         log.info("【登陆】 BRANCH : " + BRANCH);
         if (bindingResult.hasErrors()) {
-            log.error("【登陆】登陆失败,参数不正确, loginForm={}", loginForm);
+            log.error("【ERROR】登陆失败,参数不正确, loginForm={}", loginForm);
             return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
@@ -80,6 +80,16 @@ public class LoginConfirm {
         log.info("【登陆】验证用户身份");
         LoginVO loginVO = new LoginVO();
         UserRole userRole = new UserRole();
+
+//        // 最先验证特殊权限
+//        if (userRole.getUserRoleSpecial()!=null && !"".equals(userRole.getUserRoleSpecial())){
+//            // 特殊权限仅可配置业务部门和公司领导,需要配合运营商和区域分公司使用
+//            log.info("【特殊权限】校验用户特殊权限:" + userRole.getUserRoleSpecial());
+//            log.info("【特殊权限】校验用户运营商:" + userRole.getSpcodeId());
+//            log.info("【特殊权限】校验用户区域分公司:" + userRole.getBusinessOfficeId());
+//
+//            userRole = LoginForm2UserRoleConvert.convert(loginForm);
+//        }
 
         // 如果 userId 不为"",说明是基础网格员、支撑网格员、站长。
         // 否则就是公司领导或者业务部门
@@ -90,6 +100,7 @@ public class LoginConfirm {
 
             // 如果是网格员但匹配不到网格,返回报错信息
             if (serviceGridOptList == null || serviceGridOptList.size()==0){
+                log.info("【ERROR】网格员无法匹配到网格");
                 return ResultVOUtil.error(ResultEnum.USER_NOT_MATCH.getCode(),
                         ResultEnum.USER_NOT_MATCH.getDesc());
             }
@@ -110,6 +121,7 @@ public class LoginConfirm {
 
             }catch (Exception e){
                 // 根据userid查询不到用户,无此用户
+                log.info("【ERROR】根据userid查询不到用户,无此用户");
                 return ResultVOUtil.error(ResultEnum.USER_NOT_FOUND.getCode(),
                         ResultEnum.USER_NOT_FOUND.getDesc());
             }

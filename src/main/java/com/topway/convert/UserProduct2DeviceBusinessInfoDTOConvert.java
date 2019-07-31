@@ -26,6 +26,7 @@ public class UserProduct2DeviceBusinessInfoDTOConvert {
         deviceBusinessInfoDTO.setAuthorizationEndTime(userProduct.getAuthorizationEndTime());
         // fkb8be2a22 订购状态
         deviceBusinessInfoDTO.setStatus(userProduct.getOrderStatus());
+
         return deviceBusinessInfoDTO;
 
     }

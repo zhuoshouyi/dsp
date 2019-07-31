@@ -2,6 +2,12 @@ package com.topway.convert;
 
 import com.topway.dto.DeviceBusinessInfoDetailDTO;
 import com.topway.pojo.UserProduct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by haizhi on 2019/5/27.
@@ -33,6 +39,25 @@ public class UserProduct2DeviceBusinessInfoDetailDTOConvert {
         // fke127b206 计费标准
         deviceBusinessInfoDetailDTO.setBillingMode(userProduct.getFreightBasis());
         return deviceBusinessInfoDetailDTO;
+
+    }
+
+    public static List<DeviceBusinessInfoDetailDTO> convert(List<UserProduct> userProductList){
+
+        return userProductList.stream()
+                .map(e -> convert(e))
+                .collect(Collectors.toList());
+    }
+
+    public static Page<DeviceBusinessInfoDetailDTO> convert(Page<UserProduct> userProductPage){
+        Pageable pageable = userProductPage.getPageable();
+        List<UserProduct> userProductList = userProductPage.getContent();
+        List<DeviceBusinessInfoDetailDTO> deviceBusinessInfoDetailDTOList = convert(userProductList);
+        Page<DeviceBusinessInfoDetailDTO> deviceBusinessInfoDetailDTOPage =
+                new PageImpl(deviceBusinessInfoDetailDTOList, pageable, userProductPage.getTotalElements());
+
+
+        return deviceBusinessInfoDetailDTOPage;
 
     }
 

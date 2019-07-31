@@ -46,7 +46,7 @@ public interface UserService {
     /** 通过设备号查询 DeviceDTO */
     DeviceBasicInfoDTO findDeviceBasicInfoDTO(String customerId, String deviceNo);
 
-    List<DeviceBusinessInfoDTO> findDeviceBusinessInfoDTO(String customerId, String deviceNo);
+    List<DeviceBusinessInfoDetailDTO> findDeviceBusinessInfoDTO(String customerId, String deviceNo);
 
     List<DeviceWorkOrderDTO> findDeviceWorkOrderDTO(String customerId, String deviceNo);
 

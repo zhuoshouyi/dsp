@@ -67,7 +67,7 @@ public class AreaController {
 
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
-            log.error("【参数错误】keyword不正确,keyword={}", KEYWORD);
+            log.error("【ERROR】参数错误,keyword不正确,keyword={}", KEYWORD);
             return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(),
                     bindingResult.getFieldError().getDefaultMessage());
         }
@@ -112,11 +112,9 @@ public class AreaController {
             }
 
         }catch (Exception e){
-            log.error("【结果未找到】未匹配到条件对应的结果");
+            log.error("【ERROR】结果未找到,未匹配到条件对应的结果");
             return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
                     ResultEnum.RESULT_NOT_FOUND.getDesc());
-//            throw new ResultNotFoundException(ResultEnum.RESULT_NOT_FOUND.getCode(),
-//                    ResultEnum.RESULT_NOT_FOUND.getDesc());
         }
 
     }
@@ -180,6 +178,7 @@ public class AreaController {
         // TODO 计算天威客户数,覆盖住户数
         Area area = areaService.findByAreaId(AREAID);
         if (area == null){
+            log.info("【ERROR】无法通过AREAID查询到小区,数据库未匹配到此小区");
             return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
                     "数据库未匹配到此小区");
         }

@@ -218,7 +218,7 @@ public class UserController {
         DeviceBasicInfoDTO deviceBasicInfoDTO = userService.findDeviceBasicInfoDTO(CUSTOMERID, DEVICENO);
         log.info("【终端信息】开始查找产品信息");
         // 业务基本信息
-        List<DeviceBusinessInfoDTO> deviceBusinessInfoDTO = userService.findDeviceBusinessInfoDTO(CUSTOMERID, DEVICENO);
+        List<DeviceBusinessInfoDetailDTO> deviceBusinessInfoDTO = userService.findDeviceBusinessInfoDTO(CUSTOMERID, DEVICENO);
 //        List<DeviceBusinessInfoDTO> deviceBusinessInfoDTO = new ArrayList<>();
         log.info("【终端信息】开始查找工单信息");
         // 工单信息

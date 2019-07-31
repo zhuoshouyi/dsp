@@ -69,4 +69,7 @@ public class User {
     /** 维护站名称. fk00e197e4 */
     private String station_name;
 
+    /** 用户状态. fk3e798b66 */
+    private String status;
+
 }

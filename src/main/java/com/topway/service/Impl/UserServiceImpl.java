@@ -326,12 +326,15 @@ public class UserServiceImpl implements UserService {
 
 
 
-    public static void DeviceSort(List<DeviceDTO> deviceDTOList) {
+    // 自定义排序: 正常融合 > 正常单电视 > 正常单宽 > 停机 > 注销
+    public void DeviceSort(List<DeviceDTO> deviceDTOList) {
         Collections.sort(deviceDTOList,new Comparator<DeviceDTO>() {
             @Override
             public int compare(DeviceDTO d1,DeviceDTO d2) {
-                if(d1.getDevice_type().equals("数字电视")) return 1;
-                else if (d2.getDevice_type().equals("宽带")) return -1;
+                // 升序排序
+                int diff = d1.getNo() - d2.getNo();
+                if(diff > 0) return 1;
+                else if (diff < 0) return -1;
                 else return 0;
             }
         });
@@ -380,6 +383,13 @@ public class UserServiceImpl implements UserService {
                         DeviceDTO deviceDTO = new DeviceDTO();
                         deviceDTO.setDeviceNo(user.getDeviceNo());
                         deviceDTO.setDevice_type(user.getBusinessType());
+                        if ("数字电视".equals(deviceDTO.getDevice_type())) {
+                            deviceDTO.setNo(1);
+                        }else if ("宽带".equals(deviceDTO.getDevice_type())){
+                            deviceDTO.setNo(2);
+                        }else {
+                            deviceDTO.setNo(3);
+                        }
                         list.add(deviceDTO);
                     }
             }
@@ -396,6 +406,21 @@ public class UserServiceImpl implements UserService {
                     DeviceDTO deviceDTO = new DeviceDTO();
                     deviceDTO.setDevice_type(x.getBusinessType());
                     deviceDTO.setDeviceNo(x.getDeviceNo());
+                    deviceDTO.setStatus(x.getStatus());
+
+                    if ("融合".equals(deviceDTO.getDevice_type())){
+                        deviceDTO.setNo(1);
+                    }else if ("数字电视".equals(deviceDTO.getDevice_type()) && "正常".equals(deviceDTO.getStatus())){
+                        deviceDTO.setNo(2);
+                    }else if ("宽带".equals(deviceDTO.getDevice_type()) && "正常".equals(deviceDTO.getStatus())){
+                        deviceDTO.setNo(3);
+                    }else if ("停机".equals(deviceDTO.getStatus())){
+                        deviceDTO.setNo(4);
+                    }else if ("注销".equals(deviceDTO.getStatus())){
+                        deviceDTO.setNo(5);
+                    }else {
+                        deviceDTO.setNo(6);
+                    }
                     list.add(deviceDTO);
                     DeviceSort(list);
                     deviceList.add(list);
@@ -494,10 +519,10 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public List<DeviceBusinessInfoDTO> findDeviceBusinessInfoDTO(String customerId, String deviceNo) {
+    public List<DeviceBusinessInfoDetailDTO> findDeviceBusinessInfoDTO(String customerId, String deviceNo) {
         PageRequest pageRequest = new PageRequest(0, 5);
         Page<UserProduct> userProductPage = userProductDao.findJoinUserAndUserProduct(customerId, deviceNo, pageRequest);
-        return UserProduct2DeviceBusinessInfoDTOConvert.convert(userProductPage.getContent());
+        return UserProduct2DeviceBusinessInfoDetailDTOConvert.convert(userProductPage.getContent());
     }
 
 
