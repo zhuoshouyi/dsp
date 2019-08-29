@@ -100,7 +100,7 @@ public class LoginConfirm {
 
             // 如果是网格员但匹配不到网格,返回报错信息
             if (serviceGridOptList == null || serviceGridOptList.size()==0){
-                log.info("【ERROR】网格员无法匹配到网格");
+                log.error("【ERROR】网格员无法匹配到网格");
                 return ResultVOUtil.error(ResultEnum.USER_NOT_MATCH.getCode(),
                         ResultEnum.USER_NOT_MATCH.getDesc());
             }
@@ -111,6 +111,7 @@ public class LoginConfirm {
                     serviceGridIdList.add(serviceGridOpt.getServiceGridId());
                 }
             }
+            log.info("【登陆】用户网格为:" + serviceGridIdList.toString());
 
             try {
                 userRole = userRoleDao.findByUserId(USERID);
@@ -121,7 +122,7 @@ public class LoginConfirm {
 
             }catch (Exception e){
                 // 根据userid查询不到用户,无此用户
-                log.info("【ERROR】根据userid查询不到用户,无此用户");
+                log.error("【ERROR】根据userid查询不到用户,无此用户");
                 return ResultVOUtil.error(ResultEnum.USER_NOT_FOUND.getCode(),
                         ResultEnum.USER_NOT_FOUND.getDesc());
             }

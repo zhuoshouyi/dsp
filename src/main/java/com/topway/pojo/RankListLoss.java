@@ -34,7 +34,7 @@ public class RankListLoss {
     private String gridId;
 
     /** 网格名称.fkaf296537 */
-    private String gridName;
+    private String grid;
 
     /** 本月底数字用户数.fkabae59ce */
     private double nowMonthWatchNum;

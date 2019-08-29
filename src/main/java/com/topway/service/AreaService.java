@@ -23,6 +23,8 @@ public interface AreaService {
 
     List<Area> findByAreaList();
 
+    List<Area> findAllByGridId(UserRoleDTO userRoleDTO);
+
     Area findByAreaId(String areaId, UserRoleDTO userRoleDTO);
 
     Area findByAreaId(String areaId);

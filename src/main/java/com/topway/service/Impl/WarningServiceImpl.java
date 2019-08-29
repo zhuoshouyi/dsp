@@ -14,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +42,67 @@ public class WarningServiceImpl implements WarningService {
     @Autowired
     UserRoleDao userRoleDao;
 
+    // 全局统一时间格式化格式
+    SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+    SimpleDateFormat FMT_MONTH = new SimpleDateFormat("yyyy-MM");
+
+    // 实例化当天的日期
+    Date today = new Date();
+
+    // 用当天的日期减去一天的秒数得到昨天的日期
+    String yesterday = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(new Date(today.getTime()-86400000L));
+
+
+    // 网格绩效月
+
+
+    // 月初计算,累计一月
+
+    // 当天往前推一个月
+    public String getLastMonthStart(){
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.add(Calendar.MONTH, -1);
+        Date m = c.getTime();
+        return FMT.format(m);
+    }
+
+    // 上个月的月份
+    public String getLastMonth(){
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.add(Calendar.MONTH, -1);
+        Date m = c.getTime();
+        return FMT_MONTH.format(m);
+    }
+
+    // 获取绩效月开始日
+    public String getAchiveMonthStart(){
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        if (today.getDate()>21){
+            // 如果时间大于20号,则从当月21号开始计算绩效月
+            c.add(Calendar.DAY_OF_MONTH, 21-today.getDate());
+            Date m = c.getTime();
+            return FMT.format(m);
+        }else {
+            // 如果时间小于等于20号,则从上月21号开始计算绩效月
+            c.add(Calendar.MONTH, -1);
+            c.add(Calendar.DAY_OF_MONTH, 21-today.getDate());
+            Date m = c.getTime();
+            return FMT.format(m);
+
+        }
+
+    }
+
+
+    // 获取绩效月结束日
+
+
     @Override
     public List<Double> WatchLossNumAndWbLossNum(UserRoleDTO userRoleDTO) {
 
@@ -50,18 +114,18 @@ public class WarningServiceImpl implements WarningService {
             // 用户身份为网格员
             log.info("【预警数据】用户身份为基础网格员、支撑网格员或站长");
             log.info("【预警数据】用户网格:" + userRoleDTO.getServiceGridId());
-            objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), "2019-05");
+            objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), getLastMonth());
         }else if(userRoleDTO.getUserRole().equals("公司领导") ||
                 userRoleDTO.getUserRole().equals("业务部门")){
             // 用户身份为公司领导或业务部门
             log.info("【预警数据】用户为公司领导或业务部门");
             log.info("【预警数据】用户所管运营商:" + userRoleDTO.getSpcodeId() + ". 分公司:" + userRoleDTO.getBusinessOfficeId());
-            objects = warningLossDao.findBySpcodeAndBranchAndDate(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), "2019-05");
+            objects = warningLossDao.findBySpcodeAndBranchAndDate(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), getLastMonth());
         }else{
             // 用户无身份,默认网格员
             log.info("【预警数据】用户无身份,默认网格员");
             log.info("【预警数据】用户网格:" + userRoleDTO.getServiceGridId());
-            objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), "2019-05");
+            objects = warningLossDao.findByGridIdAndDate(userRoleDTO.getServiceGridId(), getLastMonth());
         }
         Object[] object0 = (Object[])objects[0];
         List<Double> doubleList = new ArrayList<>();
@@ -79,7 +143,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double InstallSuccess24h(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningServiceDao.findBy24(userRoleDTO.getServiceGridId(), "2019-05-21 00:00:00", "2019-06-20 00:00:00");
+        Object[] objects = warningServiceDao.findBy24(userRoleDTO.getServiceGridId(), getAchiveMonthStart(), yesterday);
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -90,7 +154,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double MarketEffectNum(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningMarketDao.findByGridId(userRoleDTO.getServiceGridId(), "2019-05-21 00:00:00", "2019-06-20 00:00:00");
+        Object[] objects = warningMarketDao.findByGridId(userRoleDTO.getServiceGridId(), getAchiveMonthStart(), yesterday);
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -100,7 +164,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double RegionAverageNum(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningServiceDao.findByRegionAverage(userRoleDTO.getServiceGridId(), "2019-05-21 00:00:00", "2019-06-20 00:00:00");
+        Object[] objects = warningServiceDao.findByRegionAverage(userRoleDTO.getServiceGridId(), getAchiveMonthStart(), yesterday);
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -109,7 +173,7 @@ public class WarningServiceImpl implements WarningService {
     @Override
     public Double RegionFaultSuccess(UserRoleDTO userRoleDTO){
 
-        Object[] objects = warningServiceDao.findByFaultSuccess(userRoleDTO.getServiceGridId(),"2019-05-21 00:00:00", "2019-06-20 00:00:00");
+        Object[] objects = warningServiceDao.findByFaultSuccess(userRoleDTO.getServiceGridId(), getAchiveMonthStart(), yesterday);
 //        Object[] object0 = (Object[]) objects[0];
 
         return Double.valueOf(objects[0]==null ? "0" : objects[0].toString());
@@ -135,12 +199,14 @@ public class WarningServiceImpl implements WarningService {
         // 如果 userId 不为"",说明是基础网格员、支撑网格员、站长。
         // 否则就是公司领导或者业务部门
         if (!USERID.equals("") && USERID!=null ){
-            log.info("【登陆】用户为网格员或站长,userId为" + USERID);
+            log.info("【登陆】用户为网格员或站长,userId为 " + USERID);
+            log.info("【登陆】用户名称为 " + USERNAME);
             // 关联工单表,获取用户所管辖的网格
             List<ServiceGridOpt> serviceGridOptList = serviceGridOptDao.findByOpId(USERID);
 
             // 如果是网格员但匹配不到网格,返回报错信息
             if (serviceGridOptList == null || serviceGridOptList.size()==0){
+                log.error("【ERROR】网格员无法匹配到网格");
                 return null;
             }
             // 将网格员负责的网格拼接到列表中去
@@ -159,6 +225,7 @@ public class WarningServiceImpl implements WarningService {
 
             }catch (Exception e){
                 // 根据userid查询不到用户,无此用户
+                log.error("【ERROR】根据 userid 无法查询到此用户");
                 return null;
             }
 

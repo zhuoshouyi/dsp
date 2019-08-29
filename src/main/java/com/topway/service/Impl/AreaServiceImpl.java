@@ -27,8 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
-
 /**
  * Created by haizhi on 2019/5/22.
  */
@@ -37,12 +35,12 @@ import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 public class AreaServiceImpl implements AreaService{
 
     // 全局统一时间格式化格式
-    SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 
     // 实例化当天的日期
     Date today = new Date();
 
-    // 用当天的日期减去昨天的日期
+    // 用当天的日期减去一天的秒数得到昨天的日期
     String yesterday = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(new Date(today.getTime()-86400000L));
 
 
@@ -68,6 +66,20 @@ public class AreaServiceImpl implements AreaService{
         return null;
     }
 
+    /**
+     * 查询出此用户可查询的所有小区
+     *
+     * @param userRoleDTO
+     * @return
+     */
+    @Override
+    public List<Area> findAllByGridId(UserRoleDTO userRoleDTO){
+
+        List<Area> areaList = dao.findAllByGridId(userRoleDTO.getServiceGridId(), yesterday);
+
+        return areaList;
+
+    }
 
     /** 根据小区id查找小区信息 */
     @Override
@@ -80,20 +92,20 @@ public class AreaServiceImpl implements AreaService{
             case "站长":
                 log.info("【认证】身份为 基础网格员、支撑网格员 或 站长");
                 area = dao.findByAreaIdLike(
-                        areaId, "收费", "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null);
+                        areaId, "收费", yesterday, userRoleDTO.getServiceGridId(), null, null);
                 break;
 
             case "公司领导":
             case "业务部门":
                 log.info("【认证】身份为 公司领导 或 业务部门");
                 area = dao.findByAreaIdLike(
-                        areaId, "收费", "2019-05-27 00:00:00", null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
+                        areaId, "收费", yesterday, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
                 break;
 
             default:
                 log.info("【认证】无用户身份,默认网格员");
                 area = dao.findByAreaIdLike(
-                        areaId, "收费", "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null);
+                        areaId, "收费", yesterday, userRoleDTO.getServiceGridId(), null, null);
                 break;
         }
         return area;
@@ -102,7 +114,7 @@ public class AreaServiceImpl implements AreaService{
     /** 根据小区id查找小区信息(无权限) */
     @Override
     public Area findByAreaId(String areaId) {
-        return dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", "2019-05-27 00:00:00");
+        return dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", yesterday);
     }
 
     /**
@@ -140,29 +152,30 @@ public class AreaServiceImpl implements AreaService{
     public Page<Area> findByAreaNameLike(String areaName, UserRoleDTO userRoleDTO, Pageable pageable) {
         // TODO 修改日期,改为昨天
         Page<Area> areaPage = null;
-        log.info("【查询】userRole=" + userRoleDTO.getUserRole());
+        log.info("【小区查询】userRole:" + userRoleDTO.getUserRole());
         switch (userRoleDTO.getUserRole()){
             case "基础网格员":
             case "支撑网格员":
             case "站长":
-                log.info("【查询】网格查找");
+                log.info("【小区查询】网格查找");
 //                log.info("【查询】serviceGridId=" + userRoleDTO.getServiceGridId().toString());
+                log.info("【小区查询】时间:" + yesterday);
                 areaPage = dao.findByAreaNameLike(
-                        areaName, "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null, pageable);
+                        areaName, yesterday, userRoleDTO.getServiceGridId(), null, null, pageable);
                 break;
 
             case "公司领导":
             case "业务部门":
-                log.info("【查询】运营商分公司查找");
+                log.info("【小区查询】运营商分公司查找");
                 areaPage = dao.findByAreaNameLike(
-                        areaName, "2019-05-27 00:00:00", null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
+                        areaName, yesterday, null, userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId(), pageable);
                 break;
 
             default:
                 // TODO
-                log.info("【查询】无用户身份,默认网格员");
+                log.info("【小区查询】无用户身份,默认网格员");
                 areaPage = dao.findByAreaNameLike(
-                        areaName, "2019-05-27 00:00:00", userRoleDTO.getServiceGridId(), null, null, pageable);
+                        areaName, yesterday, userRoleDTO.getServiceGridId(), null, null, pageable);
                 break;
         }
         return areaPage;
@@ -298,7 +311,7 @@ public class AreaServiceImpl implements AreaService{
     public AreaBusinessDTO calAreaBusiness(String areaId) {
         AreaBusinessDTO areaBusinessDTO = new AreaBusinessDTO();
 
-        Area area1 = dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", "2019-05-22 00:00:00");
+        Area area1 = dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", yesterday);
 //        Area area2 = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "免费", "2019-04-20 00:00:00");
 
         // 1 数字电视在线收费终端数(fk06266ce4 数字电视用户数)
@@ -365,7 +378,7 @@ public class AreaServiceImpl implements AreaService{
         AreaMonthlyDevelopmentDTO areaMonthlyDevelopmentDTO = new AreaMonthlyDevelopmentDTO();
 
         // TODO 时间
-        Area area1 = dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", "2019-05-22 00:00:00");
+        Area area1 = dao.findByAreaIdAndPaymentTypeAndDate(areaId, "收费", yesterday);
 //        Area area2 = dao.findByFka9350c89AndFk560a959bAndFkfceb956f(areaId, "免费", "2019-04-20 00:00:00");
 
 

@@ -42,8 +42,22 @@ public class AreaController {
     // 全局统一时间格式化格式
     SimpleDateFormat FMT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+
+//    public ResultVO list_all(HttpServletRequest httpServletRequest){
+//
+//        log.info("【小区清单】-------------------------------------------------------");
+//
+//        /** 2.识别用户身份,判断权限 */
+//        UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
+//
+//        List<Area> areaList = areaService.findAllByGridId(userRoleDTO);
+//
+//
+//
+//    }
+
     /**
-     * 小区列表接口
+     * 小区搜索接口
      *
      * @return
      */

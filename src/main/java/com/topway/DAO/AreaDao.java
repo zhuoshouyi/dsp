@@ -16,6 +16,15 @@ import java.util.List;
 public interface AreaDao extends JpaRepository<Area, Integer> {
 
 
+    /**
+     * 查询出此用户所有的小区
+     */
+    @Query(value = "select * " +
+            "from area a " +
+            "where a.grid_id in ?1 " +
+            "and date=?2 ", nativeQuery = true)
+    List<Area> findAllByGridId(List<String> gridIdList,String date);
+
 
     /**
      * 通过areaId查找唯一的小区
