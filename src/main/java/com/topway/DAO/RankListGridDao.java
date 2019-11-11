@@ -38,22 +38,43 @@ public interface RankListGridDao extends JpaRepository<RankListGrid, Integer> {
 
 
 
-    // 2019-07-23 更新
-    /** 网格报障数  网格对比 */
+    // 2019-11-08 更新
+    /** 网格报障率  网格对比 */
     @Query(value = "select " +
-            "   rank.grid, " +
-            "   rank.grid_id, " +
-            "   sum(fault_num) as sum_num " +
+            "   rank.master_grid, " +
+            "   rank.master_grid_id, " +
+            "   sum(month_fault_num)/sum(last_month_no_free_num) as sum_num " +
             "from rank_list_grid rank " +
             "where rank.branch_office=coalesce(?1, rank.branch_office) " +
             "and rank.station=coalesce(?2, rank.station) " +
-            "and rank.grid is not null " +
-            "and rank.grid<>'' " +
+            "and rank.master_grid is not null " +
+            "and rank.master_grid<>'' " +
             "and rank.month=?3 " +
-            "group by rank.grid " +
+            "group by rank.master_grid " +
             "order by sum_num desc " +
             " ", nativeQuery = true)
     List<Object[]> findGridGrid(String branch,
                                 String station,
                                 String month);
+
+    // 2019-11-08 更新
+    /** 重复故障率  网格维度 */
+    @Query(value = "select " +
+            "   rank.master_grid, " +
+            "   rank.master_grid_id, " +
+            "   sum(rank.month_repeat_fault_num)/coalesce(sum(rank.month_fault_num), 0) as sum_num " +
+            "from rank_list_grid rank " +
+            "where rank.branch_office=coalesce(?1, rank.branch_office) " +
+            "and rank.station=coalesce(?2, rank.station) " +
+            "and rank.master_grid is not null " +
+            "and rank.master_grid<>'' " +
+            "and rank.month=?3 " +
+            "group by rank.master_grid " +
+            "order by sum_num desc " +
+            " ", nativeQuery = true)
+    List<Object[]> findRepeatGrid(String branch,
+                                  String station,
+                                  String month);
+
 }
+

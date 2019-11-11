@@ -91,7 +91,7 @@ public class AreaController {
 
         /** 3.判断用户是使用"小区编码"搜索的还是使用"小区名称"搜索的 */
         try {
-            if (Pattern.matches("^\\w{4}$", KEYWORD)) {
+            if (Pattern.matches("^(\\w){4}$", KEYWORD)) {
                 log.info("【小区搜索】小区编码搜索:" + KEYWORD);
                 /** 如果是四位数字或字母,则认为是使用小区编码搜索,小区编码不能模糊搜索 */
 

@@ -33,6 +33,9 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      * fk560a959b 缴费类型
      * fkfceb956f 统计日期
      */
+    @Query(value = "select * from area a " +
+            "where a.area_id=?1 and a.payment_type=?2 and a.date=?3 " +
+            "limit 1 ", nativeQuery = true)
     Area findByAreaIdAndPaymentTypeAndDate(String areaId, String paymentType, String yesterday);
 
 
@@ -46,11 +49,12 @@ public interface AreaDao extends JpaRepository<Area, Integer> {
      * fkeef0a02b 运营商
      * fk93e2d7ec 区域分公司
      */
-    @Query(value = "select a from Area a " +
-            "where a.areaId=?1 and a.paymentType=?2 and a.date=?3 " +
-            "and (a.gridId in ?4 or (coalesce(?4, null) is null) )" +
-            "and (a.spcode in ?5 or (coalesce(?5, null) is null) )" +
-            "and (a.branch in ?6 or (coalesce(?6, null) is null) )")
+    @Query(value = "select * from area a " +
+            "where a.area_id=?1 and a.payment_type=?2 and a.date=?3 " +
+            "and (a.grid_id in (?4) or (coalesce(?4, null) is null) )" +
+            "and (a.spcode in (?5) or (coalesce(?5, null) is null) )" +
+            "and (a.branch in (?6) or (coalesce(?6, null) is null) ) " +
+            "limit 1", nativeQuery = true)
     Area findByAreaIdLike(String areaId,
                            String free,
                            String yesterday,

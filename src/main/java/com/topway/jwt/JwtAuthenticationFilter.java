@@ -38,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         }catch (Exception e){
             log.error("【认证】认证失败,token不符合规范");
+            log.error("【ERROR】"+e.getMessage());
             response.sendError(ResultEnum.PARAM_NOT_AUTHENTICATION.getCode(),
                     ResultEnum.PARAM_NOT_AUTHENTICATION.getDesc());
             return;

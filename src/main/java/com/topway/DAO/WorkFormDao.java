@@ -25,7 +25,7 @@ public interface WorkFormDao extends JpaRepository<WorkForm, Integer> {
      *  fk368c3e9d 创建时间
      */
     @Query(value = "select * from work_form where user_id=(" +
-            "select user_id from user u where u.customer_id=?1 and u.device_no=?2) " +
+            "select distinct user_id from user u where u.customer_id=?1 and u.device_no=?2) " +
             "order by master_create_time desc", nativeQuery = true)
     Page<WorkForm> findJoinWorkFormAndUser(@Param(value = "customerId") String customerId,
                                            @Param(value = "deviceNo") String deviceNo,

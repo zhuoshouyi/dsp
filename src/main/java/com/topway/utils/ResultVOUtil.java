@@ -2,10 +2,12 @@ package com.topway.utils;
 
 import com.topway.VO.ResultVO;
 import com.topway.dto.MsgDTO;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by haizhi on 2019/5/10.
  */
+@Slf4j
 public class ResultVOUtil {
 
     /**
@@ -17,6 +19,7 @@ public class ResultVOUtil {
         ResultVO resultVO = new ResultVO();
         resultVO.setSuccess(true);
         resultVO.setPayload(object);
+        log.info("【Payload】" + object.toString());
         return resultVO;
     }
 
@@ -58,6 +61,7 @@ public class ResultVOUtil {
         resultVO.setPageNo(pageNo);
         resultVO.setPageSize(pageSize);
         resultVO.setTotal(total);
+        log.info("【Payload】" + object.toString());
         return resultVO;
     }
 

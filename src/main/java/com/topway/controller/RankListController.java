@@ -132,7 +132,7 @@ public class RankListController {
         rank9List = rankListService.findTop9(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 网格保障率(网格内上月top5小区)
-        log.info("【排行榜】网格保障率(网格内上月top5小区)");
+        log.info("【排行榜】网格报障率(网格内上月top5小区)");
         rank10List = rankListService.findTop10(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 重复故障率

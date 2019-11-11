@@ -18,34 +18,37 @@ public class RankListGrid {
     @GeneratedValue
     private Integer id;
 
-    /** 统计月.fkd7f915d3 */
+    /** 统计月.fk1de6ce9f */
     private String month;
 
     /** 运营商.fka7321e69 */
     private String spcode;
 
-    /** 小区编码.fkde1f4c07 */
-    private String areaId;
+    /** 区域分公司.fk41873d1c */
+    private String branchOffice;
 
-    /** 故障单量.fk12440402 */
-    private double faultNum;
-
-    /** 小区用户数.fkcc747e6d */
-    private double areaUserNum;
-
-    /** 小区名称.fk1e80f3f0 */
-    private String areaName;
+    /** 分部名称.fkd757f8f6 */
+    private String departement;
 
     /** 维护站名称.fkeb82a46c */
     private String station;
 
-    /** 区域分公司.fk41873d1c */
-    private String branchOffice;
+    /** 业务网格编码_工单.fk27060cbb */
+    private String master_grid_id;
 
-    /** 网格名称.fk1d06e6a7 */
-    private String grid;
+    /** 业务网格_工单.fk6854bb6e */
+    private String master_grid;
 
-    /** 分部名称.fkd757f8f6 */
-    private String departement;
+    /** 业务类型_从单.fka7579569 */
+    private String follow_business_type;
+
+    /** 月度重复报障终端.fk78f2034e */
+    private String month_repeat_fault_num;
+
+    /** 月度报障终端.fka636ac5a */
+    private String month_fault_num;
+
+    /** 上月底收费用户数.fk92d0e650 */
+    private String last_month_no_free_num;
 
 }

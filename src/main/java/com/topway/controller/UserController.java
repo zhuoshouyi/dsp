@@ -55,12 +55,16 @@ public class UserController {
 
         // 参数1,搜索的关键字
         final String KEYWORD = userListForm.getKeyword();
+        log.info("【用户列表】KEYWORD:" + KEYWORD);
         // 参数2,搜索的类型
         final String SEARCHTYPE = userListForm.getSearchType();
+        log.info("【用户列表】SEARCHTYPE:" + SEARCHTYPE);
         // 参数3,查看的页数
         final int PAGENO = userListForm.getPageNo();
+        log.info("【用户列表】PAGENO:" + PAGENO);
         // 参数4,每页的个数
         final int PAGESIZE = userListForm.getPageSize();
+        log.info("【用户列表】PAGESIZE:" + PAGESIZE);
 
         // 搜索结果数据总条数
         long total=0L;

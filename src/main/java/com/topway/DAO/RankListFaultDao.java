@@ -392,24 +392,7 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
                                        String StartDate,
                                        String EndDate);
 
-    /** 重复故障率  网格维度 */
-    @Query(value = "select " +
-            "   rank.master_grid, " +
-            "   rank.master_grid_id, " +
-            "   sum(rank.repeat_num)/coalesce(sum(rank.install_num), 0) as sum_num " +
-            "from rank_list_fault rank " +
-            "where rank.master_region=coalesce(?1, rank.master_region) " +
-            "and rank.follow_back_depa_name=coalesce(?2, rank.follow_back_depa_name) " +
-            "and rank.master_grid is not null " +
-            "and rank.master_grid<>'' " +
-            "and rank.back_time between ?3 and ?4 " +
-            "group by rank.master_grid " +
-            "order by sum_num desc " +
-            " ", nativeQuery = true)
-    List<Object[]> findRepeatGrid(String branch,
-                                  String station,
-                                  String StartDate,
-                                  String EndDate);
+
 
 
 }

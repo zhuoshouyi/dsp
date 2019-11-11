@@ -21,6 +21,9 @@ public interface UserDao extends JpaRepository<User, Integer> {
     List<User> findByDeviceNoLike(String deviceNo);
 
     /** 通过客户编码和资源号查询 */
+    @Query(value = "select * from user u " +
+            "where u.customer_id=?1 and u.device_no=?2 " +
+            "limit 1 ", nativeQuery = true)
     User findByCustomerIdAndDeviceNo(String customerId, String deviceNo);
 
     /** 通过客户编码模糊查询 */

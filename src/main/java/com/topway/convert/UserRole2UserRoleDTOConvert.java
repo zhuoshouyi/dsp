@@ -14,6 +14,7 @@ public class UserRole2UserRoleDTOConvert {
         userRoleDTO.setUserId(userRole.getUserId());
         userRoleDTO.setUserName(userRole.getUserName());
         userRoleDTO.setOpenId(userRole.getOpenId());
+        userRoleDTO.setUserRole(userRole.getUserRole());
         userRoleDTO.setServiceGridId(userRole.getServiceGridId()==null ? null : String2ListConvert.convert(userRole.getServiceGridId()));
         userRoleDTO.setSpcodeId(userRole.getSpcodeId()==null ? null : String2ListConvert.convertTo(userRole.getSpcodeId()));
         userRoleDTO.setBusinessOfficeId(userRole.getBusinessOfficeId()==null ? null : String2ListConvert.convertTo(userRole.getBusinessOfficeId()));

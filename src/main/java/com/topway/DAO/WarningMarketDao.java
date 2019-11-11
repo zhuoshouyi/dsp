@@ -11,11 +11,12 @@ import java.util.List;
  */
 public interface WarningMarketDao extends JpaRepository<WarningMarket, Integer> {
 
-    @Query(value = "select sum(market_effect_num) as market_effect_num " +
-            "from warning_market " +
-            "where grid_id in (?1) " +
-            "and date>=?2 " +
-            "and date<=?3 ", nativeQuery = true)
+    @Query(value = "select sum(wm.market_effect_num) as market_effect_num " +
+            "from (select distinct date, spcode, branch, station, develop_id, develop_name, access_id, access, business_type, market_effect_num " +
+            "   from warning_market " +
+            "   where grid_id in (?1) " +
+            "   and date>=?2 " +
+            "   and date<=?3 ) wm", nativeQuery = true)
     Object[] findByGridId(List<String> gridId,
                           String timeStart,
                           String timeEnd);

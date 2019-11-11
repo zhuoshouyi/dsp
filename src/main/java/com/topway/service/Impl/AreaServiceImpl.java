@@ -317,8 +317,8 @@ public class AreaServiceImpl implements AreaService{
         // 1 数字电视在线收费终端数(fk06266ce4 数字电视用户数)
         areaBusinessDTO.setF1(area1.getWatchNum());
 
-        // 2 单电视+单宽用户(fk20d1fbb4 单电视用户数, fkcef5362c 单宽用户数)
-        areaBusinessDTO.setF2(area1.getWatchOnlyNum() + area1.getWbOnlyNum());
+        // 2 同一地址含单电视+单宽带的正常收费客户数 (fkba2558d1 单电视单宽用户数)
+        areaBusinessDTO.setF2(area1.getWatchOnlyWbOnlyNum());
 
         // 3 高清双向终端(fk2d7cd0f7 高清双向用户数)
         areaBusinessDTO.setF3(area1.getTwoWayNum());

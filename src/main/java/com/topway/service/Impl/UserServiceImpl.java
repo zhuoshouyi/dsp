@@ -390,7 +390,8 @@ public class UserServiceImpl implements UserService {
                         }else {
                             deviceDTO.setNo(3);
                         }
-                        list.add(deviceDTO);
+                        if (!list.contains(deviceDTO))
+                            list.add(deviceDTO);
                     }
             }
             // 使用匿名内部类,完成自定义排序
