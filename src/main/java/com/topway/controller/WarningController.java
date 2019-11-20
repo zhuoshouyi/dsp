@@ -60,34 +60,37 @@ public class WarningController {
         /** 3.拼接WarningVO */
         WarningVO warningVO = new WarningVO();
 
-        List<Double> WatchLossNumAndWbLossNumList = service.WatchLossNumAndWbLossNum(userRoleDTO);
+        // 保留两位小数
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+
+//        List<Double> WatchLossNumAndWbLossNumList = service.WatchLossNumAndWbLossNum(userRoleDTO);
 
         // 数字电视终端流失数
-        warningVO.setWatchLossNum(WatchLossNumAndWbLossNumList.get(0));
+//        warningVO.setWatchLossNum(WatchLossNumAndWbLossNumList.get(0));
 
         // 宽带终端流失数
-        warningVO.setWbLossNum(WatchLossNumAndWbLossNumList.get(1));
+//        warningVO.setWbLossNum(WatchLossNumAndWbLossNumList.get(1));
 
         // 24小时安装处理成功率
-        warningVO.setInstallSuccess24h(service.InstallSuccess24h(userRoleDTO));
+        warningVO.setInstallSuccess24h(Double.valueOf(df.format(service.InstallSuccess24h(userRoleDTO))));
 
         // 假单数
-        warningVO.setFaultOrderNum(0.0);
+//        warningVO.setFaultOrderNum(0.0);
 
         // 服务投诉数
-        warningVO.setServiceComplaintNum(0.0);
+//        warningVO.setServiceComplaintNum(0.0);
 
         // 营销生效额
-        warningVO.setMarketEffectiveNum(service.MarketEffectNum(userRoleDTO));
+//        warningVO.setMarketEffectiveNum(service.MarketEffectNum(userRoleDTO));
 
         if (userRoleDTO.getUserRole().equals("站长")){
             // 片区故障平均处理时长
-            warningVO.setRegionTimeLength(service.RegionAverageNum(userRoleDTO));
+            warningVO.setRegionTimeLength(Double.valueOf(df.format(service.RegionAverageNum(userRoleDTO))));
         }
 
         if (userRoleDTO.getUserRole().equals("基础网格员")){
             // 故障及时处理成功率
-            warningVO.setFaultSuccess(service.RegionFaultSuccess(userRoleDTO));
+            warningVO.setFaultSuccess(Double.valueOf(df.format(service.RegionFaultSuccess(userRoleDTO))));
         }
 
 

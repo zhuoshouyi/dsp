@@ -26,7 +26,7 @@ public class User2DeviceBasicInfoDTOConvert {
         deviceBasicInfoDTO.setCertificates(
                 (user.getBankName()==null?"":user.getBankName())
                         + "(卡号后四位为"
-                        + ((user.getBankNo()==null)?"":(user.getBankNo().substring(user.getBankNo().length()-4)))
+                        + ((user.getBankNo()==null)?"":(user.getBankNo().length()>4 ? user.getBankNo().substring(user.getBankNo().length()-4) : ""))
                         + ")");
         // fkc398514b 地址
         deviceBasicInfoDTO.setAddress(user.getAddress());
