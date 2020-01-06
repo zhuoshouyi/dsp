@@ -145,12 +145,12 @@ public class RankListServiceImpl implements RankListService{
      */
     public RankListFilterDTO rankListFilter(UserRoleDTO userRoleDTO){
         RankListFilterDTO rankListFilterDTO = new RankListFilterDTO();
-        if (userRoleDTO.getUserRole().equals("公司领导") || userRoleDTO.getUserRole().equals("业务部门") || userRoleDTO.getUserRole().equals("站长")){
 
-            // TODO 补充公司领导的排行榜权限
+        log.info("【排行榜筛选】用户身份:" + userRoleDTO.getUserRole());
+        // 如果 userId 不为空,则使用网格来判断
+        if (userRoleDTO.getUserId() != null && !userRoleDTO.getUserId().equals("")){
 
-        }else if (userRoleDTO.getUserRole().equals("基础网格员") || userRoleDTO.getUserRole().equals("支撑网格员")){
-
+            log.info("【排行榜筛选】userId 不为空,使用网格判断");
             List<String> branchList = userDao.findBranchByGridId(userRoleDTO.getServiceGridId());
             log.info("【排行榜筛选】branchList: " + branchList.toString());
             if (branchList != null && branchList.size()>0){
@@ -162,7 +162,33 @@ public class RankListServiceImpl implements RankListService{
             if (stationList != null && stationList.size()>0){
                 rankListFilterDTO.setStation(stationList.get(0));
             }
+
+            // 检验如果得到的结果为空,则报错
+            if (rankListFilterDTO.getBranch().equals("") || rankListFilterDTO.getStation().equals("")){
+                log.error("【排行榜筛选】无法通过网格查询维护站和分部 ");
+            }
+
         }
+        // 如果 userId 为空,则使用运营商和分公司判断
+        else {
+            List<String> branchList = userRoleDTO.getBusinessOfficeId();
+            log.info("【排行榜筛选】branchList: " + branchList.toString());
+            if (branchList != null && branchList.size()>0){
+                rankListFilterDTO.setBranch(branchList.get(0));
+            }
+
+            List<String> stationList = userDao.findStationBySpcodeAndBranch(userRoleDTO.getSpcodeId(), userRoleDTO.getBusinessOfficeId());
+            log.info("【排行榜筛选】stationList: " + stationList.toString());
+            if (stationList != null && stationList.size()>0){
+                rankListFilterDTO.setStation(stationList.get(0));
+            }
+
+            // 检验如果得到的结果为空,则报错
+            if (rankListFilterDTO.getBranch().equals("") || rankListFilterDTO.getStation().equals("")){
+                log.error("【排行榜筛选】无法通过运营商和分公司查询维护站和分部 ");
+            }
+        }
+
 
         return rankListFilterDTO;
     }
@@ -329,15 +355,26 @@ public class RankListServiceImpl implements RankListService{
     }
 
 
+    /**
+     * 工具类:
+     * 通过用户角色查询用户所属的分公司和分部
+     *
+     * @param userRoleDTO
+     * @return rankListFilterDTO
+     */
+    public RankListFilterDTO getRankListFilterDTOFromUserRoleDTO(UserRoleDTO userRoleDTO){
 
+        List<RankListShowPersonDTO> rankListShowPersonDTOList;
+        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
+        return rankListFilterDTO;
+    }
 
 
     /** 排行榜11个指标计算 */
     @Override
-    public List<RankListShowPersonDTO> findTop1(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson){
+    public List<RankListShowPersonDTO> findTop1(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson){
 
         List<RankListShowPersonDTO> rankListShowPersonDTOList;
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         // 判断用户权限
@@ -387,11 +424,10 @@ public class RankListServiceImpl implements RankListService{
 
 
     @Override
-    public List findTop2(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List findTop2(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowPersonDTO> rankListShowPersonDTOList = new ArrayList<>();
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
@@ -428,11 +464,10 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List findTop3(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List findTop3(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowPersonDTO> rankListShowPersonDTOList = new ArrayList<>();
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
@@ -469,11 +504,10 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List findTop4(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List findTop4(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowPersonDTO> rankListShowPersonDTOList = new ArrayList<>();
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
@@ -510,11 +544,10 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List findTop5(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List findTop5(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowPersonDTO> rankListShowPersonDTOList = new ArrayList<>();
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司") && gridOrPerson.equals("个人维度")){
@@ -551,15 +584,14 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List<RankListShowStationDTO> findTop6(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List<RankListShowStationDTO> findTop6(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
         return null;
     }
 
     @Override
-    public List<RankListShowGridDTO> findTop7(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List<RankListShowGridDTO> findTop7(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司")){
@@ -582,10 +614,9 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List<RankListShowGridDTO> findTop8(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List<RankListShowGridDTO> findTop8(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司")){
@@ -608,10 +639,9 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List<RankListShowGridDTO> findTop9(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List<RankListShowGridDTO> findTop9(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司")){
@@ -634,10 +664,9 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List<RankListShowGridDTO> findTop10(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List<RankListShowGridDTO> findTop10(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司")){
@@ -660,10 +689,9 @@ public class RankListServiceImpl implements RankListService{
     }
 
     @Override
-    public List<RankListShowGridDTO> findTop11(UserRoleDTO userRoleDTO, String branchOrStation, String gridOrPerson) {
+    public List<RankListShowGridDTO> findTop11(UserRoleDTO userRoleDTO, RankListFilterDTO rankListFilterDTO, String branchOrStation, String gridOrPerson) {
 
         List<RankListShowGridDTO> rankListShowGridDTOList = new ArrayList<>();
-        RankListFilterDTO rankListFilterDTO = findRankList(userRoleDTO);
         List<Object[]> objects = new ArrayList<>();
 
         if (branchOrStation.equals("分公司")){

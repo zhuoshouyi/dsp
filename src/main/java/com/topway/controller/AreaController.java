@@ -179,6 +179,7 @@ public class AreaController {
 
         final String AREAID = areaIdForm.getAreaId();
         AreaDetailDTO areaDetailDTO = new AreaDetailDTO();
+        log.info("【小区详情】接收参数 AREAID=" + AREAID);
 
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
@@ -192,9 +193,9 @@ public class AreaController {
         // TODO 计算天威客户数,覆盖住户数
         Area area = areaService.findByAreaId(AREAID);
         if (area == null){
-            log.info("【ERROR】无法通过AREAID查询到小区,数据库未匹配到此小区");
+            log.info("【ERROR】查询AREAID:" + AREAID + ". 无法通过AREAID查询到小区,数据库未匹配到此小区");
             return ResultVOUtil.error(ResultEnum.RESULT_NOT_FOUND.getCode(),
-                    "数据库未匹配到此小区");
+                    "数据库无法根据"+AREAID+"匹配到此小区");
         }
         areaBasicInfoDTO = Area2AreaBasicInfoDTOConvert.convert(area, 0, 0);
 

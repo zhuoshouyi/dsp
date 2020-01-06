@@ -23,4 +23,18 @@ public class RankListForm {
     @NotEmpty(message = "请选择排行维度")
     private String gridOrPerson;
 
+    /**
+     * 分公司
+     */
+    @NotEmpty(message = "前端未传输分公司信息")
+    private String branch;
+
+    /**
+     * 分部
+     */
+    @NotEmpty(message = "前端未传输分部信息")
+    private String station;
+
+
+
 }

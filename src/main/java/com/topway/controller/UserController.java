@@ -208,6 +208,8 @@ public class UserController {
         final String DEVICENO = deviceNoForm.getDeviceNo();
 
         log.info("【终端信息】开始查找终端信息");
+        log.info("【终端信息】接收参数 CUSTOMERID=" + CUSTOMERID + ", DEVICENO=" + DEVICENO);
+
         /** 1.校验form表单是否正确 */
         if (bindingResult.hasErrors()){
             log.error("【参数错误】传入的参数有误,deviceNoForm={}", deviceNoForm.toString());

@@ -53,7 +53,7 @@ public class RankListController {
                     ResultEnum.USER_GRID_MSG_ERROR.getDesc());
         }else {
 
-            return ResultVOUtil.success(rankListService.rankListFilter(userRoleDTO));
+            return ResultVOUtil.success(rankListFilterDTO);
         }
     }
 
@@ -73,8 +73,15 @@ public class RankListController {
                     bindingResult.getFieldError().getDefaultMessage());
         }
 
+        // BRANCHORSTATION 按照'分公司'或者'分部'查询
         final String BRANCHORSTATION = rankListForm.getBranchOrStation();
+        // GRIDORPERSON 按照'网格'或者'个人'查询
         final String GRIDORPERSON = rankListForm.getGridOrPerson();
+        // BRANCH 分公司
+        final String BRANCH = rankListForm.getBranch();
+        // STATION 分部
+        final String STATION = rankListForm.getStation();
+
 
         /** 2.识别用户身份,判断权限 */
         UserRoleDTO userRoleDTO = UserAuthentication.authentication(httpServletRequest);
@@ -94,50 +101,51 @@ public class RankListController {
         List<RankListShowGridDTO> rank10List = new ArrayList<>();
         List<RankListShowGridDTO> rank11List = new ArrayList<>();
 
+        RankListFilterDTO rankListFilterDTO = new RankListFilterDTO(BRANCH, STATION);
 
         // 营销生效额
         log.info("【排行榜】营销生效额排行");
-        rank1List = rankListService.findTop1(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank1List = rankListService.findTop1(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 24安装处理成功率(数字+宽带)
         log.info("【排行榜】24安装处理成功率(数字+宽带)");
-        rank2List = rankListService.findTop2(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank2List = rankListService.findTop2(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 48安装处理成功率(数字+宽带)
         log.info("【排行榜】48安装处理成功率(数字+宽带)");
-        rank3List = rankListService.findTop3(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank3List = rankListService.findTop3(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 故障及时处理成功率(数字)
         log.info("【排行榜】故障及时处理成功率(数字)");
-        rank4List = rankListService.findTop4(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank4List = rankListService.findTop4(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 故障及时处理成功率(宽带)
         log.info("【排行榜】故障及时处理成功率(宽带)");
-        rank5List = rankListService.findTop5(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank5List = rankListService.findTop5(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 故障单预约规范率
         log.info("【排行榜】故障单预约规范率");
-        rank6List = rankListService.findTop6(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank6List = rankListService.findTop6(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 数字电视用户流失数/率
         log.info("【排行榜】数字电视用户流失数/率");
-        rank7List = rankListService.findTop7(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank7List = rankListService.findTop7(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 20M宽带流失数/率
         log.info("【排行榜】20M宽带流失数/率");
-        rank8List = rankListService.findTop8(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank8List = rankListService.findTop8(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 100M宽带流失数/率
         log.info("【排行榜】100M宽带流失数/率");
-        rank9List = rankListService.findTop9(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank9List = rankListService.findTop9(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 网格保障率(网格内上月top5小区)
         log.info("【排行榜】网格报障率(网格内上月top5小区)");
-        rank10List = rankListService.findTop10(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank10List = rankListService.findTop10(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         // 重复故障率
         log.info("【排行榜】重复故障率");
-        rank11List = rankListService.findTop11(userRoleDTO, BRANCHORSTATION, GRIDORPERSON);
+        rank11List = rankListService.findTop11(userRoleDTO, rankListFilterDTO, BRANCHORSTATION, GRIDORPERSON);
 
         /** 4.拼接json */
         rankListShowDTO.setF1(rank1List);
