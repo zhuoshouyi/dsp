@@ -1,7 +1,5 @@
 package com.topway.service;
 
-import com.topway.dto.UserRoleDTO;
-import com.topway.form.LoginForm;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,15 +10,15 @@ import java.util.List;
 @Service
 public interface WarningService {
 
-    List<Double> WatchLossNumAndWbLossNum(UserRoleDTO userRoleDTO);
+//    List<Double> WatchLossNumAndWbLossNum(UserRoleDTO userRoleDTO);
 
-    Double InstallSuccess24h(UserRoleDTO userRoleDTO);
+    Double InstallSuccess24h(List<String> gridStr, List<String> operatorStr, List<String> branchStr);
 
-    Double MarketEffectNum(UserRoleDTO userRoleDTO);
+//    Double MarketEffectNum(UserRoleDTO userRoleDTO);
 
-    Double RegionAverageNum(UserRoleDTO userRoleDTO);
+    Double RegionAverageNum(List<String> gridStr, List<String> operatorStr, List<String> branchStr);
 
-    Double RegionFaultSuccess(UserRoleDTO userRoleDTO);
+    Double RegionFaultSuccess(List<String> gridStr, List<String> operatorStr, List<String> branchStr);
 
-    UserRoleDTO authentication(LoginForm loginForm);
+//    UserRoleDTO authentication(LoginForm loginForm);
 }

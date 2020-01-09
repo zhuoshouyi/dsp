@@ -1,6 +1,7 @@
 package com.topway.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -17,6 +18,8 @@ public class test {
         String yesterday = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(new Date(today.getTime()-86400000L));
 
         System.out.println(yesterday);
+
+
     }
 
 }

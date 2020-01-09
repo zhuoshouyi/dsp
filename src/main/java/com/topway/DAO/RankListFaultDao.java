@@ -221,6 +221,8 @@ public interface RankListFaultDao extends JpaRepository<RankListFault, Integer> 
 
 //  2019-07-23更新版本
     /** 24安装及时处理率(数字)  个人维度 */
+    // 维度: 从单返单人名称  数值: sum(24小时安装成功量)/sum(安装单处理量)
+    // 筛选条件: 返单时间在指定范围内
     @Query(value = "select * " +
         "from " +
         "(select @curRank\\:=@curRank +1 as id ,a.* from " +

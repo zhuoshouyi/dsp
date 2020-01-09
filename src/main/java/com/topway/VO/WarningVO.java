@@ -16,7 +16,7 @@ public class WarningVO {
 //    private Double wbLossNum = 0.0;
 
     @JsonProperty("24小时安装处理成功率")
-    private Double installSuccess24h = 0.0;
+    private Double installSuccess24h;
 
 //    @JsonProperty("假单数")
 //    private Double faultOrderNum = 0.0;
@@ -27,9 +27,9 @@ public class WarningVO {
 //     @JsonProperty("营销生效额")
 //     private Double marketEffectiveNum = 0.0;
 
-    @JsonProperty("片区故障平均处理时长")
-    private Double regionTimeLength = 0.0;
+    @JsonProperty("片区故障平均处理时长m")
+    private Double regionTimeLength;
 
     @JsonProperty("故障及时处理成功率")
-    private Double faultSuccess = 0.0;
+    private Double faultSuccess;
 }

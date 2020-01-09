@@ -31,6 +31,7 @@ public class String2ListConvert {
                 case "01": stringList.add("罗湖分公司"); break;
                 case "02": stringList.add("福田分公司"); break;
                 case "03": stringList.add("南山分公司"); break;
+                case "00": stringList.add("天威"); break;
                 default: break;
             }
         }
