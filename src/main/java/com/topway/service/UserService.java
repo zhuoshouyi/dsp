@@ -64,7 +64,7 @@ public interface UserService {
 
 
     /** 滑动接口 */
-    Page<DeviceBusinessInfoDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable);
+    Page<DeviceBusinessInfoDetailDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable);
 
     Page<DeviceWorkOrderDTO> findWorkOrderSlide(String customerId, String deviceNo, Pageable pageable);
 

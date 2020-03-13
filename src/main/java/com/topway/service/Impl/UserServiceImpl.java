@@ -643,9 +643,9 @@ public class UserServiceImpl implements UserService {
 
     /** 滑动 */
     @Override
-    public Page<DeviceBusinessInfoDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable) {
+    public Page<DeviceBusinessInfoDetailDTO> findBusinessSlide(String customerId, String deviceNo, Pageable pageable) {
         Page<UserProduct> userProductPage = userProductDao.findJoinUserAndUserProduct(customerId, deviceNo, pageable);
-        return UserProduct2DeviceBusinessInfoDTOConvert.convert(userProductPage);
+        return UserProduct2DeviceBusinessInfoDetailDTOConvert.convert(userProductPage);
     }
 
     @Override

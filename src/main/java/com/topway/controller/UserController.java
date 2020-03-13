@@ -462,10 +462,10 @@ public class UserController {
 
         /** 2.查找产品信息 */
         PageRequest pageRequest = new PageRequest(PAGENO, PAGESIZE);
-        Page<DeviceBusinessInfoDTO> deviceBusinessInfoDTOPage = userService.findBusinessSlide(CUSTOMERID, DEVICENO, pageRequest);
-        long total = deviceBusinessInfoDTOPage.getTotalElements();
+        Page<DeviceBusinessInfoDetailDTO> deviceBusinessInfoDetailDTOPage = userService.findBusinessSlide(CUSTOMERID, DEVICENO, pageRequest);
+        long total = deviceBusinessInfoDetailDTOPage.getTotalElements();
 
-        return ResultVOUtil.successPage(deviceBusinessInfoDTOPage.getContent(), PAGENO, PAGESIZE, total);
+        return ResultVOUtil.successPage(deviceBusinessInfoDetailDTOPage.getContent(), PAGENO, PAGESIZE, total);
     }
 
 

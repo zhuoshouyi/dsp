@@ -83,7 +83,6 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
 //    List<Object[]> findWatchLossGrid(String station, String date);
 
 
-
 //    /** 20M宽带流失数/率  维护站对比 */
 //    @Query(value = "select rank.station, coalesce(sum(now_month20m_num) - sum(last_month20m_num),0) as sum_num, " +
 //            "coalesce((sum(now_month20m_num) - sum(last_month20m_num)) / now_month20m_num , 0) as per_num " +
@@ -149,7 +148,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
             "   rank.grid, " +
             "   rank.grid_id, " +
             "   coalesce((sum(now_month_watch_num) - sum(last_month_watch_num)), 0) as sum_num," +
-            "   coalesce((sum(now_month_watch_num) - sum(last_month_watch_num)) / now_month_watch_num, 0) as per_num " +
+            "   coalesce((sum(now_month_watch_num) - sum(last_month_watch_num)) / last_month_watch_num, 0) as per_num " +
             "from rank_list_loss rank " +
             "where rank.branch_office=coalesce(?1, rank.branch_office) " +
             "and rank.station=coalesce(?2, rank.station) " +
@@ -169,7 +168,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
             "   rank.grid, " +
             "   rank.grid_id, " +
             "   coalesce(sum(now_month20m_num) - sum(last_month20m_num),0) as sum_num, " +
-            "   coalesce((sum(now_month20m_num) - sum(last_month20m_num)) / now_month20m_num , 0) as per_num " +
+            "   coalesce((sum(now_month20m_num) - sum(last_month20m_num)) / last_month20m_num , 0) as per_num " +
             "from rank_list_loss rank " +
             "where rank.branch_office=coalesce(?1, rank.branch_office) " +
             "and rank.station=coalesce(?2, rank.station) " +
@@ -189,7 +188,7 @@ public interface RankListLossDao extends JpaRepository<RankListLoss, Integer> {
             "   rank.grid, " +
             "   rank.grid_id, " +
             "   coalesce((sum(now_month100m_num) - sum(last_month100m_num)), 0) as sum_num, " +
-            "   coalesce((sum(now_month100m_num) - sum(last_month100m_num)) / now_month100m_num, 0) as per_num " +
+            "   coalesce((sum(now_month100m_num) - sum(last_month100m_num)) / last_month100m_num, 0) as per_num " +
             "from rank_list_loss rank " +
             "where rank.branch_office=coalesce(?1, rank.branch_office) " +
             "and rank.station=coalesce(?2, rank.station) " +

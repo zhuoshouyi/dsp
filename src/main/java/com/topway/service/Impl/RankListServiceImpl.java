@@ -647,6 +647,7 @@ public class RankListServiceImpl implements RankListService{
         if (branchOrStation.equals("分公司")){
 
             log.info("【Top9】排行范围: 分公司  排行维度: 网格维度");
+            log.info("【Top9】传入参数 $1=" + rankListFilterDTO.getBranch() + ", $2=null, $3=" + getLastMonth());
             objects = rankListLossDao.find100MLossGrid(rankListFilterDTO.getBranch(), null, getLastMonth());
             rankListShowGridDTOList = convertGrid(objects, "top9", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;
@@ -654,6 +655,7 @@ public class RankListServiceImpl implements RankListService{
         }else if (branchOrStation.equals("分部")){
 
             log.info("【Top9】排行范围: 分部  排行维度: 网格维度");
+            log.info("【Top9】传入参数 $1=null, $2=" + rankListFilterDTO.getStation() + ", $3=" + getLastMonth());
             objects = rankListLossDao.find100MLossGrid(null, rankListFilterDTO.getStation(), getLastMonth());
             rankListShowGridDTOList = convertGrid(objects, "top9", userRoleDTO.getServiceGridId());
             return rankListShowGridDTOList;

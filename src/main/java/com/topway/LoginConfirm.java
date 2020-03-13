@@ -39,7 +39,8 @@ public class LoginConfirm {
     UserRoleDao userRoleDao;
 
     @PostMapping("/hello")
-    public @ResponseBody Object hellWorld(HttpServletRequest httpServletRequest) {
+    public @ResponseBody
+    Object hellWorld(HttpServletRequest httpServletRequest) {
         Map<String, Claim> claimMap = JwtUtil.getToken(httpServletRequest);
         System.out.println("userId : " + claimMap.get("userId"));
         System.out.println("userName : " + claimMap.get("userName"));
